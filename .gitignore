@@ -1,0 +1,13 @@
+data
+runs
+attention
+__pycache__
+experiments
+models
+STAGCN_output
+models_stgcn
+prediction_output
+result
+__pycache__/
+*.py[cod]
+**/.DS_Store
