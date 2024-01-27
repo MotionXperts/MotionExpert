@@ -57,17 +57,6 @@ class Attention_branch(nn.Module):
         x_last = self.stgc_block4(x, A, None)
        
 
-        # Prediction embedding x_last
-        '''
-        x_out = F.avg_pool2d(x_last, x_last.size()[2:]) 
-        print("In attention branch : x_out", x_out.shape) # torch.Size([8, 256, 1, 1])
-        x_out = x_out.view(N, -1, 1, 1).mean(dim=1)
-        print("In attention branch : x_out", x_out.shape) # torch.Size([8, 1, 1])
-        x_out = self.fc(x_out)
-        print("In attention branch : x_out", x_out.shape)
-        output = x_out.view(x_out.size(0), -1)
-        print("In attention branch : output", output.shape)
-        '''
         # Attention
         x_att = self.att_bn0(x_last) 
         x_att = self.att_conv(x_att)

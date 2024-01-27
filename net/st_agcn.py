@@ -115,15 +115,13 @@ class STA_GCN(nn.Module):
 
         # Attention Branch
         a_config = [[128, 128, 1], [128, 128, 1], [128, 256, 2], [256, 256, 1], [256, 256, 1]]
-        self.attention_branch = Attention_branch(config=a_config, num_att_A=num_att_A, **kwargs)
+        self.attention_branch = Attention_branch(config=a_config,num_class=num_class, num_att_A=num_att_A, **kwargs)
 
         # Perception Branch
         p_config = [[128, 128, 1], [128, 128, 1], [128, 256, 2], [256, 256, 1], [256, 256, 1]]
-        self.perception_branch = Perception_branch(config=p_config, num_att_A=num_att_A, **kwargs)
+        self.perception_branch = Perception_branch(config=p_config,num_class=num_class, num_att_A=num_att_A, **kwargs)
 
     def forward(self, x):
-        # FIXME: weihsin
-        print("x",x.size())
         N, c, t, v = x.size()
         # Feature Extractor
         feature = self.feature_extractor(x, self.A)

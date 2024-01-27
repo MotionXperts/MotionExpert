@@ -125,15 +125,15 @@ class SimpleT5Model(nn.Module):
         self.t5 = T5ForConditionalGeneration.from_pretrained('t5-base', config=config)
         #### ST-GCN's GCN block SETTING #####
         self.out_channel = CONFIG.OUT_CHANNEL 
-        self.STAGCN  = st_agcn(num_class=10000,
+        self.STAGCN  = st_agcn(num_class=1200,
                                 in_channels=6,
                                 residual=True,
                                 dropout=0.5,
                                 num_person=1,
-                                t_kernel_size=4,
+                                t_kernel_size=9,
                                 layout='SMPL',
                                 strategy='spatial',
-                                hop_size=3,num_att_A=2 )
+                                hop_size=3,num_att_A=1 )
     
     def _get_encoder_feature(self, src):
        
@@ -149,9 +149,7 @@ class SimpleT5Model(nn.Module):
             #output = self.t5(inputs_embeds=input_embeds, attention_mask=attention_mask, decoder_input_ids=decoder_input_ids, labels=labels)
             ############################################# ST-GCN
             input_embeds, attention_node, attention_matrix  = self._get_encoder_feature(input_ids)
-            # print("attention_mask",attention_mask.size())
             new_attentention_mask = attention_mask[:,:,::4].clone()
-            # print("new_attentention_mask",new_attentention_mask.size())
             attention_mask = new_attentention_mask[:,0,:] # 8 6 118 --> 8 118
             output = self.t5(inputs_embeds=input_embeds, attention_mask=attention_mask, decoder_input_ids=decoder_input_ids, labels=labels)
             ###############################################
@@ -212,8 +210,7 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                             attention_mask=keypoints_mask_batch.contiguous(), 
                             decoder_input_ids=tgt_input.contiguous(),
                             labels=tgt_labels.contiguous())
-            # print nn.module's parameters
-            print("After forward : model.parameters",model.parameters())
+            #print("After forward : model.parameters",list(model.parameters()))
             loss = outputs.loss
             loss.backward()
             optimizer.step()
@@ -225,7 +222,7 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                 'lr': scheduler.optimizer.param_groups[0]['lr'],
             })
             progress.update()
-            print("After backward : model.parameters",model.parameters())
+            #print("After backward : model.parameters",list(model.parameters()))
 
         if eval_dataset is not None:
             print(f"Epoch {epoch}: Train Loss: {np.mean(loss_list):.4f}")

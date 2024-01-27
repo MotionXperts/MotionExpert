@@ -68,12 +68,8 @@ class Stgc_block(nn.Module):
         #In STAGCN : Stgc_block x torch.Size([256, 2, 150, 18])                                                                                                         
         #In STAGCN : Stgc_block A torch.Size([3, 18, 18])   
       
-     
-        # DEBUG: 
         sgc_out = self.sgc(x, A * self.M, att_A)
-        # FIXME: 
         x = self.tgc(sgc_out) + self.residual(x)
-
         return x
 
 
@@ -100,9 +96,7 @@ class S_GC(nn.Module):
         #In S_GC 1 : x torch.Size([256, 2, 150, 18])                                                                                                                                                              
         #In S_GC 1 : A torch.Size([3, 18, 18])                                                                                                                                                                    
         #In S_GC 1 : att_A None        
-        # print("In S_GC 1 : x",x.shape)
-        # print("In S_GC 1 : A",A.shape)
-        # print("In S_GC 1 : att_A",att_A)
+
         x = self.conv(x)
         n, kc, t, v = x.size()
         x = x.view(n, self.s_kernel_size, kc//self.s_kernel_size, t, v)
