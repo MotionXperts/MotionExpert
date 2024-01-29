@@ -164,14 +164,14 @@ class SimpleT5Model(nn.Module):
         input_embeds, attention_node, attention_matrix  = self._get_encoder_feature(input_ids)
         new_attentention_mask = attention_mask[:,:,::4].clone()
         attention_mask = new_attentention_mask[:,0,:]             # 8 6 118 --> 8 118
-        beam_size = 3
+        beam_size = 10
         generated_ids = self.t5.generate(
                         inputs_embeds=input_embeds,
                         attention_mask=attention_mask,
                         decoder_input_ids=decoder_input_ids, 
                         max_length=50,
                         num_beams=beam_size,
-                        repetition_penalty=2.5,
+                        repetition_penalty=5,
                         length_penalty=1.0,
                         early_stopping=True)
         return generated_ids , attention_node , attention_matrix
@@ -210,7 +210,6 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                             attention_mask=keypoints_mask_batch.contiguous(), 
                             decoder_input_ids=tgt_input.contiguous(),
                             labels=tgt_labels.contiguous())
-            #print("After forward : model.parameters",list(model.parameters()))
             loss = outputs.loss
             loss.backward()
             optimizer.step()
@@ -222,7 +221,6 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                 'lr': scheduler.optimizer.param_groups[0]['lr'],
             })
             progress.update()
-            #print("After backward : model.parameters",list(model.parameters()))
 
         if eval_dataset is not None:
             print(f"Epoch {epoch}: Train Loss: {np.mean(loss_list):.4f}")
@@ -267,16 +265,27 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                     for name, att_A in zip(video_names, att_A):
                         att_A_results[name] = att_A.cpu().numpy().tolist()
                     
+            if( args.finetune == False) : 
+                with open('STAGCN_output/STAGCN_results_epoch'+str(epoch)+'.json', 'w') as f:
+                    json.dump(results, f)
+                with open('STAGCN_output/STAGCN_att_node_results_epoch'+str(epoch)+'.json', 'w') as f:
+                    json.dump(att_node_results, f)
+                with open('STAGCN_output/STAGCN_att_A_results_epoch'+str(epoch)+'.json', 'w') as f:
+                    json.dump(att_A_results, f)
 
-            with open('STAGCN_output/STAGCN_results_epoch'+str(epoch)+'.json', 'w') as f:
-                json.dump(results, f)
-            with open('STAGCN_output/STAGCN_att_node_results_epoch'+str(epoch)+'.json', 'w') as f:
-                json.dump(att_node_results, f)
-            with open('STAGCN_output/STAGCN_att_A_results_epoch'+str(epoch)+'.json', 'w') as f:
-                json.dump(att_A_results, f)
+                predictions = readJSON('STAGCN_output/STAGCN_results_epoch'+str(epoch)+'.json')
+                annotations = readPickle('/home/peihsin/projects/humanML/dataset/rm_test.pkl')
+            else :
+                with open('STAGCN_output_finetune/finetune_results_epoch'+str(epoch)+'.json', 'w') as f:
+                    json.dump(results, f)
+                with open('STAGCN_output_finetune/finetune_att_node_results_epoch'+str(epoch)+'.json', 'w') as f:
+                    json.dump(att_node_results, f)
+                with open('STAGCN_output_finetune/finetune_att_A_results_epoch'+str(epoch)+'.json', 'w') as f:
+                    json.dump(att_A_results, f)
 
-            predictions = readJSON('STAGCN_output/STAGCN_results_epoch'+str(epoch)+'.json')
-            annotations = readPickle('/home/peihsin/projects/humanML/dataset/rm_test.pkl')
+                predictions = readJSON('STAGCN_output_finetune/finetune_results_epoch'+str(epoch)+'.json')
+                annotations = readPickle('/home/weihsin/datasets/VQA/test_local.pkl')
+
             gts = getGTCaptions(annotations)
             #Check predictions content is correct
             assert type(predictions) is dict
@@ -295,8 +304,9 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--finetune', type=bool,default=False)
     parser.add_argument('--data', default='/home/weihsin/datasets/FigureSkate/HumanML3D_g/global_human_train.pkl')
-    parser.add_argument('--out_dir', default='./models')
+    parser.add_argument('--out_dir', default='./models_finetune')
     parser.add_argument('--prefix', default='HumanML', help='prefix for saved filenames')
     parser.add_argument('--epochs', type=int, default=10)
     parser.add_argument('--save_every', type=int, default=1)
@@ -305,15 +315,24 @@ def main():
     args = parser.parse_args()
 
     tokenizer = AutoTokenizer.from_pretrained('t5-base', use_fast=True)
-    dataset = HumanMLDataset(args.data, tokenizer)
-    eval_dataset = HumanMLDataset_val(args.test_data, tokenizer)  
+    
     model = SimpleT5Model()
-    #print(model)
-    #weight = './models/HumanML_epoch0.pt'
-    #model.load_state_dict(torch.load(weight))
+    if(args.finetune):
+        print("finetune---------------------------------------------------------------\n")
+        args.data = '/home/weihsin/datasets/VQA/train_local.pkl'
+        args.test_data = '/home/weihsin/datasets/VQA/test_local.pkl'
+        weight = '/home/weihsin/projects/MotionExpertST-GCN/models/HumanML_epoch9.pt'
+        model_state_dict = model.state_dict()
 
+        state_dict = torch.load(weight)
+
+        pretrained_dict_1 = {k: v for k, v in state_dict.items() if k in model_state_dict}
+        model_state_dict.update(pretrained_dict_1)
+        model.load_state_dict(model_state_dict)
+    
+    dataset = HumanMLDataset(args.data, tokenizer)
+    eval_dataset = HumanMLDataset_val(args.test_data, tokenizer) 
     train(dataset, model, tokenizer, args,eval_dataset=eval_dataset, output_dir=args.out_dir, output_prefix=args.prefix)
-
-
+    
 if __name__ == '__main__':
     main()
