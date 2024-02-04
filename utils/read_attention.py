@@ -240,16 +240,20 @@ def normal_draw(joints,file_name):
 
 if __name__ == '__main__':
 
-    attention_node_path   = '/home/weihsin/projects/MotionExpertST-GCN/STAGCN_att_node_results_epoch0.json'
-    attention_matrix_path = '/home/weihsin/projects/MotionExpertST-GCN/STAGCN_att_A_results_epoch0.json'
-    node_coordinate_path  = '/home/weihsin/datasets/FigureSkate/HumanML3D_g/global_human_test.pkl'
+    #attention_node_path   = '/home/weihsin/projects/MotionExpertST-GCN/STAGCN_att_node_results_epoch0.json'
+    #attention_matrix_path = '/home/weihsin/projects/MotionExpertST-GCN/STAGCN_att_A_results_epoch0.json'
+    #node_coordinate_path  = '/home/weihsin/datasets/FigureSkate/HumanML3D_g/global_human_test.pkl'
+    attention_node_path   = '/home/weihsin/projects/MotionExpertST-GCN/STAGCN_output_finetune/finetune_att_node_results_epoch9.json'
+    attention_matrix_path = '/home/weihsin/projects/MotionExpertST-GCN/STAGCN_output_finetune/finetune_att_A_results_epoch9.json'
+    node_coordinate_path  = '/home/weihsin/datasets/VQA/test_local.pkl'
 
     with open(attention_node_path) as f:         attention_node   = json.load(f)
     with open(attention_matrix_path) as f:       attention_matrix = json.load(f)
     with open(node_coordinate_path, 'rb') as f:   node_coordinate = pkl.load(f)
     num_length = 0
     for item in node_coordinate:
-        if (item['video_name'] == '002404' ):
+        print (item['video_name'])
+        if (item['video_name'] == '471706283780080147_0' ):
             offset = 1.5
             '''
            item['video_name'] == '000215' or item['video_name'] == '000274' or item['video_name'] == '000301' or 
@@ -270,8 +274,8 @@ if __name__ == '__main__':
             color_node = []
             attention_node = np.array(attention_node[key])
             attention_matrix_new = np.array(attention_matrix[key][0])
-            for k in range(1,4):
-                attention_matrix_new += np.array(attention_matrix[key][1])
+            #for k in range(1,4):
+            #    attention_matrix_new += np.array(attention_matrix[key][1])
             for i in range(0,num_length,1 ):
                 if num_length <= 160 :
                     # 取(i/num_length)*160的 floor值

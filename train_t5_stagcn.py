@@ -15,10 +15,6 @@ import pickle , json, time , sys
 from torch.nn.utils.rnn import pad_sequence
 from cider import readJSON, readPickle, getGTCaptions, BLEUScore, CIDERScore
 from config import CONFIG
-#################################################### 1228 weihsin ST-GCN
-# from net.utils.tgcn import ConvTemporalGraphical
-# from net.st_gcn import Model as st_gcn 
-# from net.utils.graph import Graph
 from torch import Tensor
 import torch.nn.functional as F
 from typing import Optional
@@ -68,8 +64,8 @@ class HumanMLDataset(Dataset):
             idx = idx.tolist()
 
         features, label, video_name = self.samples[idx]
-        padded_features = np.zeros((6,self.max_len, 22)) # 6 469 22
-        keypoints_mask = np.zeros((6,self.max_len))       # 469
+        padded_features = np.zeros((6,self.max_len, 22)) 
+        keypoints_mask = np.zeros((6,self.max_len))       
 
         current_len = len(features[0])
         padded_features[:,:current_len, :] = features
@@ -83,7 +79,7 @@ class HumanMLDataset(Dataset):
             "output": tokenized_label['input_ids'].squeeze(0),
         }
         return sample
-# FIXME: I need to change the dataset for validation
+
 class HumanMLDataset_val(Dataset):
     def __init__(self, pkl_file, tokenizer, transform=None):
         with open(pkl_file, 'rb') as f:
@@ -125,12 +121,7 @@ class SimpleT5Model(nn.Module):
         self.t5 = T5ForConditionalGeneration.from_pretrained('t5-base', config=config)
         #### ST-GCN's GCN block SETTING #####
         self.out_channel = CONFIG.OUT_CHANNEL 
-        self.STAGCN  = st_agcn(num_class=1200,
-                                in_channels=6,
-                                residual=True,
-                                dropout=0.5,
-                                num_person=1,
-                                t_kernel_size=9,
+        self.STAGCN  = st_agcn(num_class=1200, in_channels=6, residual=True, dropout=0.5, num_person=1, t_kernel_size=9,
                                 layout='SMPL',
                                 strategy='spatial',
                                 hop_size=3,num_att_A=1 )
@@ -142,17 +133,12 @@ class SimpleT5Model(nn.Module):
 
     def forward(self, input_ids, attention_mask, decoder_input_ids=None, labels=None, use_embeds=True):
         if use_embeds:
-        
             batch_size, channel,seq_length, feature_dim = input_ids.shape
-            
-            #input_embeds = self.embedding(input_ids.view(-1,feature_dim)).view(batch_size, seq_length, -1)
-            #output = self.t5(inputs_embeds=input_embeds, attention_mask=attention_mask, decoder_input_ids=decoder_input_ids, labels=labels)
             ############################################# ST-GCN
             input_embeds, attention_node, attention_matrix  = self._get_encoder_feature(input_ids)
             new_attentention_mask = attention_mask[:,:,::4].clone()
             attention_mask = new_attentention_mask[:,0,:] # 8 6 118 --> 8 118
             output = self.t5(inputs_embeds=input_embeds, attention_mask=attention_mask, decoder_input_ids=decoder_input_ids, labels=labels)
-            ###############################################
         else:
             output = self.t5(input_ids=input_ids, attention_mask=attention_mask, decoder_input_ids=decoder_input_ids, labels=labels)
         
@@ -164,16 +150,17 @@ class SimpleT5Model(nn.Module):
         input_embeds, attention_node, attention_matrix  = self._get_encoder_feature(input_ids)
         new_attentention_mask = attention_mask[:,:,::4].clone()
         attention_mask = new_attentention_mask[:,0,:]             # 8 6 118 --> 8 118
-        beam_size = 10
-        generated_ids = self.t5.generate(
-                        inputs_embeds=input_embeds,
-                        attention_mask=attention_mask,
-                        decoder_input_ids=decoder_input_ids, 
-                        max_length=50,
-                        num_beams=beam_size,
-                        repetition_penalty=5,
-                        length_penalty=1.0,
-                        early_stopping=True)
+        beam_size = 3
+
+        generated_ids = self.t5.generate( inputs_embeds=input_embeds, 
+                                          attention_mask=attention_mask, 
+                                          decoder_input_ids=decoder_input_ids, 
+                                          max_length=50,
+                                          num_beams=beam_size, #3
+                                          repetition_penalty=2.5,
+                                          length_penalty=1.0,
+                                          early_stopping=True)
+                        
         return generated_ids , attention_node , attention_matrix
 
 def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, warmup_steps=5000, output_dir=".", output_prefix=""):
@@ -229,33 +216,22 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
             val_data_loader = DataLoader(eval_dataset, batch_size=2, shuffle=False)
             results = {}
             att_node_results = {}
-            att_A_results = {}
-            start_token_id = 3
-            beam_size = 3
+            att_A_results = {}    
             with torch.no_grad():
                 for batch in tqdm(val_data_loader):
                     video_names = batch['video_name']
                     src_batch = batch['keypoints'].to(device)
                     keypoints_mask_batch = batch['keypoints_mask'].to(device)
-                    ## FIXME: use ST-GCN
-                    # input_embeds, att_node , att_A= model._get_encoder_feature(src_batch)
-                    decoder_input_ids = torch.tensor([[start_token_id]] * src_batch.shape[0]).to(device)
-                    # new_attentention_mask = keypoints_mask_batch[:,:,::4].clone()
-                    # keypoints_mask_batch = new_attentention_mask[:,0,:]
-                    # generated_ids = model.t5.generate(
-                    #    inputs_embeds=input_embeds,
-                    #    attention_mask=keypoints_mask_batch,
-                    #    decoder_input_ids=decoder_input_ids, 
-                    #    max_length=50,
-                    #    num_beams=beam_size,
-                    #    repetition_penalty=2.5,
-                    #    length_penalty=1.0,
-                    #    early_stopping=True
-                    #)
+                    decoder_input_ids = tokenizer([""], 
+                                                  return_tensors="pt", 
+                                                  padding=True, 
+                                                  truncation=True, 
+                                                  add_special_tokens=False)['input_ids']
+                    decoder_input_ids = decoder_input_ids.repeat(src_batch.shape[0], 1).to(device)
+                    print("decoder_input_ids",decoder_input_ids.shape)
                     generated_ids , att_node , att_A = model.generate(input_ids=src_batch.contiguous(), 
-                            attention_mask=keypoints_mask_batch.contiguous(), 
-                            decoder_input_ids=decoder_input_ids)
-                    #generated_ids = model.generate((self, input_ids, attention_mask, decoder_input_ids=None, labels=None, use_embeds=True):
+                            attention_mask=keypoints_mask_batch.contiguous()) 
+                            #decoder_input_ids=decoder_input_ids)
 
                     for name, gen_id in zip(video_names, generated_ids):
                         decoded_text = tokenizer.decode(gen_id, skip_special_tokens=True, clean_up_tokenization_spaces=True)
@@ -287,7 +263,7 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                 annotations = readPickle('/home/weihsin/datasets/VQA/test_local.pkl')
 
             gts = getGTCaptions(annotations)
-            #Check predictions content is correct
+            # Check predictions content is correct
             assert type(predictions) is dict
             assert set(predictions.keys()) == set(gts.keys())
             assert all([type(pred) is str for pred in predictions.values()])
@@ -313,7 +289,6 @@ def main():
     parser.add_argument('--bs', type=int, default=8)
     parser.add_argument('--test_data', default='/home/weihsin/datasets/FigureSkate/HumanML3D_g/global_human_test.pkl')
     args = parser.parse_args()
-
     tokenizer = AutoTokenizer.from_pretrained('t5-base', use_fast=True)
     
     model = SimpleT5Model()
@@ -321,6 +296,7 @@ def main():
         print("finetune---------------------------------------------------------------\n")
         args.data = '/home/weihsin/datasets/VQA/train_local.pkl'
         args.test_data = '/home/weihsin/datasets/VQA/test_local.pkl'
+        
         weight = '/home/weihsin/projects/MotionExpertST-GCN/models/HumanML_epoch9.pt'
         model_state_dict = model.state_dict()
 
