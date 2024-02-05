@@ -121,7 +121,12 @@ class SimpleT5Model(nn.Module):
         self.t5 = T5ForConditionalGeneration.from_pretrained('t5-base', config=config)
         #### ST-GCN's GCN block SETTING #####
         self.out_channel = CONFIG.OUT_CHANNEL 
-        self.STAGCN  = st_agcn(num_class=1200, in_channels=6, residual=True, dropout=0.5, num_person=1, t_kernel_size=9,
+        self.STAGCN  = st_agcn(num_class=1200, 
+                                in_channels=6, 
+                                residual=True, 
+                                dropout=0.5, 
+                                num_person=1, 
+                                t_kernel_size=9,
                                 layout='SMPL',
                                 strategy='spatial',
                                 hop_size=3,num_att_A=1 )
@@ -151,25 +156,24 @@ class SimpleT5Model(nn.Module):
         new_attentention_mask = attention_mask[:,:,::4].clone()
         attention_mask = new_attentention_mask[:,0,:]             # 8 6 118 --> 8 118
         beam_size = 3
-
         generated_ids = self.t5.generate( inputs_embeds=input_embeds, 
                                           attention_mask=attention_mask, 
                                           decoder_input_ids=decoder_input_ids, 
                                           max_length=50,
-                                          num_beams=beam_size, #3
+                                          num_beams=beam_size, 
                                           repetition_penalty=2.5,
                                           length_penalty=1.0,
                                           early_stopping=True)
                         
         return generated_ids , attention_node , attention_matrix
 
-def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, warmup_steps=5000, output_dir=".", output_prefix=""):
+def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, warmup_steps=5000):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     batch_size = args.bs
     epochs = args.epochs
 
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+    if not os.path.exists(args.out_dir):
+        os.makedirs(args.out_dir)
     model.to(device)
     model.train()
     optimizer = AdamW(model.parameters(), lr=lr)
@@ -181,7 +185,7 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
     for epoch in range(epochs):
         print(f">>> Training epoch {epoch}")
         sys.stdout.flush()
-        progress = tqdm(total=len(train_dataloader), desc=output_prefix)
+        progress = tqdm(total=len(train_dataloader), desc=args.prefix)
         loss_list = []
         for idx, batch in enumerate(train_dataloader):
             model.zero_grad()
@@ -211,7 +215,7 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
 
         if eval_dataset is not None:
             print(f"Epoch {epoch}: Train Loss: {np.mean(loss_list):.4f}")
-            torch.save(model.state_dict(), os.path.join(output_dir, f"{output_prefix}_epoch{epoch}.pt"))            
+            torch.save(model.state_dict(), os.path.join(args.out_dir , f"{args.prefix}_epoch{epoch}.pt"))            
             model.eval()
             val_data_loader = DataLoader(eval_dataset, batch_size=2, shuffle=False)
             results = {}
@@ -222,7 +226,7 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                     video_names = batch['video_name']
                     src_batch = batch['keypoints'].to(device)
                     keypoints_mask_batch = batch['keypoints_mask'].to(device)
-                    decoder_input_ids = tokenizer([""], 
+                    decoder_input_ids = tokenizer(["You"], 
                                                   return_tensors="pt", 
                                                   padding=True, 
                                                   truncation=True, 
@@ -230,8 +234,8 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                     decoder_input_ids = decoder_input_ids.repeat(src_batch.shape[0], 1).to(device)
                     print("decoder_input_ids",decoder_input_ids.shape)
                     generated_ids , att_node , att_A = model.generate(input_ids=src_batch.contiguous(), 
-                            attention_mask=keypoints_mask_batch.contiguous()) 
-                            #decoder_input_ids=decoder_input_ids)
+                                                                        attention_mask=keypoints_mask_batch.contiguous()
+                                                                        decoder_input_ids=decoder_input_ids)
 
                     for name, gen_id in zip(video_names, generated_ids):
                         decoded_text = tokenizer.decode(gen_id, skip_special_tokens=True, clean_up_tokenization_spaces=True)
@@ -241,27 +245,17 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                     for name, att_A in zip(video_names, att_A):
                         att_A_results[name] = att_A.cpu().numpy().tolist()
                     
-            if( args.finetune == False) : 
-                with open('STAGCN_output/STAGCN_results_epoch'+str(epoch)+'.json', 'w') as f:
-                    json.dump(results, f)
-                with open('STAGCN_output/STAGCN_att_node_results_epoch'+str(epoch)+'.json', 'w') as f:
-                    json.dump(att_node_results, f)
-                with open('STAGCN_output/STAGCN_att_A_results_epoch'+str(epoch)+'.json', 'w') as f:
-                    json.dump(att_A_results, f)
+           
+            with open(args.result_dir+'/results_epoch'+str(epoch)+'.json', 'w') as f:
+                json.dump(results, f)
+            with open(args.result_dir+'/att_node_results_epoch'+str(epoch)+'.json', 'w') as f:
+                json.dump(att_node_results, f)
+            with open(args.result_dir+'/att_A_results_epoch'+str(epoch)+'.json', 'w') as f:
+                json.dump(att_A_results, f)
 
-                predictions = readJSON('STAGCN_output/STAGCN_results_epoch'+str(epoch)+'.json')
-                annotations = readPickle('/home/peihsin/projects/humanML/dataset/rm_test.pkl')
-            else :
-                with open('STAGCN_output_finetune/finetune_results_epoch'+str(epoch)+'.json', 'w') as f:
-                    json.dump(results, f)
-                with open('STAGCN_output_finetune/finetune_att_node_results_epoch'+str(epoch)+'.json', 'w') as f:
-                    json.dump(att_node_results, f)
-                with open('STAGCN_output_finetune/finetune_att_A_results_epoch'+str(epoch)+'.json', 'w') as f:
-                    json.dump(att_A_results, f)
-
-                predictions = readJSON('STAGCN_output_finetune/finetune_results_epoch'+str(epoch)+'.json')
-                annotations = readPickle('/home/weihsin/datasets/VQA/test_local.pkl')
-
+            predictions = readJSON(args.result_dir+'/results_epoch'+str(epoch)+'.json')
+            annotations = readPickle(args.test_data)
+           
             gts = getGTCaptions(annotations)
             # Check predictions content is correct
             assert type(predictions) is dict
@@ -282,22 +276,25 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--finetune', type=bool,default=False)
     parser.add_argument('--data', default='/home/weihsin/datasets/FigureSkate/HumanML3D_g/global_human_train.pkl')
-    parser.add_argument('--out_dir', default='./models_finetune')
+    parser.add_argument('--out_dir', default='./models')
     parser.add_argument('--prefix', default='HumanML', help='prefix for saved filenames')
     parser.add_argument('--epochs', type=int, default=10)
     parser.add_argument('--save_every', type=int, default=1)
     parser.add_argument('--bs', type=int, default=8)
     parser.add_argument('--test_data', default='/home/weihsin/datasets/FigureSkate/HumanML3D_g/global_human_test.pkl')
+    parser.add_argument('--result_dir', default = 'STAGCN_output')
     args = parser.parse_args()
     tokenizer = AutoTokenizer.from_pretrained('t5-base', use_fast=True)
     
     model = SimpleT5Model()
     if(args.finetune):
-        print("finetune---------------------------------------------------------------\n")
         args.data = '/home/weihsin/datasets/VQA/train_local.pkl'
+        args.out_dir = './models_finetune'
+        args.prefix = 'Finetune'
         args.test_data = '/home/weihsin/datasets/VQA/test_local.pkl'
-        
-        weight = '/home/weihsin/projects/MotionExpertST-GCN/models/HumanML_epoch9.pt'
+        args.result_dir = 'STAGCN_output_finetune'
+
+        weight = './models/HumanML_epoch9.pt'
         model_state_dict = model.state_dict()
 
         state_dict = torch.load(weight)
@@ -308,7 +305,7 @@ def main():
     
     dataset = HumanMLDataset(args.data, tokenizer)
     eval_dataset = HumanMLDataset_val(args.test_data, tokenizer) 
-    train(dataset, model, tokenizer, args,eval_dataset=eval_dataset, output_dir=args.out_dir, output_prefix=args.prefix)
+    train(dataset, model, tokenizer, args,eval_dataset=eval_dataset)
     
 if __name__ == '__main__':
     main()
