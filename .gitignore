@@ -14,3 +14,4 @@ __pycache__/
 .nfs0000000056fdc6de00000025
 STAGCN_output_finetune
 models_finetune
+outputloss.txt
