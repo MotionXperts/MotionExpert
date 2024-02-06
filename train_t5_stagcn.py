@@ -119,7 +119,6 @@ class SimpleT5Model(nn.Module):
         super(SimpleT5Model, self).__init__()
         config = AutoConfig.from_pretrained('t5-base')
         self.t5 = T5ForConditionalGeneration.from_pretrained('t5-base', config=config)
-        #### ST-GCN's GCN block SETTING #####
         self.out_channel = CONFIG.OUT_CHANNEL 
         self.STAGCN  = st_agcn(num_class=1200, 
                                 in_channels=6, 
@@ -132,14 +131,12 @@ class SimpleT5Model(nn.Module):
                                 hop_size=3,num_att_A=1 )
     
     def _get_encoder_feature(self, src):
-       
         embedding, attention_node, attention_matrix  = self.STAGCN(src)
         return embedding, attention_node, attention_matrix    
 
     def forward(self, input_ids, attention_mask, decoder_input_ids=None, labels=None, use_embeds=True):
         if use_embeds:
             batch_size, channel,seq_length, feature_dim = input_ids.shape
-            ############################################# ST-GCN
             input_embeds, attention_node, attention_matrix  = self._get_encoder_feature(input_ids)
             new_attentention_mask = attention_mask[:,:,::4].clone()
             attention_mask = new_attentention_mask[:,0,:] # 8 6 118 --> 8 118
@@ -155,7 +152,7 @@ class SimpleT5Model(nn.Module):
         input_embeds, attention_node, attention_matrix  = self._get_encoder_feature(input_ids)
         new_attentention_mask = attention_mask[:,:,::4].clone()
         attention_mask = new_attentention_mask[:,0,:]             # 8 6 118 --> 8 118
-        beam_size = 3
+        beam_size = 5
         generated_ids = self.t5.generate( inputs_embeds=input_embeds, 
                                           attention_mask=attention_mask, 
                                           decoder_input_ids=decoder_input_ids, 
@@ -234,7 +231,7 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                     decoder_input_ids = decoder_input_ids.repeat(src_batch.shape[0], 1).to(device)
                     print("decoder_input_ids",decoder_input_ids.shape)
                     generated_ids , att_node , att_A = model.generate(input_ids=src_batch.contiguous(), 
-                                                                        attention_mask=keypoints_mask_batch.contiguous()
+                                                                        attention_mask=keypoints_mask_batch.contiguous(),
                                                                         decoder_input_ids=decoder_input_ids)
 
                     for name, gen_id in zip(video_names, generated_ids):
@@ -247,7 +244,7 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                     
            
             with open(args.result_dir+'/results_epoch'+str(epoch)+'.json', 'w') as f:
-                json.dump(results, f)
+                json.dump(results, f,indent = 1)
             with open(args.result_dir+'/att_node_results_epoch'+str(epoch)+'.json', 'w') as f:
                 json.dump(att_node_results, f)
             with open(args.result_dir+'/att_A_results_epoch'+str(epoch)+'.json', 'w') as f:

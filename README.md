@@ -5,9 +5,9 @@
 [零散的筆記](https://hackmd.io/thcD77cGSVinURAAFO3bfg)
 請記錄你寫的工具python檔在哪裡
 
-用github 禁止CP喔 
-
-
+-
+# run code
+python train_t5_stagcn.py --finetune True > outputloss.txt 
 # create a virtual env
 ```
 python3 -m venv motion2text_env

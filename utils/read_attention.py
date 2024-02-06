@@ -43,7 +43,8 @@ def draw(joints,file_name,color_node,attention_matrix_new):
     num_frame = len(joints)
     joints = joints.reshape(num_frame,22,3)
     # y z 顛倒
-    joints[:,:,1],joints[:,:,2] = joints[:,:,2],joints[:,:,1].copy()
+    # tensor 用clone() 其他用copy()
+    joints[:,:,1],joints[:,:,2] = joints[:,:,2].clone(),joints[:,:,1].clone()
     attention_matrix_new = (attention_matrix_new - attention_matrix_new.min()) / (attention_matrix_new.max() - attention_matrix_new.min())
 
     combinations = [[i,j] for i in range(0,22) for j in range(0,22) ]
@@ -112,8 +113,6 @@ def draw(joints,file_name,color_node,attention_matrix_new):
                     [skeleton[first][1], skeleton[second][1]] ,
                     [skeleton[first][2], skeleton[second][2]] , 'black',linewidth=5.0)
 
-        
-        #attention_matrix_new flattent the 1D arrays name values
         values = attention_matrix_new.flatten()
     
         cNorm  = colors.Normalize(vmin=0, vmax=values.max())
@@ -121,7 +120,6 @@ def draw(joints,file_name,color_node,attention_matrix_new):
         colorVal = scalarMap.to_rgba(values)
         # threshold 為colorVal的最大值的0.8倍
         threshold = np.max(attention_matrix_new)*0.8
-        linesx = []
         i =0
         for index in combinations:
             first ,second = index[0] , index[1]      
@@ -165,8 +163,7 @@ def normal_draw(joints,file_name):
 
     def animate(frame):
         ax.clear()
-        skeleton_index = [ [ 0, 1 ], [ 0, 2 ], [ 0, 3 ], [ 1, 4 ], [ 2, 5 ], [ 3, 6 ], [ 4, 7 ], [ 5, 8 ], [ 6, 9 ], 
-                           [ 7, 10], [ 8, 11], [ 9, 12], [ 9, 13], [ 9, 14], [12, 15], [13, 16], [14, 17], [16, 18], [17, 19], [18, 20], [19, 21]]
+
         skeleton = joints[frame]
         ax.set_xlim([joints[0][0][0]-offset, joints[0][0][0]+offset])  # 设置 x 轴范围
         ax.set_ylim([joints[0][0][1]-offset, joints[0][0][1]+offset])  # 设置 y 轴范围
@@ -243,8 +240,8 @@ if __name__ == '__main__':
     #attention_node_path   = '/home/weihsin/projects/MotionExpertST-GCN/STAGCN_att_node_results_epoch0.json'
     #attention_matrix_path = '/home/weihsin/projects/MotionExpertST-GCN/STAGCN_att_A_results_epoch0.json'
     #node_coordinate_path  = '/home/weihsin/datasets/FigureSkate/HumanML3D_g/global_human_test.pkl'
-    attention_node_path   = '/home/weihsin/projects/MotionExpertST-GCN/STAGCN_output_finetune/finetune_att_node_results_epoch9.json'
-    attention_matrix_path = '/home/weihsin/projects/MotionExpertST-GCN/STAGCN_output_finetune/finetune_att_A_results_epoch9.json'
+    attention_node_path   = '/home/weihsin/projects/MotionExpert/STAGCN_output_finetune/finetune_att_node_results_epoch9.json'
+    attention_matrix_path = '/home/weihsin/projects/MotionExpert/STAGCN_output_finetune/finetune_att_A_results_epoch9.json'
     node_coordinate_path  = '/home/weihsin/datasets/VQA/test_local.pkl'
 
     with open(attention_node_path) as f:         attention_node   = json.load(f)
@@ -269,7 +266,7 @@ if __name__ == '__main__':
             key = item['video_name']
             print(type(key))
             print("attention_node",np.shape(attention_node[key]))
-            # attention_node 的長度為160 幫我把線性插值 num_length，如果小於 num_length 就補前面的值，如果大於 
+
             color_map = 'jet'
             color_node = []
             attention_node = np.array(attention_node[key])
@@ -279,7 +276,7 @@ if __name__ == '__main__':
             for i in range(0,num_length,1 ):
                 if num_length <= 160 :
                     # 取(i/num_length)*160的 floor值
-                    index = int(i*(160/num_length))
+                    index = int(i*(num_length/160))
                     color_node.append(attention_node[0,index])
                 if num_length > 160 :
                     index = int(i*(160/num_length))
@@ -288,12 +285,5 @@ if __name__ == '__main__':
             draw(item['features'],key,color_node,attention_matrix_new)
             normal_draw(item['features'],key)
             
-        #print("attention_matrix",np.shape(attention_matrix[key]))
-        #print("attention_matrix",attention_matrix[key][0])
-        #with open('attention_data.json', 'w') as outfile:
-        #        json.dump(attention_matrix[key], outfile)
-    
 
-    # write to json
-    
 
