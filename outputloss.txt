@@ -28,3 +28,263 @@ decoder_input_ids torch.Size([2, 1])
 CIDEr: 0.05536550679956799
 BLEU: {'Bleu_1': 0.1944444444437693, 'Bleu_2': 0.060006858318376, 'Bleu_3': 2.4266124020362627e-07, 'Bleu_4': 4.971029555964597e-10}
 >>> Training epoch 1
+Epoch 1: Train Loss: 3.9852
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+CIDEr: 0.034561866028559284
+BLEU: {'Bleu_1': 0.1792068557410705, 'Bleu_2': 9.975064087324958e-10, 'Bleu_3': 1.8415544179238876e-12, 'Bleu_4': 8.193952611694261e-14}
+>>> Training epoch 2
+Epoch 2: Train Loss: 3.7606
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+CIDEr: 0.040189355090813644
+BLEU: {'Bleu_1': 0.16244731724098918, 'Bleu_2': 0.04640925306718157, 'Bleu_3': 2.1855827114584104e-07, 'Bleu_4': 4.865186536049315e-10}
+>>> Training epoch 3
+Epoch 3: Train Loss: 3.4410
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+CIDEr: 0.042653722926926776
+BLEU: {'Bleu_1': 0.17724667480252465, 'Bleu_2': 0.055012396662600466, 'Bleu_3': 2.4157879075141735e-07, 'Bleu_4': 5.185148757594321e-10}
+>>> Training epoch 4
+Epoch 4: Train Loss: 3.0697
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+CIDEr: 0.046748434441468846
+BLEU: {'Bleu_1': 0.1685148347552527, 'Bleu_2': 0.06487552578038679, 'Bleu_3': 2.8552207680155606e-07, 'Bleu_4': 6.162027060732931e-10}
+>>> Training epoch 5
+Epoch 5: Train Loss: 2.6479
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+CIDEr: 0.038958792562605316
+BLEU: {'Bleu_1': 0.16043192796505096, 'Bleu_2': 0.052998013185714066, 'Bleu_3': 2.658561838175522e-07, 'Bleu_4': 6.194686154921523e-10}
+>>> Training epoch 6
+Epoch 6: Train Loss: 2.2528
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+CIDEr: 0.042119709190420455
+BLEU: {'Bleu_1': 0.1556286458958453, 'Bleu_2': 0.05261208489457845, 'Bleu_3': 2.675219050053897e-07, 'Bleu_4': 6.313811007470088e-10}
+>>> Training epoch 7
+Epoch 7: Train Loss: 1.9044
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+CIDEr: 0.04891975363457619
+BLEU: {'Bleu_1': 0.15652471978475005, 'Bleu_2': 0.05283804582587649, 'Bleu_3': 2.681944853168919e-07, 'Bleu_4': 6.315553220752818e-10}
+>>> Training epoch 8
+Epoch 8: Train Loss: 1.5820
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+CIDEr: 0.05128963809263656
+BLEU: {'Bleu_1': 0.15780939266914712, 'Bleu_2': 0.053149874482213914, 'Bleu_3': 2.690299058478354e-07, 'Bleu_4': 6.313318451518709e-10}
+>>> Training epoch 9
+Epoch 9: Train Loss: 1.2958
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+decoder_input_ids torch.Size([2, 1])
+CIDEr: 0.05098610199403924
+BLEU: {'Bleu_1': 0.1472113967324851, 'Bleu_2': 0.051109226253927546, 'Bleu_3': 2.6040070833129624e-07, 'Bleu_4': 6.108720941957641e-10}

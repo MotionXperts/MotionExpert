@@ -19,6 +19,8 @@ matplotlib.use('Agg')
 # Specify the path to your .pkl file
 dtype=torch.float32
 root_name = './'
+
+
 def gen_map(att_node, dir, color_map):
     map = torch.squeeze(att_node).permute(1, 0).data.cpu()
     map = (map - map.min()) / (map.max() - map.min())
@@ -119,11 +121,10 @@ def draw(joints,file_name,color_node,attention_matrix_new):
         scalarMap = cmx.ScalarMappable(norm=cNorm, cmap='rainbow')
         colorVal = scalarMap.to_rgba(values)
         # threshold 為colorVal的最大值的0.8倍
-        threshold = np.max(attention_matrix_new)*0.8
+        threshold = np.max(attention_matrix_new)*0.9
         i =0
         for index in combinations:
             first ,second = index[0] , index[1]      
-            #ax.plot([skeleton[first][0],skeleton[first][1],skeleton[first][2]],[skeleton[second][0],skeleton[second][1],skeleton[second][2]], color=colorVal[i])
             if attention_matrix_new[first][second] > threshold :
                 ax.plot([skeleton[first][0], skeleton[second][0]], [skeleton[first][1], skeleton[second][1]], [skeleton[first][2], skeleton[second][2]], linewidth= 3,color=colorVal[i])
             i += 1
@@ -240,8 +241,8 @@ if __name__ == '__main__':
     #attention_node_path   = '/home/weihsin/projects/MotionExpertST-GCN/STAGCN_att_node_results_epoch0.json'
     #attention_matrix_path = '/home/weihsin/projects/MotionExpertST-GCN/STAGCN_att_A_results_epoch0.json'
     #node_coordinate_path  = '/home/weihsin/datasets/FigureSkate/HumanML3D_g/global_human_test.pkl'
-    attention_node_path   = '/home/weihsin/projects/MotionExpert/STAGCN_output_finetune/finetune_att_node_results_epoch9.json'
-    attention_matrix_path = '/home/weihsin/projects/MotionExpert/STAGCN_output_finetune/finetune_att_A_results_epoch9.json'
+    attention_node_path   = '/home/weihsin/projects/MotionExpert/STAGCN_output_finetune/att_node_results_epoch9.json'
+    attention_matrix_path = '/home/weihsin/projects/MotionExpert/STAGCN_output_finetune/att_A_results_epoch9.json'
     node_coordinate_path  = '/home/weihsin/datasets/VQA/test_local.pkl'
 
     with open(attention_node_path) as f:         attention_node   = json.load(f)
@@ -249,9 +250,7 @@ if __name__ == '__main__':
     with open(node_coordinate_path, 'rb') as f:   node_coordinate = pkl.load(f)
     num_length = 0
     for item in node_coordinate:
-        print (item['video_name'])
-        if (item['video_name'] == '471706283780080147_0' ):
-            offset = 1.5
+        if (item['video_name'] == '468398487521460434_0' ):
             '''
            item['video_name'] == '000215' or item['video_name'] == '000274' or item['video_name'] == '000301' or 
            item['video_name'] == '000591' or item['video_name'] == '000632' or item['video_name'] == '000772' or item['video_name'] == '000846' or 
@@ -274,12 +273,12 @@ if __name__ == '__main__':
             #for k in range(1,4):
             #    attention_matrix_new += np.array(attention_matrix[key][1])
             for i in range(0,num_length,1 ):
-                if num_length <= 160 :
+                if num_length <= 131 :
                     # 取(i/num_length)*160的 floor值
-                    index = int(i*(num_length/160))
+                    index = int(i*(num_length/131))
                     color_node.append(attention_node[0,index])
-                if num_length > 160 :
-                    index = int(i*(160/num_length))
+                if num_length > 131 :
+                    index = int(i*(131/num_length))
                     color_node.append(attention_node[0,index])
 
             draw(item['features'],key,color_node,attention_matrix_new)
