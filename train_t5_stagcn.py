@@ -128,7 +128,7 @@ class SimpleT5Model(nn.Module):
                                 t_kernel_size=9,
                                 layout='SMPL',
                                 strategy='spatial',
-                                hop_size=3,num_att_A=1 )
+                                hop_size=3,num_att_A=4 )
     
     def _get_encoder_feature(self, src):
         embedding, attention_node, attention_matrix  = self.STAGCN(src)
@@ -146,7 +146,6 @@ class SimpleT5Model(nn.Module):
         
         return output
 
-    # debug 01/24
     def generate(self, input_ids, attention_mask, decoder_input_ids=None):
         batch_size, channel,seq_length, feature_dim = input_ids.shape
         input_embeds, attention_node, attention_matrix  = self._get_encoder_feature(input_ids)
@@ -155,7 +154,7 @@ class SimpleT5Model(nn.Module):
         beam_size = 5
         generated_ids = self.t5.generate( inputs_embeds=input_embeds, 
                                           attention_mask=attention_mask, 
-                                          decoder_input_ids=decoder_input_ids, 
+                                          # decoder_input_ids=decoder_input_ids, 
                                           max_length=50,
                                           num_beams=beam_size, 
                                           repetition_penalty=2.5,
@@ -223,13 +222,15 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                     video_names = batch['video_name']
                     src_batch = batch['keypoints'].to(device)
                     keypoints_mask_batch = batch['keypoints_mask'].to(device)
-                    decoder_input_ids = tokenizer(["You"], 
-                                                  return_tensors="pt", 
-                                                  padding=True, 
-                                                  truncation=True, 
-                                                  add_special_tokens=False)['input_ids']
-                    decoder_input_ids = decoder_input_ids.repeat(src_batch.shape[0], 1).to(device)
-                    print("decoder_input_ids",decoder_input_ids.shape)
+                    # decoder_input_ids = tokenizer([""], 
+                    #                               return_tensors="pt", 
+                    #                               padding=True, 
+                    #                               truncation=True, 
+                    #                               add_special_tokens=False)['input_ids']
+                    # decoder_input_ids = torch.tensor([[3]] * src_batch.shape[0]).to(device)
+                    # decoder_input_ids = decoder_input_ids.repeat(src_batch.shape[0], 1).to(device)
+                    decoder_input_ids = None
+                    # print("decoder_input_ids",decoder_input_ids.shape)
                     generated_ids , att_node , att_A = model.generate(input_ids=src_batch.contiguous(), 
                                                                         attention_mask=keypoints_mask_batch.contiguous(),
                                                                         decoder_input_ids=decoder_input_ids)
@@ -265,9 +266,7 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
             print(f"BLEU: {bleu_score}")
         
         progress.close()
-
     return model
-
 
 def main():
     parser = argparse.ArgumentParser()
@@ -285,17 +284,15 @@ def main():
     
     model = SimpleT5Model()
     if(args.finetune):
-        args.data = '/home/weihsin/datasets/VQA/train_local.pkl'
+        # python train_t5_stagcn.py --finetune True > outputloss.txt  
+        args.data    = '/home/weihsin/datasets/VQA/train_local.pkl'
         args.out_dir = './models_finetune'
-        args.prefix = 'Finetune'
-        args.test_data = '/home/weihsin/datasets/VQA/test_local.pkl'
+        args.prefix  = 'Finetune'
+        args.test_data  = '/home/weihsin/datasets/VQA/test_local.pkl'
         args.result_dir = 'STAGCN_output_finetune'
-
-        weight = './models/HumanML_epoch9.pt'
+        weight           = './models/HumanML_epoch9.pt'
         model_state_dict = model.state_dict()
-
         state_dict = torch.load(weight)
-
         pretrained_dict_1 = {k: v for k, v in state_dict.items() if k in model_state_dict}
         model_state_dict.update(pretrained_dict_1)
         model.load_state_dict(model_state_dict)
