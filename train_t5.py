@@ -26,8 +26,8 @@ class HumanMLDataset(Dataset):
             features = item['features']
             max_len = max(max_len, len(features)) 
             video_name = item['video_name']
-            for label in item['labels']:
-                self.samples.append((features, label, video_name))
+            for label in item['labels']:   
+                self.samples.append((features, label_prefix, video_name))
         self.max_len = max_len  
         self.tokenizer = tokenizer
         self.transform = transform

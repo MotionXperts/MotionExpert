@@ -1,6 +1,6 @@
 import os
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "4"
 import torch
 from torch.nn import functional as nnf
 from transformers import T5ForConditionalGeneration, AutoConfig, AutoTokenizer, AdamW, get_linear_schedule_with_warmup
@@ -39,7 +39,7 @@ def generate_data(current_keypoints ):
     return coordinates
 
 class HumanMLDataset(Dataset):
-    def __init__(self, pkl_file, tokenizer, transform=None):
+    def __init__(self, pkl_file, tokenizer, finetune,transform=None):
         with open(pkl_file, 'rb') as f:
             self.data_list = pickle.load(f)
         self.samples = []
@@ -50,6 +50,10 @@ class HumanMLDataset(Dataset):
             max_len = max(max_len, len(features[0]))
             video_name = item['video_name']
             for label in item['labels']:
+                if(finetune == False) : 
+                    label = "Motion Description : " + label
+                else :
+                    label = "Motion Instruction : " + label
                 self.samples.append((features, label, video_name))
 
         self.max_len = max_len  
@@ -150,8 +154,9 @@ class SimpleT5Model(nn.Module):
         batch_size, channel,seq_length, feature_dim = input_ids.shape
         input_embeds, attention_node, attention_matrix  = self._get_encoder_feature(input_ids)
         new_attentention_mask = attention_mask[:,:,::4].clone()
-        attention_mask = new_attentention_mask[:,0,:]             # 8 6 118 --> 8 118
-        beam_size = 5
+        attention_mask = new_attentention_mask[:,0,:]            
+        beam_size = 3
+
         generated_ids = self.t5.generate( inputs_embeds=input_embeds, 
                                           attention_mask=attention_mask, 
                                           decoder_input_ids=decoder_input_ids, 
@@ -159,6 +164,8 @@ class SimpleT5Model(nn.Module):
                                           num_beams=beam_size, 
                                           repetition_penalty=2.5,
                                           length_penalty=1.0,
+                                          temperature=1.5,   # 調高
+                                          do_sample=True,    # True
                                           early_stopping=True)
                         
         return generated_ids , attention_node , attention_matrix
@@ -203,6 +210,7 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
             scheduler.step()
             optimizer.zero_grad()
             loss_list.append(loss.item())
+
             progress.set_postfix({
                 'loss': np.mean(loss_list),
                 'lr': scheduler.optimizer.param_groups[0]['lr'],
@@ -222,7 +230,14 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                     video_names = batch['video_name']
                     src_batch = batch['keypoints'].to(device)
                     keypoints_mask_batch = batch['keypoints_mask'].to(device)
-                    decoder_input_ids = tokenizer(["Description: "], # Instruction
+                    if args.finetune == True :  
+                        decoder_input_ids = tokenizer(["Motion Instruction : "],
+                                                  return_tensors="pt", 
+                                                  padding=True, 
+                                                  truncation=True, 
+                                                  add_special_tokens=False)['input_ids']
+                    else :
+                        decoder_input_ids = tokenizer(["Motion Description : "],
                                                   return_tensors="pt", 
                                                   padding=True, 
                                                   truncation=True, 
@@ -270,11 +285,12 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--local',type=bool,default = True)
     parser.add_argument('--finetune', type=bool,default=False)
     parser.add_argument('--data', default='/home/weihsin/datasets/FigureSkate/HumanML3D_g/global_human_train.pkl')
     parser.add_argument('--out_dir', default='./models')
     parser.add_argument('--prefix', default='HumanML', help='prefix for saved filenames')
-    parser.add_argument('--epochs', type=int, default=10)
+    parser.add_argument('--epochs', type=int, default=100)
     parser.add_argument('--save_every', type=int, default=1)
     parser.add_argument('--bs', type=int, default=8)
     parser.add_argument('--test_data', default='/home/weihsin/datasets/FigureSkate/HumanML3D_g/global_human_test.pkl')
@@ -283,21 +299,29 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained('t5-base', use_fast=True)
     
     model = SimpleT5Model()
+    if(args.local):
+        args.data        = '/home/weihsin/datasets/FigureSkate/HumanML3D_l/local_human_train.pkl'
+        args.out_dir     = './models_local'
+        args.prefix      = 'Local'
+        args.test_data   = '/home/weihsin/datasets/FigureSkate/HumanML3D_l/local_human_test.pkl'
+        args.result_dir  = 'STAGCN_output_local'
+
     if(args.finetune):
         # python train_t5_stagcn.py --finetune True > outputloss.txt  
-        args.data    = '/home/weihsin/datasets/VQA/train_local.pkl'
-        args.out_dir = './models_finetune'
-        args.prefix  = 'Finetune'
-        args.test_data  = '/home/weihsin/datasets/VQA/test_local.pkl'
-        args.result_dir = 'STAGCN_output_finetune'
-        weight           = './models/HumanML_epoch9.pt'
+        args.data        = '/home/weihsin/datasets/VQA/train_local.pkl'
+        args.out_dir     = './models_finetune'
+        args.prefix      = 'Finetune'
+        args.test_data   = '/home/weihsin/datasets/VQA/test_local.pkl'
+        args.result_dir  = 'STAGCN_output_finetune'
+        weight           = './models_local/Local_epoch10.pt'
         model_state_dict = model.state_dict()
         state_dict = torch.load(weight)
         pretrained_dict_1 = {k: v for k, v in state_dict.items() if k in model_state_dict}
         model_state_dict.update(pretrained_dict_1)
         model.load_state_dict(model_state_dict)
     
-    dataset = HumanMLDataset(args.data, tokenizer)
+        
+    dataset = HumanMLDataset(args.data, tokenizer,args.finetune)
     eval_dataset = HumanMLDataset_val(args.test_data, tokenizer) 
     train(dataset, model, tokenizer, args,eval_dataset=eval_dataset)
     

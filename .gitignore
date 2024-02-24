@@ -16,3 +16,5 @@ STAGCN_output_finetune
 models_finetune
 ./outputloss.txt
 outputloss
+models_local
+STAGCN_output_local
