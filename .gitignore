@@ -18,3 +18,5 @@ models_finetune
 outputloss
 models_local
 STAGCN_output_local
+humalMLgroundtruth.json
+*.txt
