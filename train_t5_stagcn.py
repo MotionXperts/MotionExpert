@@ -18,7 +18,6 @@ from config import CONFIG
 from torch import Tensor
 import torch.nn.functional as F
 from typing import Optional
-#################################################### ST-GCN
 #################################################### STAGCN
 from net.st_agcn import STA_GCN as st_agcn
 from net.Utils_attention.attention_branch import *
@@ -26,6 +25,7 @@ from net.Utils_attention.perception_branch import *
 from net.Utils_attention.feature_extractor import *
 from net.Utils_attention.graph_convolution import *
 #################################################### STAGCN
+
 bonelink = [(0, 1), (0, 2), (0, 3), (1, 4), (2,5), (3,6), (4, 7), (5, 8), (6, 9), (7, 10), (8, 11), (9, 12), (9, 13), (9, 14), (12, 15), (13, 16), (14, 17), (16, 18), (17, 19), (18,  20), (19, 21)]
 def generate_data(current_keypoints ):
     joint_coordinate = np.zeros((3,len(current_keypoints),22))
@@ -164,8 +164,8 @@ class SimpleT5Model(nn.Module):
                                           num_beams=beam_size, 
                                           repetition_penalty=2.5,
                                           length_penalty=1.0,
-                                          temperature=1.5,   # 調高
-                                          do_sample=True,    # True
+                                          temperature=1.5,   
+                                          do_sample=True,    
                                           early_stopping=True)
                         
         return generated_ids , attention_node , attention_matrix
@@ -242,10 +242,9 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                                                   padding=True, 
                                                   truncation=True, 
                                                   add_special_tokens=False)['input_ids']
-                    # decoder_input_ids = torch.tensor([[3]] * src_batch.shape[0]).to(device)
+  
                     decoder_input_ids = decoder_input_ids.repeat(src_batch.shape[0], 1).to(device)
-                    # decoder_input_ids = None
-                    # print("decoder_input_ids",decoder_input_ids.shape)
+                    
                     generated_ids , att_node , att_A = model.generate(input_ids=src_batch.contiguous(), 
                                                                         attention_mask=keypoints_mask_batch.contiguous(),
                                                                         decoder_input_ids=decoder_input_ids)
