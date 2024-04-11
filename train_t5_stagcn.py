@@ -1,6 +1,6 @@
 import os
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "4"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 import torch
 from torch.nn import functional as nnf
 from transformers import T5ForConditionalGeneration, AutoConfig, AutoTokenizer, AdamW, get_linear_schedule_with_warmup
@@ -307,11 +307,11 @@ def main():
 
     if(args.finetune):
         # python train_t5_stagcn.py --finetune True > outputloss.txt  
-        args.data        = '/home/weihsin/datasets/VQA/train_local.pkl'
-        args.out_dir     = './models_finetune'
+        args.data        = '/home/weihsin/datasets/Loop/train_Loop.pkl'
+        args.out_dir     = './models_finetune_loop'
         args.prefix      = 'Finetune'
-        args.test_data   = '/home/weihsin/datasets/VQA/test_local.pkl'
-        args.result_dir  = 'STAGCN_output_finetune'
+        args.test_data   = '/home/weihsin/datasets/Loop/test_Loop.pkl'
+        args.result_dir  = 'STAGCN_output_finetune_loop'
         weight           = './models_local/Local_epoch10.pt'
         model_state_dict = model.state_dict()
         state_dict = torch.load(weight)

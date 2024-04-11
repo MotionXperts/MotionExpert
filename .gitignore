@@ -20,3 +20,5 @@ models_local
 STAGCN_output_local
 humalMLgroundtruth.json
 *.txt
+STAGCN_output_finetune_loop
+models_finetune_loop
