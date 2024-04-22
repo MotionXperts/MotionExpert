@@ -3,6 +3,7 @@ import numpy as np
 import os
 import json
 path = '/home/weihsin/datasets/FigureSkate/HumanML3D_g/global_human_test.pkl'
+path = '/home/weihsin/datasets/Loop/test_Loop.pkl'
 with open(path, 'rb') as f:
     data = pkl.load(f)
 
@@ -11,6 +12,7 @@ dictitory = {}
 
 for i in range(len(data)):
     print(data[i]['video_name'])
+    print(data[i]['labels'])
     # dict_keys(['video_name', 'labels'])
     video_name = data[i]['video_name']
     labels   = data[i]['labels']

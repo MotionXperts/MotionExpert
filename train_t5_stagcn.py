@@ -1,6 +1,6 @@
 import os
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 import torch
 from torch.nn import functional as nnf
 from transformers import T5ForConditionalGeneration, AutoConfig, AutoTokenizer, AdamW, get_linear_schedule_with_warmup
@@ -25,6 +25,9 @@ from net.Utils_attention.perception_branch import *
 from net.Utils_attention.feature_extractor import *
 from net.Utils_attention.graph_convolution import *
 #################################################### STAGCN
+
+from transformers import utils
+from bertviz import model_view
 
 bonelink = [(0, 1), (0, 2), (0, 3), (1, 4), (2,5), (3,6), (4, 7), (5, 8), (6, 9), (7, 10), (8, 11), (9, 12), (9, 13), (9, 14), (12, 15), (13, 16), (14, 17), (16, 18), (17, 19), (18,  20), (19, 21)]
 def generate_data(current_keypoints ):
@@ -104,7 +107,7 @@ class HumanMLDataset_val(Dataset):
         features = generate_data(features)
 
         padded_features = np.zeros((6,self.max_len, 22)) # 6 469 22
-        keypoints_mask = np.zeros((6,self.max_len))       # 469
+        keypoints_mask = np.zeros((6,self.max_len))      # 469
 
         current_len = len(features[0])
         padded_features[:,:current_len, :] = features
@@ -138,25 +141,26 @@ class SimpleT5Model(nn.Module):
         embedding, attention_node, attention_matrix  = self.STAGCN(src)
         return embedding, attention_node, attention_matrix    
 
-    def forward(self, input_ids, attention_mask, decoder_input_ids=None, labels=None, use_embeds=True):
+    def forward(self, input_ids, attention_mask, decoder_input_ids=None, labels=None, use_embeds=True,output_attentions=True):
         if use_embeds:
             batch_size, channel,seq_length, feature_dim = input_ids.shape
             input_embeds, attention_node, attention_matrix  = self._get_encoder_feature(input_ids)
             new_attentention_mask = attention_mask[:,:,::4].clone()
             attention_mask = new_attentention_mask[:,0,:] # 8 6 118 --> 8 118
-            output = self.t5(inputs_embeds=input_embeds, attention_mask=attention_mask, decoder_input_ids=decoder_input_ids, labels=labels)
+            output = self.t5(inputs_embeds=input_embeds, attention_mask=attention_mask, decoder_input_ids=decoder_input_ids, labels=labels,output_attentions=True)
         else:
-            output = self.t5(input_ids=input_ids, attention_mask=attention_mask, decoder_input_ids=decoder_input_ids, labels=labels)
+            output = self.t5(input_ids=input_ids, attention_mask=attention_mask, decoder_input_ids=decoder_input_ids, labels=labels,output_attentions=True)
         
         return output
 
-    def generate(self, input_ids, attention_mask, decoder_input_ids=None):
+    def generate(self, input_ids, attention_mask, decoder_input_ids=None,output_attentions=True):
         batch_size, channel,seq_length, feature_dim = input_ids.shape
         input_embeds, attention_node, attention_matrix  = self._get_encoder_feature(input_ids)
         new_attentention_mask = attention_mask[:,:,::4].clone()
         attention_mask = new_attentention_mask[:,0,:]            
         beam_size = 3
 
+        print("input_embeds.shape",input_embeds.shape)
         generated_ids = self.t5.generate( inputs_embeds=input_embeds, 
                                           attention_mask=attention_mask, 
                                           decoder_input_ids=decoder_input_ids, 
@@ -166,8 +170,9 @@ class SimpleT5Model(nn.Module):
                                           length_penalty=1.0,
                                           temperature=1.5,   
                                           do_sample=True,    
-                                          early_stopping=True)
-                        
+                                          early_stopping=True,
+                                          output_attentions=True)
+  
         return generated_ids , attention_node , attention_matrix
 
 def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, warmup_steps=5000):
@@ -203,7 +208,10 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
             outputs = model(input_ids=src_batch.contiguous(), 
                             attention_mask=keypoints_mask_batch.contiguous(), 
                             decoder_input_ids=tgt_input.contiguous(),
-                            labels=tgt_labels.contiguous())
+                            labels=tgt_labels.contiguous(),
+                            output_attentions=True)
+            print(outputs.keys())
+            
             loss = outputs.loss
             loss.backward()
             optimizer.step()
@@ -247,8 +255,15 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                     
                     generated_ids , att_node , att_A = model.generate(input_ids=src_batch.contiguous(), 
                                                                         attention_mask=keypoints_mask_batch.contiguous(),
-                                                                        decoder_input_ids=decoder_input_ids)
-
+                                                                           decoder_input_ids=decoder_input_ids,output_attentions=True)
+                   
+                    model_view(
+                        encoder_attention=outputs.encoder_attentions,
+                        decoder_attention=outputs.decoder_attentions,
+                        cross_attention=outputs.cross_attentions,
+                        encoder_tokens= src_batch.contiguous(),
+                        decoder_tokens=generated_ids
+                    )
                     for name, gen_id in zip(video_names, generated_ids):
                         decoded_text = tokenizer.decode(gen_id, skip_special_tokens=True, clean_up_tokenization_spaces=True)
                         results[name] = decoded_text
@@ -306,18 +321,18 @@ def main():
         args.result_dir  = 'STAGCN_output_local'
 
     if(args.finetune):
-        # python train_t5_stagcn.py --finetune True > outputloss.txt  
+        #  CUDA_LAUNCH_BLOCKING=1 python train_t5_stagcn.py --finetune True > outputloss.txt  
         args.data        = '/home/weihsin/datasets/Loop/train_Loop.pkl'
         args.out_dir     = './models_finetune_loop'
         args.prefix      = 'Finetune'
         args.test_data   = '/home/weihsin/datasets/Loop/test_Loop.pkl'
         args.result_dir  = 'STAGCN_output_finetune_loop'
-        weight           = './models_local/Local_epoch10.pt'
-        model_state_dict = model.state_dict()
-        state_dict = torch.load(weight)
-        pretrained_dict_1 = {k: v for k, v in state_dict.items() if k in model_state_dict}
-        model_state_dict.update(pretrained_dict_1)
-        model.load_state_dict(model_state_dict)
+        #weight           = './models_local/Local_epoch10.pt'
+        #model_state_dict = model.state_dict()
+        #state_dict = torch.load(weight)
+        #pretrained_dict_1 = {k: v for k, v in state_dict.items() if k in model_state_dict}
+        #model_state_dict.update(pretrained_dict_1)
+        #model.load_state_dict(model_state_dict)
     
         
     dataset = HumanMLDataset(args.data, tokenizer,args.finetune)
