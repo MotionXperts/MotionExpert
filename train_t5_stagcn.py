@@ -327,7 +327,7 @@ def main():
         args.prefix      = 'Finetune'
         args.test_data   = '/home/weihsin/datasets/Loop/test_Loop.pkl'
         args.result_dir  = 'STAGCN_output_finetune_loop'
-        #weight           = './models_local/Local_epoch10.pt'
+        #weight           = '/home/weihsin/projects/MotionExpert/models_local/Local_epoch10.pt'
         #model_state_dict = model.state_dict()
         #state_dict = torch.load(weight)
         #pretrained_dict_1 = {k: v for k, v in state_dict.items() if k in model_state_dict}
