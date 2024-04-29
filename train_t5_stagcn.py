@@ -1,6 +1,6 @@
 import os
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "5"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 import torch
 from torch.nn import functional as nnf
 from transformers import T5ForConditionalGeneration, AutoConfig, AutoTokenizer, AdamW, get_linear_schedule_with_warmup
@@ -257,13 +257,13 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                                                                         attention_mask=keypoints_mask_batch.contiguous(),
                                                                            decoder_input_ids=decoder_input_ids,output_attentions=True)
                    
-                    model_view(
-                        encoder_attention=outputs.encoder_attentions,
-                        decoder_attention=outputs.decoder_attentions,
-                        cross_attention=outputs.cross_attentions,
-                        encoder_tokens= src_batch.contiguous(),
-                        decoder_tokens=generated_ids
-                    )
+                    #model_view(
+                    #    encoder_attention=outputs.encoder_attentions,
+                    #    decoder_attention=outputs.decoder_attentions,
+                    #    cross_attention=outputs.cross_attentions,
+                    #    encoder_tokens= src_batch.contiguous(),
+                    #    decoder_tokens=generated_ids
+                    #)
                     for name, gen_id in zip(video_names, generated_ids):
                         decoded_text = tokenizer.decode(gen_id, skip_special_tokens=True, clean_up_tokenization_spaces=True)
                         results[name] = decoded_text
@@ -327,13 +327,15 @@ def main():
         args.prefix      = 'Finetune'
         args.test_data   = '/home/weihsin/datasets/Loop/test_Loop.pkl'
         args.result_dir  = 'STAGCN_output_finetune_loop'
-        #weight           = '/home/weihsin/projects/MotionExpert/models_local/Local_epoch10.pt'
-        #model_state_dict = model.state_dict()
-        #state_dict = torch.load(weight)
-        #pretrained_dict_1 = {k: v for k, v in state_dict.items() if k in model_state_dict}
-        #model_state_dict.update(pretrained_dict_1)
-        #model.load_state_dict(model_state_dict)
-    
+
+        ################ If you do not want to load the pretrained model, you can comment the following code
+        # weight           = '/home/weihsin/projects/MotionExpert/models_local/Local_epoch10.pt'
+        # model_state_dict = model.state_dict()
+        # state_dict = torch.load(weight)
+        # pretrained_dict_1 = {k: v for k, v in state_dict.items() if k in model_state_dict}
+        # model_state_dict.update(pretrained_dict_1)
+        # model.load_state_dict(model_state_dict)
+        ################
         
     dataset = HumanMLDataset(args.data, tokenizer,args.finetune)
     eval_dataset = HumanMLDataset_val(args.test_data, tokenizer) 

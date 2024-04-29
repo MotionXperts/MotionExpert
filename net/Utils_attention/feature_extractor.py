@@ -25,8 +25,7 @@ class Feature_extractor(nn.Module):
                       A_size=A_size)
 
         # branch1
-        # FIXME: change channel
-        self.stgc_block1_0 = Stgc_block(in_channels=2,
+        self.stgc_block1_0 = Stgc_block(in_channels=3,
                                         out_channels=config[0][1],
                                         stride=config[0][2],
                                         s_kernel_size=s_kernel_size,
@@ -40,8 +39,7 @@ class Feature_extractor(nn.Module):
         self.stgc_block1_4 = Stgc_block(config[4][0], config[4][1], config[4][2], **kwargs)
 
         # branch2
-        # FIXME: change channel
-        self.stgc_block2_0 = Stgc_block(in_channels=2,
+        self.stgc_block2_0 = Stgc_block(in_channels=3,
                                         out_channels=config[0][1],
                                         stride=config[0][2],
                                         s_kernel_size=s_kernel_size,
@@ -61,10 +59,10 @@ class Feature_extractor(nn.Module):
         x = self.bn(x)
         x = x.view(N, V, C, T).permute(0, 2, 3,1).contiguous().view(N, C, T, V)
        
-        # branch1 : skeleton
-        x1 = x[:, :2, :, :]
-        x2 = x[:, :2, :, :]
-     
+        x1 = x[:, :3, :, :] # bones
+        x2 = x[:, 3:, :, :] # joints
+
+        # branch1 : bone
         x1 = self.stgc_block1_0(x1, A, None)
         x1 = self.stgc_block1_1(x1, A, None)
         x1 = self.stgc_block1_2(x1, A, None)

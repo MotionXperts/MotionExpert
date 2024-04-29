@@ -60,13 +60,11 @@ class Attention_branch(nn.Module):
         # Attention
         x_att = self.att_bn0(x_last) 
         x_att = self.att_conv(x_att)
-
         # Attention node
         x_node = self.att_node_conv(x_att)
         x_node = self.att_node_bn(x_node)
         x_node = F.interpolate(x_node, size=(T, V))
         att_node = self.sigmoid(x_node)
-
         # Attention edge
         x_A = F.avg_pool2d(x_att, (x_att.size()[2], 1))
         x_A = self.att_A_conv(x_A)
