@@ -163,14 +163,8 @@ class SimpleT5Model(nn.Module):
         new_attentention_mask = attention_mask[:,:,::4].clone()
         attention_mask = new_attentention_mask[:,0,:22]          
         beam_size = 3
-
-        if(kwargs['fine_tune'] == True) :
-            return_dict_in_generate, output_attentions = True, True
-        else :
-            return_dict_in_generate, output_attentions = False,False
-
-        generated_ids = self.t5.generate( return_dict_in_generate=return_dict_in_generate,
-                                          output_attentions=output_attentions,
+        generated_ids = self.t5.generate( return_dict_in_generate=True,
+                                          output_attentions=True,
                                           inputs_embeds=input_embeds, 
                                           attention_mask=attention_mask, 
                                           decoder_input_ids=decoder_input_ids, 
