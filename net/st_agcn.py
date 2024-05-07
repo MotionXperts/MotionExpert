@@ -42,6 +42,12 @@ class STA_GCN(nn.Module):
         # Perception Branch
         p_config = [[128, 128, 1], [128, 128, 1], [128, 256, 2], [256, 256, 1], [256, 256, 1]]
         self.perception_branch = Perception_branch(config=p_config,num_class=num_class, num_att_A=num_att_A, **kwargs)
+ 
+        self.embedding = nn.Sequential(
+            nn.Linear(512, 768),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.5)
+        ) 
 
     def forward(self, x):
         N, c, t, v = x.size() # N : number of attention, c : channel, t : time, v : vertex
@@ -59,18 +65,13 @@ class STA_GCN(nn.Module):
         perception_last = perception_last.permute(0,2,3,1) # batchsize, channel, seq_length, vertex
         attention_last = attention_last.permute(0,2,3,1)   # batchsize, channel, seq_length, vertex
 
-        # perception_last torch.Size : ([8, 118, 22, 256]) // batchsize, seq_length, vertex, channel 
-        # attention_last torch.Size : ([8, 118, 22, 256])  // batchsize, seq_length, vertex, channel 
+        # perception_last torch.Size : ([8, 118, 22, 256])  batchsize, seq_length, vertex, channel 
+        # attention_last torch.Size : ([8, 118, 22, 256])   batchsize, seq_length, vertex, channel 
         PA_embedding = torch.cat([perception_last, attention_last], dim=-1) # ([8, 118, 22, 512])
-
-        self.embedding = nn.Sequential(nn.Linear(11264,5632),  # 22 * 512 -> 22 * 768
-                                       nn.ReLU(),nn.Linear(5632,768)).to(PA_embedding.get_device()) # 22 * 256 -> 22 * 1024
         
-        # batch_size, seq_length, feature_dim = input_ids.shape
-        # 512 -> 768/22
-        # 22 , 768/22
-        output_embedding = self.embedding(PA_embedding.view(-1,11264)).view(N, -1, 768)
+        PA_embedding = PA_embedding.permute(0,2,1,3)       # batchsize, vertex ,seq_length, channel 
+        PA_embedding = F.max_pool2d(PA_embedding, (PA_embedding.size(2), 1)).squeeze(2)
 
-        # att_node torch.Size([8, 1, 235, 22])
-        # att_A torch.Size([8, 4, 22, 22])  
+        output_embedding = self.embedding(PA_embedding).to(PA_embedding.get_device())
+
         return output_embedding, att_node, att_A
