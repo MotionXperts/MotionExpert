@@ -1,4 +1,4 @@
-import torch
+quenimport torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
@@ -70,6 +70,7 @@ class STA_GCN(nn.Module):
         PA_embedding = torch.cat([perception_last, attention_last], dim=-1) # ([8, 118, 22, 512])
         
         PA_embedding = PA_embedding.permute(0,2,1,3)       # batchsize, vertex ,seq_length, channel 
+        # use kernel model of size (seq_length, 1) to get the global feature
         PA_embedding = F.max_pool2d(PA_embedding, (PA_embedding.size(2), 1)).squeeze(2)
 
         output_embedding = self.embedding(PA_embedding).to(PA_embedding.get_device())
