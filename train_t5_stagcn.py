@@ -1,6 +1,6 @@
 import os
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 import torch
 from torch.nn import functional as nnf
 from transformers import T5ForConditionalGeneration, AutoConfig, AutoTokenizer, AdamW, get_linear_schedule_with_warmup
@@ -27,7 +27,7 @@ from net.Utils_attention.graph_convolution import *
 #################################################### STAGCN
 
 from transformers import utils
-from visualize_model import model_view
+from visualize_model import model_view, head_view, neuron_view
 
 bonelink = [(0, 1), (0, 2), (0, 3), (1, 4), (2,5), (3,6), (4, 7), (5, 8), (6, 9), (7, 10), (8, 11), (9, 12), (9, 13), (9, 14), (12, 15), (13, 16), (14, 17), (16, 18), (17, 19), (18,  20), (19, 21)]
 
@@ -191,12 +191,23 @@ class SimpleT5Model(nn.Module):
                                         html_action='return'
                                         )
 
+            html_object_head = head_view(
+                                        encoder_attention=encoder_attentions,
+                                        decoder_attention=decoder_attentions,
+                                        cross_attention=cross_attentions,
+                                        encoder_tokens= len(input_embeds[0]),
+                                        decoder_tokens=decoded_text,
+                                        html_action='return'
+                                        )
+
             if not os.path.exists(kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch'])):
                 os.makedirs(kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch']))
 
             # @name : kwargs['name'][0] since its batch size is 1
             with open(kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch']) + "/"+ kwargs['name'][0] + "_model_view.html", 'w') as file:
                 file.write(html_object.data)
+            with open(kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch']) + "/"+ kwargs['name'][0] + "_head_view.html", 'w') as file:
+                file.write(html_object_head.data)
 
         return generated_ids.sequences , attention_node , attention_matrix
 
@@ -349,11 +360,11 @@ def main():
         args.result_dir  = 'STAGCN_output_local_new'
 
     if(args.finetune):
-        args.data        = '/home/weihsin/datasets/Loop/train_Loop.pkl'
-        args.out_dir     = './models_finetune_loop_new'
+        args.data        = '/home/weihsin/datasets/VQA/train_local.pkl'
+        args.out_dir     = './models_finetune_new'
         args.prefix      = 'Finetune'
-        args.test_data   = '/home/weihsin/datasets/Loop/test_Loop.pkl'
-        args.result_dir  = 'STAGCN_output_finetune_loop_new'
+        args.test_data   = '/home/weihsin/datasets/VQA/test_local.pkl'
+        args.result_dir  = 'STAGCN_output_finetune_new'
 
     if(args.pretrained):
         weight           = '/home/weihsin/projects/MotionExpert/models_local_new/Local_epoch10.pt'

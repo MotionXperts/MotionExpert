@@ -20,7 +20,7 @@ def head_view(
         encoder_tokens=None,
         decoder_tokens=None,
         include_layers=None,
-        html_action='view'
+        html_action='return'
 ):
     """Render head view
 
@@ -49,7 +49,12 @@ def head_view(
                     - 'view' (default): Displays the generated HTML representation as a notebook cell output
                     - 'return' : Returns an HTML object containing the generated view for further processing or custom visualization
     """
-
+    # Change to 0 ~ 21 joints
+    encoder_tokens_list = list(range(0,encoder_tokens))
+    for i in range(0,encoder_tokens):
+        encoder_tokens_list[i] = str(i)
+    encoder_tokens = encoder_tokens_list
+    
     attn_data = []
     if attention is not None:
         if tokens is None:
