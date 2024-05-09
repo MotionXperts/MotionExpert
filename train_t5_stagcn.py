@@ -1,6 +1,6 @@
 import os
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "5"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 import torch
 from torch.nn import functional as nnf
 from transformers import T5ForConditionalGeneration, AutoConfig, AutoTokenizer, AdamW, get_linear_schedule_with_warmup
@@ -76,11 +76,9 @@ class HumanMLDataset(Dataset):
 
         features, label, video_name = self.samples[idx]
         padded_features = np.zeros((6,self.max_len, 22)) 
-        keypoints_mask = np.zeros((6,self.max_len))       
-
+        keypoints_mask = np.ones(22)       
         current_len = len(features[0])
         padded_features[:,:current_len, :] = features
-        keypoints_mask[:,:current_len] = 1  
         tokenized_label = self.tokenizer(label, return_tensors="pt", padding="max_length", truncation=True, max_length=50)
         sample = {
             "video_name": video_name,
@@ -111,11 +109,9 @@ class HumanMLDataset_val(Dataset):
         features = generate_data(features)
 
         padded_features = np.zeros((6,self.max_len, 22)) # 6 469 22
-        keypoints_mask = np.zeros((6,self.max_len))      # 469
-
+        keypoints_mask = np.ones(22)        
         current_len = len(features[0])
         padded_features[:,:current_len, :] = features
-        keypoints_mask[:,:current_len] = 1  
 
         sample = {
             "video_name": video_name,
@@ -148,8 +144,6 @@ class SimpleT5Model(nn.Module):
     def forward(self, input_ids, attention_mask, decoder_input_ids=None, labels=None):
         batch_size, channel,seq_length, feature_dim = input_ids.shape
         input_embeds, attention_node, attention_matrix  = self._get_encoder_feature(input_ids)
-        new_attentention_mask = attention_mask[:,:,::4].clone()
-        attention_mask = new_attentention_mask[:,0,:22]  # 8 6 118 --> 8 118 --> 8 22
         output = self.t5(inputs_embeds=input_embeds, attention_mask=attention_mask, decoder_input_ids=decoder_input_ids, labels=labels)        
         return output
 
@@ -160,8 +154,6 @@ class SimpleT5Model(nn.Module):
                                                                     kwargs['tokenizer']
 
         input_embeds, attention_node, attention_matrix  = self._get_encoder_feature(input_ids)
-        new_attentention_mask = attention_mask[:,:,::4].clone()
-        attention_mask = new_attentention_mask[:,0,:22]          
         beam_size = 3
         generated_ids = self.t5.generate( return_dict_in_generate=True,
                                           output_attentions=True,
