@@ -162,7 +162,7 @@ class SimpleT5Model(nn.Module):
                                           decoder_input_ids=decoder_input_ids, 
                                           max_length=50,
                                           num_beams=beam_size, 
-                                          repetition_penalty=2.5,
+                                          repetition_penalty=3.5,
                                           length_penalty=1.0,
                                           temperature=1.5,   
                                           do_sample=True,    
@@ -359,7 +359,7 @@ def main():
         args.result_dir  = 'STAGCN_output_finetune_new'
 
     if(args.pretrained):
-        weight           = '/home/weihsin/projects/MotionExpert/models_local_new/Local_epoch10.pt'
+        weight           = '/home/weihsin/projects/MotionExpert/models_local_new/Local_epoch40.pt'
         model_state_dict = model.state_dict()
         state_dict = torch.load(weight)
         pretrained_dict_1 = {k: v for k, v in state_dict.items() if k in model_state_dict}
