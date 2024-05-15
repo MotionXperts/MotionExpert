@@ -51,9 +51,31 @@ def model_view(
                     - 'return' : Returns an HTML object containing the generated view for further processing or custom visualization
     """
     # Change to 0 ~ 21 joints
+    joints_name = [ " 0 : pelvis", 
+                    " 1 : left hip", 
+                    " 2 : right hip", 
+                    " 3 : spine 1", 
+                    " 4 : left knee", 
+                    " 5 : right knee", 
+                    " 6 : spine 2", 
+                    " 7 : left ankle", 
+                    " 8 : right ankle", 
+                    " 9 : spine 3", 
+                    "10 : left foot", 
+                    "11 : right foot", 
+                    "12 : neck", 
+                    "13 : left collar", 
+                    "14 : right collar", 
+                    "15 : head", 
+                    "16 : left shoulder", 
+                    "17 : right shoulder", 
+                    "18 : left elbow", 
+                    "19 : right elbow", 
+                    "20 : left wrist", 
+                    "21 : right wrist"]
     encoder_tokens_list = list(range(0,encoder_tokens))
     for i in range(0,encoder_tokens):
-        encoder_tokens_list[i] = str(i)
+        encoder_tokens_list[i] = joints_name[i]
     encoder_tokens = encoder_tokens_list
 
     attn_data = []
