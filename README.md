@@ -21,15 +21,17 @@ $ pip install -r requirements.txt
 ```
 In case of installation of language_evaluation, you need to install from github source code
 
+## Prepare
+* There are three case to set the value of Pretrained and Finetune.
+  * Train HumanML3D : Pretrained = False, Finetune = False
+  * Finetune to Skating : Pretrained = True, Finetune = True
+  * Directly train Skating : Pretrained = False, Finetune = True
+
+* Change the path in config.py.
 ## Build
 
-#### pretrained on HumanML3D dataset
 ```
 $ python train_t5_stagcn.py > outputloss.txt
-```
-#### finetune on Skating dataset
-```
-$ python train_t5_stagcn.py --finetune True --pretrained True > outputloss.txt 
 ```
 
 ## All you need to know in SportTech

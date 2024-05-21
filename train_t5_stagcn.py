@@ -18,14 +18,21 @@ from config import CONFIG
 from torch import Tensor
 import torch.nn.functional as F
 from typing import Optional
-#################################################### STAGCN
+
+# STAGCN
 from net.st_agcn import STA_GCN as st_agcn
 from net.Utils_attention.attention_branch import *
 from net.Utils_attention.perception_branch import *
 from net.Utils_attention.feature_extractor import *
 from net.Utils_attention.graph_convolution import *
-#################################################### STAGCN
 
+# alignment
+from alignment.alignment import *
+
+# dim convertor
+from convertor.dim_convertor import dim_conv as dim_conv
+
+# T5 visualize tool
 from transformers import utils
 from visualize_model import model_view, head_view, neuron_view
 
@@ -45,23 +52,38 @@ def generate_data(current_keypoints ):
     coordinates = np.concatenate((joint_coordinate, bone_coordinate), axis=0)
     return coordinates
 
+'''
+# Standard joints for alignment
+# For the Pretrained Model:
+# The standard joints are those of a motionless person, compared to the HumanML3D Dataset.
+# For the Fine-tuning Model:
+# The standard joints are those of a professional athlete performing an Axel movement.
+'''
+standard = None
+
 class HumanMLDataset(Dataset):
     def __init__(self, pkl_file, tokenizer, finetune,transform=None):
         with open(pkl_file, 'rb') as f:
             self.data_list = pickle.load(f)
         self.samples = []
         max_len = 0  
-
+        global standard
         for item in self.data_list:
             features =  generate_data(item['features'])
             max_len = max(max_len, len(features[0]))
             video_name = item['video_name']
-            for label in item['labels']:
-                if(finetune == False) : 
-                    label = "Motion Description : " + label
-                else :
-                    label = "Motion Instruction : " + label
-                self.samples.append((features, label, video_name))
+
+            if(video_name == 'standard'):
+                standard = torch.FloatTensor(features)
+                standard = standard.unsqueeze(0)
+
+            else:
+                for label in item['labels']:
+                    if(finetune == False) : 
+                        label = "Motion Description : " + label
+                    else :
+                        label = "Motion Instruction : " + label
+                    self.samples.append((features, label, video_name))
 
         self.max_len = max_len  
         self.tokenizer = tokenizer
@@ -86,6 +108,7 @@ class HumanMLDataset(Dataset):
             "keypoints_mask": torch.FloatTensor(keypoints_mask),
             "label": label,
             "output": tokenized_label['input_ids'].squeeze(0),
+            "seq_len": current_len,
         }
         return sample
 
@@ -108,7 +131,9 @@ class HumanMLDataset_val(Dataset):
         features, video_name = item['features'], item['video_name']
         features = generate_data(features)
 
-        padded_features = np.zeros((6,self.max_len, 22)) # 6 469 22
+        # Padding
+        # features : 6 x (max sequence length) T x 22
+        padded_features = np.zeros((6,self.max_len, 22)) 
         keypoints_mask = np.ones(22)        
         current_len = len(features[0])
         padded_features[:,:current_len, :] = features
@@ -117,6 +142,7 @@ class HumanMLDataset_val(Dataset):
             "video_name": video_name,
             "keypoints": torch.FloatTensor(padded_features),
             "keypoints_mask": torch.FloatTensor(keypoints_mask),
+            "seq_len": current_len,
         }
         return sample
 
@@ -127,6 +153,7 @@ class SimpleT5Model(nn.Module):
         config = AutoConfig.from_pretrained('t5-base')
         self.t5 = T5ForConditionalGeneration.from_pretrained('t5-base', config=config)
         self.out_channel = CONFIG.OUT_CHANNEL 
+
         self.STAGCN  = st_agcn(num_class=1024, 
                                 in_channels=6, 
                                 residual=True, 
@@ -136,24 +163,106 @@ class SimpleT5Model(nn.Module):
                                 layout='SMPL',
                                 strategy='spatial',
                                 hop_size=3,num_att_A=4 )
+        
+        self.dim_conv = dim_conv(alignment = True)
     
-    def _get_encoder_feature(self, src):
+    def _get_stagcn_feature(self, src):
         embedding, attention_node, attention_matrix  = self.STAGCN(src)
-        return embedding, attention_node, attention_matrix    
+        return embedding, attention_node, attention_matrix  
 
-    def forward(self, input_ids, attention_mask, decoder_input_ids=None, labels=None):
-        batch_size, channel,seq_length, feature_dim = input_ids.shape
-        input_embeds, attention_node, attention_matrix  = self._get_encoder_feature(input_ids)
+    '''
+    # - _get_alignment_feature()
+    # @ query : (1, T, 22, 512) standard
+    # @ key : (batch_size, T, 22, 512) 
+    # @ return : batchsize, vertex(22), seq_length, channel (512)
+    '''
+    def _get_alignment_feature(self, query, key,seq_len):
+        max_len = max(seq_len)
+        def interpolate_sequence(sequence):
+            step = torch.div(max_len, sequence.size(0), rounding_mode='floor')
+            
+            new_sequence = torch.zeros(max_len, sequence.size(1))
+            
+            for i in range(sequence.size(0)-1):
+                new_index = int(i * step)
+                new_sequence[new_index, :] = sequence[i, :]
+                if i < sequence.size(1) - 1:
+                    for j in range(1, int(step)):
+                        ratio = j / step
+                        interpolated_vector = sequence[i, :] + ratio * (sequence[i+1, :] - sequence[i, :])
+                        new_sequence[new_index + j, :] = interpolated_vector
+            
+            return new_sequence
+            
+        batch_allignment = None
+        max_len = max(seq_len)
+        for i in range(len(key)):
+            video_allignment = None
+            current_len = seq_len[i]
+            for j in range(0,22):
+                _ ,result = align(query[0,:,j,:], key[i,:current_len,j,:])
+                result = interpolate_sequence(result)
+                result = result.unsqueeze(0)
+                if j == 0: video_allignment = result
+                else : video_allignment = torch.cat([video_allignment,result],dim=0)
+
+            video_allignment = video_allignment.unsqueeze(0)
+            if i == 0: batch_allignment = video_allignment
+            else : batch_allignment = torch.cat([batch_allignment,video_allignment],dim=0)
+
+        return batch_allignment
+
+    '''
+    # - _get_dim_convertor()
+    # @ x : batchsize, vertex(22), seq_length, channel (512)
+    # @ return : batchsize, vertex(22), 768
+    '''
+    def _get_dim_convertor(self, x):
+        return self.dim_conv(x)  
+
+    def forward(self, input_ids, attention_mask, seq_len,decoder_input_ids=None, labels=None,alignment = True):
+        # STAGCN
+        self.STAGCN.train()
+        embeddings, attention_node, attention_matrix  = self._get_stagcn_feature(input_ids)
+
+        if alignment == True:
+            # Use standard joints as input of STAGCN to generate standard embedding
+            self.STAGCN.eval()
+            with torch.no_grad():
+                std_embs, std_attention_node, std_attention_matrix  = self._get_stagcn_feature(standard.to('cuda'))
+
+            # Alignment
+            embeddings = self._get_alignment_feature(std_embs, embeddings,seq_len)
+        
+        # Dim Convertor
+        input_embeds = self._get_dim_convertor(embeddings)
+
         output = self.t5(inputs_embeds=input_embeds, attention_mask=attention_mask, decoder_input_ids=decoder_input_ids, labels=labels)        
         return output
 
     def generate(self,**kwargs):
-        input_ids, attention_mask, decoder_input_ids, tokenizer =   kwargs['input_ids'], \
-                                                                    kwargs['attention_mask'], \
-                                                                    kwargs['decoder_input_ids'], \
-                                                                    kwargs['tokenizer']
+        input_ids = kwargs['input_ids']
+        attention_mask = kwargs['attention_mask']
+        decoder_input_ids = kwargs['decoder_input_ids']
+        tokenizer = kwargs['tokenizer'] 
+        seq_len = kwargs['sequence_length']
+        alignment = kwargs['alignment']
 
-        input_embeds, attention_node, attention_matrix  = self._get_encoder_feature(input_ids)
+        # STAGCN
+        embeddings, attention_node, attention_matrix  = self._get_stagcn_feature(input_ids)
+        
+        if alignment == True:
+            # Use standard joints as input of STAGCN to generate standard embedding
+            self.STAGCN.eval()
+            with torch.no_grad():
+                std_embs, std_attention_node, std_attention_matrix  = self._get_stagcn_feature(standard.to('cuda'))
+
+            # Alignment
+            embeddings = self._get_alignment_feature(std_embs, embeddings,seq_len)
+
+        # Dim Convertor
+        input_embeds = self._get_dim_convertor(embeddings)
+
         beam_size = 3
         generated_ids = self.t5.generate( return_dict_in_generate=True,
                                           output_attentions=True,
@@ -195,7 +304,7 @@ class SimpleT5Model(nn.Module):
             if not os.path.exists(kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch'])):
                 os.makedirs(kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch']))
 
-            # @name : kwargs['name'][0] since its batch size is 1
+            # @name : kwargs['name'][0] since its batch size is one in inference dataset 
             with open(kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch']) + "/"+ kwargs['name'][0] + "_model_view.html", 'w') as file:
                 file.write(html_object.data)
             with open(kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch']) + "/"+ kwargs['name'][0] + "_head_view.html", 'w') as file:
@@ -231,14 +340,17 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
             src_batch = batch['keypoints'].to(device)
             keypoints_mask_batch = batch['keypoints_mask'].to(device)
             tgt_batch = batch['output'].to(device)
+            seq_len = batch['seq_len'].to(device)
 
             tgt_input = tgt_batch[:, :-1]
             tgt_labels = tgt_batch[:, 1:]
 
             outputs = model(input_ids=src_batch.contiguous(), 
                             attention_mask=keypoints_mask_batch.contiguous(), 
+                            seq_len=seq_len.contiguous(),
                             decoder_input_ids=tgt_input.contiguous(),         # text
-                            labels=tgt_labels.contiguous())
+                            labels=tgt_labels.contiguous(),
+                            alignment = args.alignment)
                                         
             loss = outputs.loss
             loss.backward()
@@ -257,6 +369,8 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
             print(f"Epoch {epoch}: Train Loss: {np.mean(loss_list):.4f}")
             torch.save(model.state_dict(), os.path.join(args.out_dir , f"{args.prefix}_epoch{epoch}.pt"))            
             model.eval()
+            # @ batch_size = 1 :
+            # This is because we need to visualize the attention information of every video.
             val_data_loader = DataLoader(eval_dataset, batch_size=1, shuffle=False)
             results = {}
             att_node_results = {}
@@ -266,6 +380,8 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                     video_names = batch['video_name']
                     src_batch = batch['keypoints'].to(device)
                     keypoints_mask_batch = batch['keypoints_mask'].to(device)
+                    seq_len = batch['seq_len'].to(device)
+
                     if args.finetune == True :  
                         decoder_input_ids = tokenizer(["Motion Instruction : "],
                                                   return_tensors="pt", 
@@ -284,11 +400,13 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
                     input = {   "input_ids": src_batch.contiguous(),
                                 "attention_mask": keypoints_mask_batch.contiguous(),
                                 "decoder_input_ids": decoder_input_ids,
+                                "sequence_length": seq_len.contiguous(),
                                 "name": video_names,
                                 "tokenizer": tokenizer,
                                 "fine_tune": args.finetune,
                                 "result_dir": args.result_dir,
-                                "epoch": epoch }
+                                "epoch": epoch,
+                                "alignment": args.alignment}
 
                     generated_ids , att_node , att_A = model.generate(**input)
                    
@@ -329,37 +447,24 @@ def train(train_dataset, model, tokenizer, args, eval_dataset=None, lr=1e-3, war
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--local',type=bool,default = True)
-    parser.add_argument('--finetune', type=bool,default=False)
-    parser.add_argument('--data', default='/home/weihsin/datasets/FigureSkate/HumanML3D_g/global_human_train.pkl')
-    parser.add_argument('--out_dir', default='./models')
-    parser.add_argument('--prefix', default='HumanML', help='prefix for saved filenames')
-    parser.add_argument('--epochs', type=int, default=100)
+    parser.add_argument('--local',      type=bool,default = True)
+    parser.add_argument('--finetune',   type=bool,default=CONFIG.Finetune)
+    parser.add_argument('--data',       default=CONFIG.data)
+    parser.add_argument('--out_dir',    default=CONFIG.out_dir)
+    parser.add_argument('--prefix',     default=CONFIG.prefix, help='prefix for saved filenames')
+    parser.add_argument('--epochs',     type=int, default=100)
     parser.add_argument('--save_every', type=int, default=1)
-    parser.add_argument('--bs', type=int, default=8)
-    parser.add_argument('--pretrained', type=bool,default=False)
-    parser.add_argument('--test_data', default='/home/weihsin/datasets/FigureSkate/HumanML3D_g/global_human_test.pkl')
-    parser.add_argument('--result_dir', default = 'STAGCN_output')
+    parser.add_argument('--bs',         type=int, default=8)
+    parser.add_argument('--pretrained', type=bool,default=CONFIG.Pretrained)
+    parser.add_argument('--test_data',  default=CONFIG.test_data)
+    parser.add_argument('--result_dir',  default = CONFIG.result_dir)
+    parser.add_argument('--alignment',  type=bool,default=True)
     args = parser.parse_args()
     tokenizer = AutoTokenizer.from_pretrained('t5-base', use_fast=True)
     
     model = SimpleT5Model()
-    if(args.local):
-        args.data        = '/home/weihsin/datasets/FigureSkate/HumanML3D_l/local_human_train.pkl'
-        args.out_dir     = './models_local_new'
-        args.prefix      = 'Local'
-        args.test_data   = '/home/weihsin/datasets/FigureSkate/HumanML3D_l/local_human_test.pkl'
-        args.result_dir  = 'STAGCN_output_local_new'
-
-    if(args.finetune):
-        args.data        = '/home/weihsin/datasets/VQA/train_local.pkl'
-        args.out_dir     = './models_finetune_new'
-        args.prefix      = 'Finetune'
-        args.test_data   = '/home/weihsin/datasets/VQA/test_local.pkl'
-        args.result_dir  = 'STAGCN_output_finetune_new'
-
-    if(args.pretrained):
-        weight           = '/home/weihsin/projects/MotionExpert/models_local_new/Local_epoch50.pt'
+    if(CONFIG.Pretrained):
+        weight           = CONFIG.weight_path
         model_state_dict = model.state_dict()
         state_dict = torch.load(weight)
         pretrained_dict_1 = {k: v for k, v in state_dict.items() if k in model_state_dict}
