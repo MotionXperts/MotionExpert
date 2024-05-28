@@ -23,6 +23,19 @@ In case of installation of language_evaluation, you need to install from github 
 
 ## Prepare
 You will have to first define a config file to run. Examples can be found under configs/
+Create a folder called ```results``` and an name of the experiment under ```results```, and put the defined config file under it. The repo architecture may look like this.
+```
+    <root>
+    |    -  alignment
+    |    -  configs
+    |    -  dataloaders
+    |    -  results
+               |    -     pretrain
+                              |      -  config.yaml
+    ...
+    |    -  train_t5.py  
+```
+Make sure to change the ```LOGDIR``` path in config.yaml to the related path from repo root.
 
 ## Build
 
