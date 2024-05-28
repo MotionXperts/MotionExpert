@@ -3,8 +3,9 @@ runs
 attention
 __pycache__
 experiments
-models*
 STAGCN_output*
+results/**
+**/.ipynb_checkpoints
 
 
 prediction_output

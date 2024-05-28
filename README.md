@@ -22,16 +22,33 @@ $ pip install -r requirements.txt
 In case of installation of language_evaluation, you need to install from github source code
 
 ## Prepare
-* There are three case to set the value of Pretrained and Finetune.
-  * Train HumanML3D : Pretrained = False, Finetune = False
-  * Finetune to Skating : Pretrained = True, Finetune = True
-  * Directly train Skating : Pretrained = False, Finetune = True
+You will have to first define a config file to run. Examples can be found under configs/
+Create a folder called ```results``` and an name of the experiment under ```results```, and put the defined config file under it. The repo architecture may look like this.
+```
+    <root>
+    |    -  alignment
+    |    -  configs
+    |    -  dataloaders
+    |    -  results
+               |    -     pretrain
+                              |      -  config.yaml
+    ...
+    |    -  train_t5.py  
+```
+Make sure to change the ```LOGDIR``` path in config.yaml to the related path from repo root.
 
-* Change the path in config.py.
 ## Build
 
 ```
-$ python train_t5_stagcn.py > outputloss.txt
+$ torchrun --nproc_per_node <specify_how_many_gpus_to_run> train_t5_stagcn.py --cfg_file <path_to_cfg_fil>
+```
+
+or, if the above yield Error ```detected multiple processes in same device```
+
+run
+
+```
+$ python -m torch.distributed.launch --nproc_per_node <specify_how_many_gpus_to_run> train_t5_stagcn.py --cfg_file <path_to_cfg_fil>
 ```
 
 ## All you need to know in SportTech
