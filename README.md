@@ -39,15 +39,15 @@ Make sure to change the ```LOGDIR``` path in config.yaml to the related path fro
 
 ## Build
 
-```
-$ torchrun --nproc_per_node <specify_how_many_gpus_to_run> train_t5_stagcn.py --cfg_file <path_to_cfg_fil>
+```shell
+$ torchrun --nproc_per_node <specify_how_many_gpus_to_run> train_t5_stagcn.py --cfg_file <path_to_cfg_fill>
 ```
 
 or, if the above yield Error ```detected multiple processes in same device```
 
 run
 
-```
+```shell
 $ python -m torch.distributed.launch --nproc_per_node <specify_how_many_gpus_to_run> train_t5_stagcn.py --cfg_file <path_to_cfg_fil>
 ```
 

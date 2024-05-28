@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
-#from net.utils.tgcn import ConvTemporalGraphical
-#from net.utils.graph import Graph
+
 ###### STA-GCN ######
 from net.Utils_attention.attention_branch import *
 from net.Utils_attention.perception_branch import *
