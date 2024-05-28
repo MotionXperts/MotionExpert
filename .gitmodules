@@ -1,0 +1,3 @@
+[submodule "VideoAlignment"]
+	path = VideoAlignment
+	url = git@github.com:MotionXperts/VideoAlignment.git
