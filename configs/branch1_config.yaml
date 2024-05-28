@@ -13,17 +13,18 @@ OUT_CHANNEL: 128
 TRANSFORMATION:
   REDUCTION_POLICY: 'TIME_POOL'
 TASK:
-  PRETRAIN: true
+  PRETRAIN: false
 WEIGHT_PATH: '/home/weihsin/projects/MotionExpert/models_local_new/Local_epoch50.pt'
 DATA: 
-  TRAIN: '/home/weihsin/datasets/FigureSkate/HumanML3D_l/local_human_train.pkl'
-  TEST: '/home/weihsin/datasets/FigureSkate/HumanML3D_l/local_human_test.pkl'
-  BATCH_SIZE: 6
+  TRAIN: '/home/weihsin/datasets/train_Axel_520_with_standard.pkl'
+  TEST: '/home/weihsin/datasets/test_Axel_520.pkl'
+  BATCH_SIZE: 2
 OPTIMIZER:
   LR: 1e-4
   MAX_EPOCH: 50
   WARMUP_STEPS: 5000
+BRANCH: 1
 
-LOGDIR: ./results/pretrain
+LOGDIR: ./results/finetune_branch1
 ALIGNMENT:
-  ALIGNMENT_CONFIG: /home/c1l1mo/projects/VideoAlignment/result/scl_skating_long_50/config.yaml
+  cfg_file: /home/c1l1mo/projects/VideoAlignment/result/scl_skating_long_50/config.yaml
