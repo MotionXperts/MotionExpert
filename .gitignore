@@ -4,7 +4,8 @@ attention
 __pycache__
 experiments
 STAGCN_output*
-results
+results/**
+**/.ipynb_checkpoints
 
 
 prediction_output
