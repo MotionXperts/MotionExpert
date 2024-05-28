@@ -18,10 +18,10 @@ def generate_data(current_keypoints ):
         bone_coordinate[:, :, v1] = joint_coordinate[:, :, v1] - joint_coordinate[:, :, v2]
 
     coordinates = np.concatenate((joint_coordinate, bone_coordinate), axis=0)
-    return coordinates
+    return torch.FloatTensor(coordinates)
 
 class HumanMLDataset(Dataset):
-    def __init__(self, pkl_file, finetune,transform=None,split='train'):
+    def __init__(self, pkl_file,transform=None,split='train'):
         with open(pkl_file, 'rb') as f:
             self.data_list = pickle.load(f)
         self.samples = []
@@ -32,10 +32,7 @@ class HumanMLDataset(Dataset):
             max_len = max(max_len, len(features[0]))
             video_name = item['video_name']
             for label in item['labels']:
-                if(finetune == False) : 
-                    label = "Motion Description : " + label
-                else :
-                    label = "Motion Instruction : " + label
+                label = "Motion Description : " + label
                 self.samples.append((features, label, video_name))
                 if split != 'train':
                     break
@@ -51,17 +48,16 @@ class HumanMLDataset(Dataset):
             idx = idx.tolist()
 
         features, label, video_name = self.samples[idx]
-        padded_features = np.zeros((6,self.max_len, 22)) 
-        keypoints_mask = np.ones(22)       
-        current_len = len(features[0])
-        video_mask = np.ones(self.max_len)
-        video_mask[current_len:] = 0
-        padded_features[:,:current_len, :] = features
-        sample = {
-            "video_name": video_name,
-            "keypoints": torch.FloatTensor(padded_features),
-            "keypoints_mask": torch.FloatTensor(keypoints_mask),
-            "video_mask": torch.FloatTensor(video_mask),
-            "label": label,
-        }
-        return sample
+        padded_features = torch.zeros((6,self.max_len, 22)) 
+        keypoints_mask = torch.ones(22)       
+        current_len = torch.tensor(len(features[0]))
+        video_mask = torch.ones(self.max_len)
+        video_mask[len(features[0]):] = 0
+        padded_features[:,:len(features[0]), :] = (features)
+
+        ## standard, video, standard_video are not used here, just set it to arbitrary values to meet with the collate_fn
+
+        return video_name, \
+                torch.FloatTensor(padded_features),\
+                    torch.FloatTensor(keypoints_mask),\
+                        torch.FloatTensor(video_mask),torch.empty(1),current_len,label,torch.empty(1),torch.empty(1)

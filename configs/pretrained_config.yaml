@@ -1,0 +1,29 @@
+# USE_EMBS: false
+# D_MODEL: 16
+# NUM_HEADS: 2
+# DIM_FEEDFORWARD: 128
+# NUM_ENCODER_LAYERS: 2
+# LAYER_NORM_EPS: 1e-5
+# NUM_CLASS: 4
+# USE_CRF: true
+# ADD_NOISE: false
+
+HIDDEN_CHANNEL: 32
+OUT_CHANNEL: 128
+TRANSFORMATION:
+  REDUCTION_POLICY: 'TIME_POOL'
+TASK:
+  PRETRAIN: true
+WEIGHT_PATH: '/home/weihsin/projects/MotionExpert/models_local_new/Local_epoch50.pt'
+DATA: 
+  TRAIN: '/home/weihsin/datasets/FigureSkate/HumanML3D_l/local_human_train.pkl'
+  TEST: '/home/weihsin/datasets/FigureSkate/HumanML3D_l/local_human_test.pkl'
+  BATCH_SIZE: 6
+OPTIMIZER:
+  LR: 1e-4
+  MAX_EPOCH: 50
+  WARMUP_STEPS: 5000
+
+LOGDIR: ./results/test
+ALIGNMENT:
+  ALIGNMENT_CONFIG: /home/c1l1mo/projects/VideoAlignment/result/scl_skating_long_50/config.yaml

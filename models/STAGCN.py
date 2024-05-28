@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-
 #from net.utils.tgcn import ConvTemporalGraphical
 #from net.utils.graph import Graph
 ###### STA-GCN ######
@@ -65,3 +64,4 @@ class STA_GCN(nn.Module):
         PA_embedding = torch.cat([perception_last, attention_last], dim=-1) # ([8, 118, 22, 512])
         
         return PA_embedding, att_node, att_A
+
