@@ -74,6 +74,18 @@ run
 $ python -m torch.distributed.launch --nproc_per_node <specify_how_many_gpus_to_run> train_t5_stagcn.py --cfg_file <path_to_cfg_file>
 ```
 
+### Submodule
+
+We use [VideoAlignment](https://github.com/MotionXperts/VideoAlignment) as our submodule to handle branch2 alignment code.
+
+To clone the submodule, after you ```git clone``` this repo, run the followings:
+
+```
+cd VideoAlignment
+git submodule init
+git submodule update
+```
+
 ## All you need to know in SportTech
 [開發紀錄](https://hackmd.io/@weihsinyeh/MotionXperts)
 
