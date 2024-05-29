@@ -11,7 +11,10 @@ from tqdm import tqdm
 import numpy as np
 from utils import seed_everything,get_lr
 import pickle , sys , logging
+## add videoalignment to sys path
+sys.path.append(os.path.join(os.getcwd(),'VideoAlignment'))
 from evaluate import eval
+
 
 from torch.utils.tensorboard import SummaryWriter
 import torch.distributed as dist
