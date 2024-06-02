@@ -41,7 +41,6 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
             tgt_batch = Tokenizer(label_batch, return_tensors="pt", padding="max_length", truncation=True, max_length=50)['input_ids'].to(src_batch.device)
             tgt_input = tgt_batch[:, :-1]
             tgt_label = tgt_batch[:, 1:]
-
             inputs = {      
                         "video_name": video_name,
                         "input_embeds": src_batch.to(model.device),
@@ -61,7 +60,7 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
                      }
             with torch.cuda.amp.autocast():
                 generated_ids , att_node , att_A = model.module.generate(**inputs)
-                if hasattr(cfg,'BRANCH') and cfg.BRANCH == 1: ## branch 1 uses node as time dimension, no padding needed, thus no mask needed
+                if (hasattr(cfg,'BRANCH') and cfg.BRANCH == 1) or (cfg.TRANSFORMATION.REDUCTION_POLICY == 'TIME_POOL' or cfg.TRANSFORMATION.REDUCTION_POLICY == 'ORIGIN'): ## branch 1 uses node as time dimension, no padding needed, thus no mask needed
                     loss = model(
                                 keypoints=src_batch.to(model.device),
                                 video_mask= keypoints_mask_batch.to(model.device),
@@ -117,10 +116,11 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
             results[name] = store.get(name).decode('utf-8')
         with open(cfg.JSONDIR+'/results_epoch'+str(epoch)+'.json', 'w') as f:
             json.dump(results, f,indent = 1)
-        with open(cfg.JSONDIR+'/att_node_results_epoch'+str(epoch)+'.json', 'w') as f:
-            json.dump(att_node_results, f)
-        with open(cfg.JSONDIR+'/att_A_results_epoch'+str(epoch)+'.json', 'w') as f:
-            json.dump(att_A_results, f)
+        if not cfg.TASK.PRETRAIN:
+            with open(cfg.JSONDIR+'/att_node_results_epoch'+str(epoch)+'.json', 'w') as f:
+                json.dump(att_node_results, f)
+            with open(cfg.JSONDIR+'/att_A_results_epoch'+str(epoch)+'.json', 'w') as f:
+                json.dump(att_A_results, f)
 
         predictions = readJSON(cfg.JSONDIR+'/results_epoch'+str(epoch)+'.json')
         annotations = readPickle(cfg.DATA.TEST)
@@ -171,11 +171,11 @@ def main():
             name_list.append(d['video_name'])
 
     dist.init_process_group(backend='nccl', init_method='env://')
-    torch.cuda.set_device(args.local_rank)
+    torch.cuda.set_device(args.localrank)
     model = model.cuda()
     model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
-    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.local_rank],
-                                                        output_device=args.local_rank)
+    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.localrank],
+                                                        output_device=args.localrank)
     optimizer = AdamW(model.parameters(), lr=float(cfg.OPTIMIZER.LR))
     summary_writer = SummaryWriter(os.path.join(cfg.LOGDIR, 'train_logs'))
 

@@ -12,7 +12,7 @@ import numpy as np
 from utils import seed_everything,get_lr
 import pickle , sys , logging
 ## add videoalignment to sys path
-sys.path.append(os.path.join(os.getcwd(),'VideoAlignment'))
+sys.path.append(os.path.join('/home/weihsin/projects/MotionExpert','VideoAlignment'))
 from evaluate import eval
 
 
@@ -26,7 +26,7 @@ from datetime import timedelta
 
 logger = logging.getLogger(__name__)
 
-def train(args,train_dataloader, model, optimizer,scheduler,scaler,summary_writer,epoch,logger):
+def train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer,epoch,logger):
     model.train()
     optimizer.zero_grad()
     loss_list = []
@@ -41,7 +41,17 @@ def train(args,train_dataloader, model, optimizer,scheduler,scaler,summary_write
         tgt_label = tgt_batch[:, 1:]
 
         with torch.cuda.amp.autocast():
-            outputs = model(
+            if (hasattr(cfg,'BRANCH') and cfg.BRANCH == 1) or (cfg.TRANSFORMATION.REDUCTION_POLICY == 'TIME_POOL' or cfg.TRANSFORMATION.REDUCTION_POLICY == 'ORIGIN'): ## branch 1 uses node as time dimension, no padding needed, thus no mask needed
+                    outputs = model(
+                                keypoints=src_batch.to(model.device),
+                                video_mask= keypoints_mask_batch.to(model.device),
+                                standard=standard.to(model.device),
+                                seq_len=seq_len.to(model.device),
+                                decoder_input_ids=tgt_input.to(model.device),
+                                labels=tgt_label.to(model.device),
+                                names=video_name)
+            else:
+                    outputs = model(
                                 keypoints=src_batch.to(model.device),
                                 video_mask= video_mask_batch.to(model.device),
                                 standard=standard.to(model.device),
@@ -51,6 +61,7 @@ def train(args,train_dataloader, model, optimizer,scheduler,scaler,summary_write
                                 names=video_name,
                                 videos= videos.to(model.device),
                                 standard_video = standard_video.to(model.device))
+            
             loss = outputs.loss
         scaler.scale(loss).backward()
         scaler.step(optimizer)
@@ -83,7 +94,7 @@ def main():
 
     ## Dummy check to avoid overwriting
     cfg_path = os.path.join(cfg.LOGDIR,'config.yaml').replace('./',f'{os.getcwd()}/')
-    assert cfg_path == args.cfg_file, f"config file path should be {cfg_path} but got {args.cfg_file}"
+    ## assert cfg_path == args.cfg_file, f"config file path should be {cfg_path} but got {args.cfg_file}"
 
 
     if not cfg.TASK.PRETRAIN:
@@ -111,19 +122,22 @@ def main():
         store = dist.TCPStore("127.0.0.1", 1234, dist.get_world_size(), False,timedelta(seconds=30))
 
     seed_everything(42)
-    
-    torch.cuda.set_device(args.local_rank)
     model = model.cuda()
     model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
-    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.local_rank],
+
+    if torch.__version__ == '2.2.2':
+        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.local-rank],
+                                                    output_device=args.local-rank, find_unused_parameters=False)
+    else : 
+        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.local_rank],
                                                     output_device=args.local_rank, find_unused_parameters=False)
     scaler = torch.cuda.amp.GradScaler()
     optimizer = AdamW(model.parameters(), lr=float(cfg.OPTIMIZER.LR))
     summary_writer = SummaryWriter(os.path.join(cfg.LOGDIR, 'train_logs'))
 
     
-    train_dataloader =  construct_dataloader('train',cfg.DATA.TRAIN,cfg.TASK.PRETRAIN,cfg.DATA.BATCH_SIZE,alignment_cfg=cfg.alignment_cfg)
-    val_dataloader   =  construct_dataloader('val'  ,cfg.DATA.TEST,cfg.TASK.PRETRAIN,15,alignment_cfg=cfg.alignment_cfg)
+    train_dataloader =  construct_dataloader('train',cfg)
+    val_dataloader   =  construct_dataloader('val'  ,cfg)
 
     max_epoch = cfg.OPTIMIZER.MAX_EPOCH
     scheduler = get_linear_schedule_with_warmup(
@@ -136,7 +150,10 @@ def main():
         ## sanity check
         eval(cfg,val_dataloader, model,start_epoch,summary_writer,sanity_check=True,
                             store=store,name_list=name_list,logger=logger)
-        print(f"{args.local_rank} Sanity check passed")
+        if torch.__version__ == '2.2.2':
+            print(f"{args.local-rank} Sanity check passed")
+        else :
+            print(f"{args.local_rank} Sanity check passed")
 
         for epoch in range(start_epoch, max_epoch):
             if dist.get_rank() == 0:

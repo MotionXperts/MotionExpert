@@ -27,8 +27,8 @@ def load_checkpoint(cfg,model,optimizer,name=None):
     if continue_training:
         checkpoint_dir = os.path.join(cfg.LOGDIR, "checkpoints")
     else:
-        checkpoint_dir = os.path.join(cfg.LOGDIR, "pretrain_checkpoints")
-        assert os.path.exists(checkpoint_dir), f"Checkpoint dir {checkpoint_dir} not found"
+        checkpoint_dir = os.path.join("/home/weihsin/projects/MotionExpert/results/Pretrain530", "pretrain_checkpoints")
+        #assert os.path.exists(checkpoint_dir), f"Checkpoint dir {checkpoint_dir} not found"
     if os.path.exists(checkpoint_dir):
         checkpoints = os.listdir(checkpoint_dir)
         if len(checkpoints) > 0:
@@ -60,11 +60,11 @@ def load_checkpoint(cfg,model,optimizer,name=None):
                 for (k1,v1),(k2,v2) in zip(model.module.align_module.state_dict().items(),ckpt_weight):
                     assert (torch.equal(v1,v2.to(v1.device))), f"Weight in {k1} and {k2} miss matched"
                 missing_keys -= align_module_keys
-                k = []
-                for keys in missing_keys:
-                    if not 'transformation' in keys:
-                        k.append(keys)
-                assert len(k) == 0, f'Only transformation module should be retrained but found missing keys: {k}'
+                # k = []
+                # for keys in missing_keys:
+                #     if not 'transformation' in keys:
+                #         k.append(keys)
+                # assert len(k) == 0, f'Only transformation module should be retrained but found missing keys: {k}'
 
 
                 ## TODO: insert continue training or load from pretrain

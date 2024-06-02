@@ -27,14 +27,14 @@ def generate_data(current_keypoints ):
     return coordinates
 
 class Skating(Dataset):
-    def __init__(self,cfg, pkl_file,transform=None,split='train'):
+    def __init__(self,cfg, pkl_file,transformation_policy='ORIGIN',split='train'):
         with open(pkl_file, 'rb') as f:
             self.data_list = pickle.load(f)
         self.samples = []
         max_len = 0  
 
         self.standard = generate_data(self.data_list[0]['features'])
-        self.standard_vid,_,_ = read_video(os.path.join(f'/home/{USER}/datasets/Axel_520_clip/processed_videos', f"{self.data_list[0]['video_name']}.mp4"), pts_unit='sec')
+        self.standard_vid,_,_ = read_video(os.path.join(f'/home/c1l1mo/datasets/Axel_520_clip/processed_videos', f"{self.data_list[0]['video_name']}.mp4"), pts_unit='sec')
         self.data_list = self.data_list[1:]   
 
         for item in self.data_list:
@@ -48,7 +48,7 @@ class Skating(Dataset):
                     break
 
         self.max_len = max_len  
-        self.transform = transform
+        self.transformation_policy = transformation_policy
         self.data_preprocess,_ = create_data_augment(cfg,False)
         self.standard_vid = self.standard_vid.permute(0,3,1,2).float() / 255.0
         self.standard_vid = self.data_preprocess(self.standard_vid)
@@ -64,17 +64,14 @@ class Skating(Dataset):
             idx = idx.tolist()
 
         ## features: 6 x frame x 22
-        features, label, video_name = self.samples[idx]
-        padded_features = torch.zeros((6,self.max_len, 22)) 
-        keypoints_mask = torch.ones(22)       
+        features, label, video_name = self.samples[idx]    
         
         video_mask = torch.ones(self.max_len)
         video_mask[len(features[0]):] = 0
-        # padded_features[:,:current_len, :] = features
 
         ## find the RGB path for video
-        vid_path = os.path.join(f'/home/{USER}/datasets/Axel_520_clip/processed_videos', f'{video_name}.mp4')
-
+        vid_path = os.path.join(f'/home/c1l1mo/datasets/Axel_520_clip/processed_videos', f'{video_name}.mp4')
+        assert(os.path.exists(vid_path))
         video, _ , metadata = read_video(vid_path, pts_unit='sec')
         # assert round(metadata['video_fps']) == 30, f"Video FPS {metadata['video_fps']} may conflicts with what trained alignment module"  
         video = video.permute(0,3,1,2).float() / 255.0
@@ -83,6 +80,11 @@ class Skating(Dataset):
         if features.shape[1] > len(video):
             features = features[:,:len(video),:]
         current_len = torch.tensor(len(features[0]))
+        
+        if self.transformation_policy == 'ORIGIN':
+            keypoints_mask = torch.ones(22*current_len)
+        else :
+            keypoints_mask = torch.ones(22)  
 
         return  video_name, \
                 torch.FloatTensor(features), \

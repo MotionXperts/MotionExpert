@@ -16,8 +16,8 @@ TASK:
   PRETRAIN: false
 WEIGHT_PATH: '/home/weihsin/projects/MotionExpert/models_local_new/Local_epoch50.pt'
 DATA: 
-  TRAIN: '/home/weihsin/datasets/train_Axel_520_with_standard.pkl'
-  TEST: '/home/weihsin/datasets/test_Axel_520.pkl'
+  TRAIN: '/home/c1l1mo/datasets/Axel/train_Axel_diverse.pkl'
+  TEST: '/home/c1l1mo/datasets/Axel/test_Axel_diverse.pkl'
   BATCH_SIZE: 2
 OPTIMIZER:
   LR: 1e-4

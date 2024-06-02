@@ -21,42 +21,51 @@ def collate_fn(batch):
             masks.append(mask)
         return seq,masks
     keypoints,masks = collect_video_from_batch(batch)
-
     padded_sequences = pad_sequence(keypoints,batch_first=True,padding_value=0) # B , F , coordinates, nodes
     input_mask = pad_sequence(masks,batch_first=True,padding_value=0) # B ,(max)F
+    keypoints_mask = pad_sequence(keypoints_mask,batch_first=True,padding_value=0) 
     padded_videos = pad_sequence(video,batch_first=True,padding_value=0) # B , T , C , H , W
 
     input_mask = input_mask
 
     padded_sequences = padded_sequences.permute(0,2,1,3) # convert to B , coordinates, F , nodes
     assert input_mask.size(0) == padded_sequences.size(0) and input_mask.size(1) == padded_sequences.size(2)
-    keypoints_mask = torch.stack(keypoints_mask,dim=0)
+ 
     standard = torch.stack(standard,dim=0)
     seq_len = torch.stack(seq_len,dim=0)
     standard_video = torch.stack(standard_video,dim=0)
     return (video_name),padded_sequences,keypoints_mask, input_mask, (standard), (seq_len), (label), padded_videos, standard_video
 
-def construct_dataloader(split,pkl_file,is_pretraining,batch_size,transform=None,alignment_cfg=None):
+def construct_dataloader(split,cfg):
+    is_pretraining = cfg.TASK.PRETRAIN
+    alignment_cfg=cfg.alignment_cfg
+    if split == 'train' : 
+        pkl_file = cfg.DATA.TRAIN
+        batch_size = cfg.DATA.BATCH_SIZE
+    elif split == 'val' :
+        pkl_file = cfg.DATA.TEST
+        batch_size = 1
+
     if is_pretraining:
         if split == 'train':
-            dataset = HumanMLDataset(pkl_file,transform)
-            sampler = torch.utils.data.distributed.DistributedSampler(dataset,shuffle=True)
-            dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, drop_last=True,
-                                            sampler=sampler,num_workers=8)
-        elif split == "val":
-            dataset = HumanMLDataset(pkl_file,transform,split='val')
-            sampler = torch.utils.data.distributed.DistributedSampler(dataset,shuffle=False)
-            dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, drop_last=False,sampler=sampler,num_workers=8)
-    else:
-        if split == 'train':
-            dataset = Skating(alignment_cfg,pkl_file,transform,split='train')
+            dataset = HumanMLDataset(pkl_file,transformation_policy = cfg.TRANSFORMATION.REDUCTION_POLICY,split='train')
             sampler = torch.utils.data.distributed.DistributedSampler(dataset,shuffle=True)
             dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, drop_last=True,
                                             sampler=sampler,num_workers=1,collate_fn=collate_fn)
         elif split == "val":
-            dataset = Skating(alignment_cfg,pkl_file,transform,split='val')
+            dataset = HumanMLDataset(pkl_file,transformation_policy = cfg.TRANSFORMATION.REDUCTION_POLICY,split='val')
             sampler = torch.utils.data.distributed.DistributedSampler(dataset,shuffle=False)
-            dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, drop_last=False,sampler=sampler,num_workers=8,collate_fn=collate_fn)
+            dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, drop_last=False,sampler=sampler,num_workers=1,collate_fn=collate_fn)
+    else:
+        if split == 'train':
+            dataset = Skating(alignment_cfg,pkl_file,transformation_policy = cfg.TRANSFORMATION.REDUCTION_POLICY,split='train')
+            sampler = torch.utils.data.distributed.DistributedSampler(dataset,shuffle=True)
+            dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, drop_last=True,
+                                            sampler=sampler,num_workers=1,collate_fn=collate_fn)
+        elif split == "val":
+            dataset = Skating(alignment_cfg,pkl_file,transformation_policy = cfg.TRANSFORMATION.REDUCTION_POLICY,split='val')
+            sampler = torch.utils.data.distributed.DistributedSampler(dataset,shuffle=False)
+            dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, drop_last=False,sampler=sampler,num_workers=0,collate_fn=collate_fn)
     return dataloader
 
 
