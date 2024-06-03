@@ -117,9 +117,9 @@ def main():
     dist.init_process_group(backend='nccl', init_method='env://')
 
     if dist.get_rank() == 0:
-        store = dist.TCPStore("127.0.0.1", 1234, dist.get_world_size(), True,timedelta(seconds=30))
+        store = dist.TCPStore("127.0.0.1", 8080, dist.get_world_size(), True,timedelta(seconds=30))
     else:
-        store = dist.TCPStore("127.0.0.1", 1234, dist.get_world_size(), False,timedelta(seconds=30))
+        store = dist.TCPStore("127.0.0.1", 8080, dist.get_world_size(), False,timedelta(seconds=30))
 
     seed_everything(42)
     model = model.cuda()
@@ -127,10 +127,10 @@ def main():
 
     if torch.__version__ == '2.2.2':
         model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.local-rank],
-                                                    output_device=args.local-rank, find_unused_parameters=False)
+                                                    output_device=args.local-rank, find_unused_parameters=True)
     else : 
         model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.local_rank],
-                                                    output_device=args.local_rank, find_unused_parameters=False)
+                                                    output_device=args.local_rank, find_unused_parameters=True)
     scaler = torch.cuda.amp.GradScaler()
     optimizer = AdamW(model.parameters(), lr=float(cfg.OPTIMIZER.LR))
     summary_writer = SummaryWriter(os.path.join(cfg.LOGDIR, 'train_logs'))
