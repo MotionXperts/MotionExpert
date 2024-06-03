@@ -58,13 +58,6 @@ class SimpleT5Model(nn.Module):
 
         # find the nearest interval between query and key, the interval should be the same across all keypoints, so avg keypoint here.
         avg_query = nn.AvgPool2d((22,1))(query).squeeze(2) ## b , T , 512
-        
-        if pretrain == True:
-            standard = query
-            for i in range(0,standard.shape[0]):
-                for j in range(1,seq_len[i]):
-                    standard[i][j] = query[i][0]
-
         avg_key = nn.AvgPool2d((22,1))(standard).squeeze(2)     ## 1 , T , 512
         
         batch_allignment = None
