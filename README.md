@@ -14,7 +14,7 @@
 
 ## Install 
 #### create and activate a virtual env
-```
+```shell
 $ conda create -n motion2text python=3.7
 $ conda activate motion2text
 $ pip install -r requirements.txt
@@ -62,7 +62,7 @@ Example:
 
 ## Build
 
-```
+```shell
 $ torchrun --nproc_per_node <specify_how_many_gpus_to_run> train_t5_stagcn.py --cfg_file <path_to_cfg_file>
 ```
 
@@ -70,7 +70,7 @@ or, if the above yield Error ```detected multiple processes in same device```
 
 run
 
-```
+```shell
 $ python -m torch.distributed.launch --nproc_per_node <specify_how_many_gpus_to_run> train_t5_stagcn.py --cfg_file <path_to_cfg_file>
 ```
 
@@ -80,10 +80,16 @@ We use [VideoAlignment](https://github.com/MotionXperts/VideoAlignment) as our s
 
 To clone the submodule, after you ```git clone``` this repo, run the followings:
 
+```shell
+$ cd VideoAlignment
+$ git submodule init
+$ git submodule update
 ```
-cd VideoAlignment
-git submodule init
-git submodule update
+
+If you need to update the VideoAlignment Submodule branch wheh command `git pull`
+```shell
+$ git submodule update
+$ git pull
 ```
 
 ## All you need to know in SportTech
