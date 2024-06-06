@@ -27,7 +27,7 @@ def generate_data(current_keypoints ):
     return coordinates
 
 class Skating(Dataset):
-    def __init__(self,cfg, pkl_file,transform=None,split='train'):
+    def __init__(self,cfg, pkl_file,transformation_policy='ORIGIN',split='train'):
         with open(pkl_file, 'rb') as f:
             self.data_list = pickle.load(f)
         self.samples = []
@@ -50,7 +50,7 @@ class Skating(Dataset):
                 #     break
 
         self.max_len = max_len  
-        self.transform = transform
+        self.transformation_policy = transformation_policy
 
         ## Branch 2 related
         if cfg is not None:
@@ -95,6 +95,11 @@ class Skating(Dataset):
             video = torch.empty(1)
 
         current_len = torch.tensor(len(features[0]))
+        
+        if self.transformation_policy == 'ORIGIN':
+            keypoints_mask = torch.ones(22*current_len)
+        else :
+            keypoints_mask = torch.ones(22)  
 
         return  video_name, \
                 torch.FloatTensor(features), \

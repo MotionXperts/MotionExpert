@@ -7,6 +7,7 @@ STAGCN_output*
 results/**
 **/.ipynb_checkpoints
 notebooks
+models_*
 
 prediction_output
 __pycache__/

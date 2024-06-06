@@ -21,7 +21,7 @@ def generate_data(current_keypoints ):
     return torch.FloatTensor(coordinates)
 
 class HumanMLDataset(Dataset):
-    def __init__(self, pkl_file,transform=None,split='train'):
+    def __init__(self, pkl_file,transformation_policy='ORIGIN',split='train'):
         with open(pkl_file, 'rb') as f:
             self.data_list = pickle.load(f)
         self.samples = []
@@ -38,7 +38,7 @@ class HumanMLDataset(Dataset):
                     break
 
         self.max_len = max_len  
-        self.transform = transform
+        self.transformation_policy = transformation_policy
 
     def __len__(self):
         return len(self.samples)
@@ -47,18 +47,27 @@ class HumanMLDataset(Dataset):
         if torch.is_tensor(idx):
             idx = idx.tolist()
 
-        features, label, video_name = self.samples[idx]
-        padded_features = torch.zeros((6,self.max_len, 22)) 
-        keypoints_mask = torch.ones(22)       
+        features, label, video_name = self.samples[idx]   
         current_len = torch.tensor(len(features[0]))
+        
+        if self.transformation_policy == 'ORIGIN':
+            keypoints_mask = torch.ones(22*current_len)
+        else :
+            keypoints_mask = torch.ones(22)  
+            
         video_mask = torch.ones(self.max_len)
         video_mask[len(features[0]):] = 0
-        padded_features[:,:len(features[0]), :] = (features)
 
 
         ## standard, video, standard_video are not used here, just set it to arbitrary values to meet with the collate_fn
 
-        return video_name, \
-                torch.FloatTensor(padded_features),\
-                    torch.FloatTensor(keypoints_mask),\
-                        torch.FloatTensor(video_mask),torch.empty(1),current_len,label,torch.empty(1),torch.empty(1),torch.empty(1)
+        return  video_name, \
+                torch.FloatTensor(features), \
+                torch.FloatTensor(keypoints_mask),\
+                torch.FloatTensor(video_mask),\
+                torch.empty(1),\
+                current_len,\
+                label,\
+                torch.empty(1),\
+                torch.empty(1),\
+                torch.empty(1)

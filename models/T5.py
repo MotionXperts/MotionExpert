@@ -41,7 +41,7 @@ class SimpleT5Model(nn.Module):
     # @ return : batchsize, vertex(22), seq_length, channel (512)
     '''
     # @time_elapsed
-    def _get_alignment_feature(self, query, standard,seq_len , names):
+    def _get_alignment_feature(self, query, standard,seq_len , names,pretrain = False):
         max_len = max(seq_len)
         # @time_elapsed
         def interpolate_sequence(sequence):
@@ -56,7 +56,7 @@ class SimpleT5Model(nn.Module):
                         interpolated_vector = sequence[i, :] + ratio * (sequence[i+1, :] - sequence[i, :])
                         new_sequence[new_index + j, :] = interpolated_vector
             return new_sequence
-            
+
         # find the nearest interval between query and key, the interval should be the same across all keypoints, so avg keypoint here.
         avg_query = nn.AvgPool2d((22,1))(query).squeeze(2) ## b , T , 512
         avg_key = nn.AvgPool2d((22,1))(standard).squeeze(2)     ## 1 , T , 512
@@ -65,18 +65,29 @@ class SimpleT5Model(nn.Module):
         for i in range(len(query)):
             video_alignment = None
             current_len = seq_len[i]
-            start_frame = align(avg_query[i,:current_len], avg_key[0] , names[i])
+            if pretrain == True:
+                start_frame = align(avg_query[i,:current_len], avg_key[i,:current_len] , names[i])
+            else:
+                start_frame = align(avg_query[i,:current_len], avg_key[0] , names[i])
+
             for j in range(0,22):
-                subtraction = standard[i,start_frame:start_frame+current_len,j,:] - query[0,:current_len,j,:] ## Tu x 22 x C
+                if pretrain == True:
+                    subtraction = standard[i,start_frame:start_frame+current_len,j,:] - query[i,:current_len,j,:]
+                else:
+                    subtraction = standard[i,start_frame:start_frame+current_len,j,:] - query[0,:current_len,j,:] ## Tu x 1 x C
+                    
                 ## TODO: should add back the original skeletons here
-                subtraction = interpolate_sequence(subtraction) ## seq_len x 22 x C
-                subtraction = subtraction.unsqueeze(0) ## 1 x seq_len x 22 x C
+                subtraction = interpolate_sequence(subtraction) ## seq_len x 1 x C
+                subtraction = subtraction.unsqueeze(0) ## 1 x seq_len x 1 x C
                 if j == 0: video_alignment = subtraction
-                else : video_alignment = torch.cat([video_alignment,subtraction],dim=0)
+                else : video_alignment = torch.cat([video_alignment,subtraction],dim=0) # 1,C 1,C  22,C
+            
             video_alignment = video_alignment.unsqueeze(0)
             if i == 0: batch_allignment = video_alignment
-            else : batch_allignment = torch.cat([batch_allignment,video_alignment],dim=0)
+            else : batch_allignment = torch.cat([batch_allignment,video_alignment],dim=0) # T,22,C 
 
+        # B x 22 x T x C
+        batch_allignment = batch_allignment.permute(0,2,1,3)
         return batch_allignment.to(query.device)
     
     def forward(self, names,keypoints,video_mask,standard,seq_len,decoder_input_ids,labels, videos = None,standard_video = None,subtraction=None):
@@ -85,6 +96,12 @@ class SimpleT5Model(nn.Module):
             if self.cfg.BRANCH == 1: ## BRAHCH1 CONFIG: use STAGCN's embedding to align 2 sequences, fusion, then feed to T5
                 with torch.no_grad():
                     self.stagcn.eval()
+                    if self.cfg.TASK.PRETRAIN :
+                        standard = keypoints
+                        for i in range(0,keypoints.shape[0]):
+                            for j in range(1,seq_len[i]):
+                                for k in range(0,6):
+                                    standard[i][k][j] = keypoints[i][k][0]
                     standard_embedding, _ , _ = self.stagcn(standard)
                 aligned_embedding = self._get_alignment_feature(embeddings, standard_embedding,seq_len,names)
             elif self.cfg.BRANCH == 2: ## BRANCH2 CONFIG: use RGB to align input and standard vids, expand to Tu x 22 x embedding_size, fuse with STAGCN's output, then feed to T5
@@ -114,11 +131,19 @@ class SimpleT5Model(nn.Module):
         subtraction = kwargs['subtraction'] if 'subtraction' in kwargs else None
 
         embeddings, attention_node , attention_matrix=self.stagcn(input_embeds)
-        beam_size = 2
+        beam_size = 1
         if hasattr(self.cfg,"BRANCH") and self.cfg.BRANCH !=0: 
-            if self.cfg.BRANCH == 1: ## BRAHCH1 CONFIG: use STAGCN's embedding to align 2 sequences, fusion, then feed to T5
+                 
+            ## BRAHCH1 CONFIG: use STAGCN's embedding to align 2 sequences, fusion, then feed to T5
+            if self.cfg.BRANCH == 1: 
                 with torch.no_grad():
                     self.stagcn.eval()
+                    if self.cfg.TASK.PRETRAIN :
+                        standard = input_embeds
+                        for i in range(0,input_embeds.shape[0]):
+                            for j in range(1,seq_len[i]):
+                                for k in range(0,6):
+                                    standard[i][k][j] = input_embeds[i][k][0]
                     standard_embedding, _ , _ = self.stagcn(standard)
                 aligned_embedding = self._get_alignment_feature(embeddings, standard_embedding,seq_len,names)
             elif self.cfg.BRANCH == 2: ## BRANCH2 CONFIG: use RGB to align input and standard vids, expand to Tu x 22 x embedding_size, fuse with STAGCN's output, then feed to T5
@@ -167,25 +192,39 @@ class SimpleT5Model(nn.Module):
                                           num_beams=beam_size, 
                                           repetition_penalty=3.5,
                                           length_penalty=1.0,
-                                          temperature=1.5,
+                                          # temperature=1.5,
                                           return_dict_in_generate=True,
                                           output_attentions=True,   
-                                          do_sample=True,    
+                                          # Set do_sample=True if you want to demo
+                                          do_sample=False,           
                                           early_stopping=True)
 
         if(not self.cfg.TASK.PRETRAIN) and dist.get_rank() == 0 and (hasattr(self.cfg,'BRANCH') and self.cfg.BRANCH ==1):
             decoded_text = tokenizer.convert_ids_to_tokens(generated_ids.sequences[0])
             ## not using attention mask if we use nodes for the first dimension.
-            out = self.t5(inputs_embeds=aligned_embedding[0].unsqueeze(0), decoder_input_ids=generated_ids.sequences[0].unsqueeze(0), 
+            out = self.t5(inputs_embeds=embeddings[0].unsqueeze(0), decoder_input_ids=generated_ids.sequences[0].unsqueeze(0), 
                             output_attentions=True, return_dict=True)
+            '''
+            # encoder_attentions is batch_size x num_heads x seq_length x seq_length
+            # The first seq_lentgh is the Tx22.
+            # 0,22,44,66... 取平均 1,23,45,67... 取平均
+            '''
             encoder_attentions = out.encoder_attentions
             cross_attentions = out.cross_attentions
+
+            if (self.cfg.TRANSFORMATION.REDUCTION_POLICY == 'ORIGIN' ):
+                encoder_attentions = encoder_attentions.resahpe(out.encoder_attentions.shape[0], out.encoder_attentions.shape[1], -1,22, out.encoder_attentions.shape[3])
+                encoder_attentions = encoder_attentions.mean(dim=2)
+                
+                cross_attentions = cross_attentions.resahpe(out.cross_attentions.shape[0], out.cross_attentions.shape[1], -1,22, out.cross_attentions.shape[3])
+                cross_attentions = cross_attentions.mean(dim=2)
+
             decoder_attentions = out.decoder_attentions
             html_object = model_view(
                                         encoder_attention=encoder_attentions,
                                         decoder_attention=decoder_attentions,
                                         cross_attention=cross_attentions,
-                                        encoder_tokens= len(aligned_embedding[0]),
+                                        encoder_tokens= len(embeddings[0]),
                                         decoder_tokens=decoded_text,
                                         html_action='return'
                                         )
@@ -194,7 +233,7 @@ class SimpleT5Model(nn.Module):
                                         encoder_attention=encoder_attentions,
                                         decoder_attention=decoder_attentions,
                                         cross_attention=cross_attentions,
-                                        encoder_tokens= len(aligned_embedding[0]),
+                                        encoder_tokens= len(embeddings[0]),
                                         decoder_tokens=decoded_text,
                                         html_action='return'
                                         )

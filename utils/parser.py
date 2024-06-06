@@ -2,7 +2,7 @@ import argparse
 import os,sys
 from easydict import EasyDict
 import yaml
-
+import torch
 def to_dict(config):
     if isinstance(config, list):
         return [to_dict(c) for c in config]
@@ -13,7 +13,13 @@ def to_dict(config):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--local-rank', default=0, type=int, help='rank in local processes')
+
+    localrank = '--local_rank'
+    if torch.__version__ == '2.2.2':
+        localrank = '--local-rank'
+
+    parser.add_argument('--data', default='ntu', help='dataset')
+    parser.add_argument(localrank, default=0, type=int, help='rank in local processes')
     parser.add_argument('--local',type=bool,default = True)
     parser.add_argument('--prefix', default='HumanML', help='prefix for saved filenames')
     parser.add_argument('--gpu', type=int, default=1)
