@@ -1,12 +1,13 @@
 from transformers import T5ForConditionalGeneration, AutoConfig
 from torch import nn
 from visualize_model import model_view, head_view, neuron_view
-from models.STAGCN import STA_GCN
-from models.transformation import Transformation
+from .STAGCN import STA_GCN
+from .transformation import Transformation
 from VideoAlignment.model.transformer.transformer import CARL
 import torch,os
 import torch.distributed as dist
 from alignment.alignment import align
+import sys
 # from utils import time_elapsed
 
 class SimpleT5Model(nn.Module):
@@ -78,34 +79,22 @@ class SimpleT5Model(nn.Module):
 
         return batch_allignment.to(query.device)
     
-    def forward(self, names,keypoints,video_mask,standard,seq_len,decoder_input_ids,labels, videos = None,standard_video = None):
+    def forward(self, names,keypoints,video_mask,standard,seq_len,decoder_input_ids,labels, videos = None,standard_video = None,subtraction=None):
         embeddings, _, _= self.stagcn(keypoints)
-        if hasattr(self.cfg,"BRANCH") and self.cfg.BRANCH !=0: 
+        if hasattr(self.cfg,"BRANCH") and self.cfg.BRANCH !=0: ## BRANCH 0 will directly feed the embeddings to T5 (w/o any alignment)
             if self.cfg.BRANCH == 1: ## BRAHCH1 CONFIG: use STAGCN's embedding to align 2 sequences, fusion, then feed to T5
                 with torch.no_grad():
                     self.stagcn.eval()
                     standard_embedding, _ , _ = self.stagcn(standard)
                 aligned_embedding = self._get_alignment_feature(embeddings, standard_embedding,seq_len,names)
             elif self.cfg.BRANCH == 2: ## BRANCH2 CONFIG: use RGB to align input and standard vids, expand to Tu x 22 x embedding_size, fuse with STAGCN's output, then feed to T5
-                with torch.no_grad():
-                    self.align_module.eval()
-                    query_embeddings =  self.align_module(videos,video_masks=video_mask,split='eval') ## B x Tu x self.align_module.cfg.MODEL.EMBEDDER_MODEL.EMBEDDING_SIZE
-                    standard_embedding = self.align_module(standard_video[0].unsqueeze(0),split='eval') ## 1 x Ts x self.align_module.cfg.MODEL.EMBEDDER_MODEL.EMBEDDING_SIZE
-                concatnated = []
-                s_emb = standard_embedding.squeeze(0)
-                for i,(q_emb) in enumerate((query_embeddings)):
-                    ## dummy check if attention mask is correct
-                    assert seq_len[i] == torch.sum(video_mask[i]), f"Found seq len equals to {seq_len[i]} but attention mask sums up to {torch.sum(video_mask[i])}" 
-                    if seq_len[i] > s_emb.shape[0]:
-                        subtraction = s_emb - q_emb[:s_emb.shape[0],:] ## Tu x 22 x C
-                    else:
-                        start_frame = align(q_emb[:seq_len[i]], s_emb, names)
-                        subtraction = s_emb[start_frame:start_frame+seq_len[i],:] - q_emb[:seq_len[i],:] ## Tu x 22 x C
-                    subtraction = subtraction.unsqueeze(1).expand(-1,22,-1) ## B x T x 22 x self.align_module.cfg.MODEL.EMBEDDER_MODEL.EMBEDDING_SIZE
-                    ## pad subtraction to match the length of embeddings
-                    subtraction = torch.cat([subtraction,torch.zeros(embeddings[i].shape[0]-subtraction.shape[0],22,128).to(subtraction.device)],dim=0)
-                    concatnated.append(torch.concat([embeddings[i],subtraction],dim=-1)) ## Tu x 22 x (512+self.align_module.cfg.MODEL.EMBEDDER_MODEL.EMBEDDING_SIZE)
-                aligned_embedding = torch.stack(concatnated,dim=0) # B x Tu x 22 x (512+self.align_module.cfg.MODEL.EMBEDDER_MODEL.EMBEDDING_SIZE)
+                 ## this is a bad implementation but we dont know why inferencing one video and inferencing batching videos yield different result
+                concatenation=[]
+                for (b,s) in zip(embeddings,subtraction):
+                    s = s.unsqueeze(1).expand(-1,22,-1)
+                    s = torch.cat([s,torch.zeros(b.shape[0]-s.shape[0],22,128).to(subtraction.device)],dim=0)
+                    concatenation.append(torch.concat([b,s],dim=-1))
+                aligned_embedding = torch.stack(concatenation,dim=0) ## B x T x 22 x (512+512)
             assert aligned_embedding.shape[:-1] == embeddings.shape[:-1], f"Aligned embedding shape {aligned_embedding.shape[:-1]} should be equal to embeddings shape {embeddings.shape[:-1]} except for the last dimension, check if you correctly did padding "
             embeddings = aligned_embedding
         embeddings = self.transformation(embeddings) ## B x T x 768(T5 input shape)
@@ -119,6 +108,11 @@ class SimpleT5Model(nn.Module):
         attention_mask = kwargs['attention_mask']
         decoder_input_ids = kwargs['decoder_input_ids']
         names = kwargs['name'] if 'name' in kwargs else None
+
+        videos = kwargs['videos'] if 'videos' in kwargs else None
+        standard_video = kwargs['standard_video'] if 'standard_video' in kwargs else None
+        subtraction = kwargs['subtraction'] if 'subtraction' in kwargs else None
+
         embeddings, attention_node , attention_matrix=self.stagcn(input_embeds)
         beam_size = 2
         if hasattr(self.cfg,"BRANCH") and self.cfg.BRANCH !=0: 
@@ -128,27 +122,42 @@ class SimpleT5Model(nn.Module):
                     standard_embedding, _ , _ = self.stagcn(standard)
                 aligned_embedding = self._get_alignment_feature(embeddings, standard_embedding,seq_len,names)
             elif self.cfg.BRANCH == 2: ## BRANCH2 CONFIG: use RGB to align input and standard vids, expand to Tu x 22 x embedding_size, fuse with STAGCN's output, then feed to T5
-                videos = kwargs['videos']                       # B x T x C x H x W
-                standard_video = kwargs['standard_video']       # B x T x C x H x W (We only need the first one)
-                with torch.no_grad():
-                    self.align_module.eval()
-                    query_embeddings =  self.align_module(videos,video_masks=attention_mask,split='eval') ## B x Tu x 512
-                    standard_embedding = self.align_module(standard_video[0].unsqueeze(0),split='eval') ## 1 x Ts x 512
-                concatnated = []
-                s_emb = standard_embedding.squeeze(0)
-                for i,(q_emb) in enumerate((query_embeddings)):
-                    ## dummy check if attention mask is correct
-                    assert seq_len[i] == torch.sum(attention_mask[i]), f"Found seq len equals to {seq_len[i]} but attention mask sums up to {torch.sum(attention_mask[i])}" 
-                    if seq_len[i] > s_emb.shape[0]:
-                        subtraction = s_emb - q_emb[:s_emb.shape[0],:] ## Tu x 22 x C
-                    else:
-                        start_frame = align(q_emb[:seq_len[i]], s_emb, names)
-                        subtraction = s_emb[start_frame:start_frame+seq_len[i],:] - q_emb[:seq_len[i],:] ## Tu x 22 x C
-                    subtraction = subtraction.unsqueeze(1).expand(-1,22,-1) ## B x T x 22 x 512
-                    ## pad subtraction to match the length of embeddings
-                    subtraction = torch.cat([subtraction,torch.zeros(embeddings[i].shape[0]-subtraction.shape[0],22,128).to(subtraction.device)],dim=0)
-                    concatnated.append(torch.concat([embeddings[i],subtraction],dim=-1)) ## Tu x 22 x (512+512)
-                aligned_embedding = torch.stack(concatnated,dim=0)
+                # videos = kwargs['videos']                       # B x T x C x H x W
+                # standard_video = kwargs['standard_video']       # B x T x C x H x W (We only need the first one)
+                # with torch.no_grad():
+                #     self.align_module.eval()
+                #     query_embeddings =  self.align_module(videos,video_masks=attention_mask,split='eval') ## B x Tu x 512
+                #     standard_embedding = self.align_module(standard_video[0].unsqueeze(0),split='eval') ## 1 x Ts x 512
+                # concatnated = []
+                # s_emb = standard_embedding.squeeze(0)
+                # ## plot the found sequence in tSNE
+                # for i,(q_emb) in enumerate((query_embeddings)):
+                #     ## dummy check if attention mask is correct
+                #     assert seq_len[i] == torch.sum(attention_mask[i]), f"Found seq len equals to {seq_len[i]} but attention mask sums up to {torch.sum(attention_mask[i])}" 
+                #     if seq_len[i] > s_emb.shape[0]:
+                #         subtraction = s_emb - q_emb[:s_emb.shape[0],:] ## Tu x 22 x C
+                #     else:
+                #         start_frame = align(q_emb[:seq_len[i]], s_emb, names)
+                #         from utils.visualize import align_by_start
+                #         output_path = f'{names[i]}.mp4'
+                #         start_frames = [0,start_frame]
+                #         frames = [videos[0].permute(0,2,3,1).detach().cpu().numpy(),standard_video[0].permute(0,2,3,1).detach().cpu().numpy()]
+                #         align_by_start(start_frames,frames,output_path,0,1,[q_emb[:seq_len[i]].detach().cpu().numpy(),s_emb.detach().cpu().numpy()])
+                #         sys.exit(0)
+                        
+                #         subtraction = s_emb[start_frame:start_frame+seq_len[i],:] - q_emb[:seq_len[i],:] ## Tu x 22 x C
+                #     subtraction = subtraction.unsqueeze(1).expand(-1,22,-1) ## B x T x 22 x 512
+                #     ## pad subtraction to match the length of embeddings
+                #     subtraction = torch.cat([subtraction,torch.zeros(embeddings[i].shape[0]-subtraction.shape[0],22,128).to(subtraction.device)],dim=0)
+                #     concatnated.append(torch.concat([embeddings[i],subtraction],dim=-1)) ## Tu x 22 x (512+512)
+                
+                ## this is a bad implementation but we dont know why inferencing one video and inferencing batching videos yield different result
+                concatenation=[]
+                for b,s in zip(embeddings,subtraction):
+                    s = s.unsqueeze(1).expand(-1,22,-1)
+                    s = torch.cat([s,torch.zeros(b.shape[0]-s.shape[0],22,128).to(subtraction.device)],dim=0)
+                    concatenation.append(torch.concat([b,s],dim=-1))
+                aligned_embedding = torch.stack(concatenation,dim=0) ## B x T x 22 x (512+512)
             assert aligned_embedding.shape[:-1] == embeddings.shape[:-1], f"Aligned embedding shape {aligned_embedding.shape[:-1]} should be equal to embeddings shape {embeddings.shape[:-1]} except for the last dimension, check if you correctly did padding "
             embeddings = aligned_embedding
         embeddings = self.transformation(embeddings).long()

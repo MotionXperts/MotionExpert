@@ -55,9 +55,10 @@ class HumanMLDataset(Dataset):
         video_mask[len(features[0]):] = 0
         padded_features[:,:len(features[0]), :] = (features)
 
+
         ## standard, video, standard_video are not used here, just set it to arbitrary values to meet with the collate_fn
 
         return video_name, \
                 torch.FloatTensor(padded_features),\
                     torch.FloatTensor(keypoints_mask),\
-                        torch.FloatTensor(video_mask),torch.empty(1),current_len,label,torch.empty(1),torch.empty(1)
+                        torch.FloatTensor(video_mask),torch.empty(1),current_len,label,torch.empty(1),torch.empty(1),torch.empty(1)

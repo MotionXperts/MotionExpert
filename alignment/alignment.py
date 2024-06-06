@@ -1,4 +1,4 @@
-from alignment.dtw import *
+from .dtw import *
 import numpy as np
 import torch
 # from utils import time_elapsed
@@ -42,7 +42,7 @@ def align(query_embs,key_embs,name) -> (int):
     @ query_embs: Tu , 512
     @ key_embs: Ts , 512
     """
-    def find_min_distance_with_standard(emb,query_embs):
+    def find_min_distance_with_standard(query_embs,emb):
         """
         Deprecated due to high computation time.
         inputs:
@@ -60,8 +60,8 @@ def align(query_embs,key_embs,name) -> (int):
 
         for i in range(len(emb)-len(query_embs)+1): ## * use sliding window
             window_embs = emb[i:i+len(query_embs)]   ## * compare in which window
-            # min_dist, _, _, _ = dtw(query_embs, window_embs, dist=dist_fn) ## * the dtw yields
-            # min_dists.append(min_dist)
+            min_dist, _, _, _ = dtw(query_embs.detach().cpu().numpy(), window_embs.detach().cpu().numpy(), dist=dist_fn) ## * the dtw yields
+            min_dists.append(min_dist)
 
             ## the aligning cost is approximately the same as the naive distance
             naive_distance = torch.sum(torch.FloatTensor([(torch.sum((query_embs[j]-window_embs[j])**2)) for j in range(len(query_embs))])) 
@@ -70,10 +70,11 @@ def align(query_embs,key_embs,name) -> (int):
         # start_frame = min_dists.index(min(min_dists)) 
         naive_start_frame = naive_distances.index(min(naive_distances)) ## * the smallest value (set it as start frame)
         # print('naive distances : ' , naive_distances)
+        print("min_dists: " , min_dists)
+        print("min distance : ",min_dists.index(min(min_dists)))
         return naive_start_frame
     
     tmp = key_embs.expand(key_embs.size(0),key_embs.size(0),-1)
-
     self_subtraction_matrix = (tmp - tmp.transpose(0,1))
     """
           a0    a1   a2  a3     a4 ...
@@ -88,12 +89,12 @@ def align(query_embs,key_embs,name) -> (int):
     if len(key_embs) < len(query_embs): 
         print("\033[91m" + f"Typically this shouldn't happen, consider checking the query embs (query embs {name} has shape {query_embs.shape})" + "\033[0m")
         key_embs, query_embs = query_embs, key_embs
-    # start_frame = find_min_distance_with_standard(input_embs,query_embs)
-    # print(start_frame,opt_start_frame)
+    # start_frame = find_min_distance_with_standard(query_embs,key_embs)
     # assert start_frame == opt_start_frame
     # result = input_embs[start_frame:start_frame+len(query_embs)]
     # assert result.shape == query_embs.shape
     opt_start_frame = optimized_distance_finder(self_subtraction_matrix,key_embs,query_embs)
+    print('opt start frame : ',opt_start_frame)
     return opt_start_frame
 
 import unittest
@@ -106,7 +107,8 @@ class TestAlign(unittest.TestCase):
             input_embs = torch.randn(20, 128)
 
             # Call the align function
-            _ = align(query_embs, input_embs)
+            print(align(query_embs, input_embs,None))
+            
 
 if __name__ == '__main__':
     torch.manual_seed(42)

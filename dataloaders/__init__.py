@@ -11,7 +11,7 @@ from torch.nn.utils.rnn import pad_sequence
 import numpy as np
 
 def collate_fn(batch):
-    video_name, keypoints, keypoints_mask, video_mask, standard,seq_len, label, video,standard_video = zip(*batch)
+    video_name, keypoints, keypoints_mask, video_mask, standard,seq_len, label, video,standard_video,subtraction = zip(*batch)
     def collect_video_from_batch(batch):
         seq = []
         masks = []
@@ -25,6 +25,7 @@ def collate_fn(batch):
     padded_sequences = pad_sequence(keypoints,batch_first=True,padding_value=0) # B , F , coordinates, nodes
     input_mask = pad_sequence(masks,batch_first=True,padding_value=0) # B ,(max)F
     padded_videos = pad_sequence(video,batch_first=True,padding_value=0) # B , T , C , H , W
+    subtraction = pad_sequence(subtraction,batch_first=True,padding_value=0) # B , T , C
 
     input_mask = input_mask
 
@@ -34,7 +35,7 @@ def collate_fn(batch):
     standard = torch.stack(standard,dim=0)
     seq_len = torch.stack(seq_len,dim=0)
     standard_video = torch.stack(standard_video,dim=0)
-    return (video_name),padded_sequences,keypoints_mask, input_mask, (standard), (seq_len), (label), padded_videos, standard_video
+    return (video_name),padded_sequences,keypoints_mask, input_mask, (standard), (seq_len), (label), padded_videos, standard_video,subtraction
 
 def construct_dataloader(split,pkl_file,is_pretraining,batch_size,transform=None,alignment_cfg=None):
     if is_pretraining:

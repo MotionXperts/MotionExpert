@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from net.Utils_attention.graph_convolution import Stgc_block
+from .graph_convolution import Stgc_block
 
 
 class Attention_branch(nn.Module):

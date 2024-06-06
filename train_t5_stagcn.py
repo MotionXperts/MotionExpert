@@ -33,7 +33,7 @@ def train(args,train_dataloader, model, optimizer,scheduler,scaler,summary_write
     Tokenizer = AutoTokenizer.from_pretrained('t5-base', use_fast=True)
     if dist.get_rank() == 0:
         train_dataloader = tqdm(train_dataloader,total=len(train_dataloader), desc='Training')
-    for index, (video_name,src_batch,keypoints_mask_batch,video_mask_batch,standard,seq_len,label_batch,videos,standard_video) in enumerate(train_dataloader):
+    for index, (video_name,src_batch,keypoints_mask_batch,video_mask_batch,standard,seq_len,label_batch,videos,standard_video,subtraction) in enumerate(train_dataloader):
         model.zero_grad()
         optimizer.zero_grad()
         tgt_batch = Tokenizer(label_batch, return_tensors="pt", padding="max_length", truncation=True, max_length=50)['input_ids'].to(src_batch.device)
@@ -50,7 +50,8 @@ def train(args,train_dataloader, model, optimizer,scheduler,scaler,summary_write
                                 labels=tgt_label.to(model.device),
                                 names=video_name,
                                 videos= videos.to(model.device),
-                                standard_video = standard_video.to(model.device))
+                                standard_video = standard_video.to(model.device),
+                                subtraction = subtraction.to(model.device))
             loss = outputs.loss
         scaler.scale(loss).backward()
         scaler.step(optimizer)
@@ -85,12 +86,13 @@ def main():
     cfg_path = os.path.join(cfg.LOGDIR,'config.yaml').replace('./',f'{os.getcwd()}/')
     assert cfg_path == args.cfg_file, f"config file path should be {cfg_path} but got {args.cfg_file}"
 
+    cfg.alignment_cfg = None
 
     if not cfg.TASK.PRETRAIN:
         assert hasattr(cfg,'BRANCH'), "BRANCH should be defined in config for finetuning."
-        cfg.alignment_cfg = load_config(cfg.ALIGNMENT)
-    else:
-        cfg.alignment_cfg = None
+        if cfg.BRANCH ==2:
+            cfg.alignment_cfg = load_config(cfg.ALIGNMENT)
+
     
     model = SimpleT5Model(cfg)
     
@@ -106,9 +108,9 @@ def main():
     dist.init_process_group(backend='nccl', init_method='env://')
 
     if dist.get_rank() == 0:
-        store = dist.TCPStore("127.0.0.1", 1234, dist.get_world_size(), True,timedelta(seconds=30))
+        store = dist.TCPStore("127.0.0.1", 1284, dist.get_world_size(), True,timedelta(seconds=30))
     else:
-        store = dist.TCPStore("127.0.0.1", 1234, dist.get_world_size(), False,timedelta(seconds=30))
+        store = dist.TCPStore("127.0.0.1", 1284, dist.get_world_size(), False,timedelta(seconds=30))
 
     seed_everything(42)
     
@@ -145,6 +147,7 @@ def main():
             train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer,epoch,logger)
             if (epoch+1) < 10 or (epoch+ 1) % 5 == 0:
                 if dist.get_rank() == 0:
+                    os.makedirs(cfg.CKPTDIR,exist_ok=True)
                     save_checkpoint(cfg,model,optimizer,epoch+1)
                 dist.barrier()
                 try:

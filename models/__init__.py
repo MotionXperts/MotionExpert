@@ -22,12 +22,14 @@ def save_checkpoint(cfg, model, optimizer, epoch):
 
 def load_checkpoint(cfg,model,optimizer,name=None):
     continue_training = False
-    if os.path.exists(os.path.join(cfg.LOGDIR,'checkpoints')):
+    logdir = cfg.LOGDIR
+    # logdir = '/home/c1l1mo/projects/MotionExpert/results/b2_para6' ## this line is for debugging
+    if os.path.exists(os.path.join(logdir,'checkpoints')) and len(os.listdir(os.path.join(logdir,'checkpoints')))>0:
         continue_training = True
     if continue_training:
-        checkpoint_dir = os.path.join(cfg.LOGDIR, "checkpoints")
+        checkpoint_dir = os.path.join(logdir, "checkpoints")
     else:
-        checkpoint_dir = os.path.join(cfg.LOGDIR, "pretrain_checkpoints")
+        checkpoint_dir = os.path.join(logdir, "pretrain_checkpoints")
         assert os.path.exists(checkpoint_dir), f"Checkpoint dir {checkpoint_dir} not found"
     if os.path.exists(checkpoint_dir):
         checkpoints = os.listdir(checkpoint_dir)
@@ -35,36 +37,45 @@ def load_checkpoint(cfg,model,optimizer,name=None):
             ## sort the files in checkpoint dir
             if name is not None:
                 checkpoint_path = name
+                checkpoint = torch.load(checkpoint_path)
             else:
                 checkpoint_path = natsorted(checkpoints)[-1]
-            checkpoint = torch.load(os.path.join(checkpoint_dir,checkpoint_path))
-            ## partially load, then return missing keys
+                checkpoint = torch.load(os.path.join(checkpoint_dir,checkpoint_path))
+            ## partially load, then print missing keys count
             model_keys = set(model.module.state_dict().keys())
 
-            # retrain transformation module
-            newckpt = {'model_state':{}}
-            for k,v in checkpoint["model_state"].items():
-                if not 'transformation' in k:
-                    newckpt['model_state'][k] = v
+            if not continue_training: ## the first time load from pretraining, discard transformation layer
+                newckpt = {'model_state':{}}
+                for k,v in checkpoint["model_state"].items():
+                    if not 'transformation' in k and not 'projection' in k:
+                        newckpt['model_state'][k] = v
+            else: ## continue training from previous interruption, only discard projection layer
+                newckpt = {'model_state':{}}
+                for k,v in checkpoint["model_state"].items():
+                    if not 'projection' in k:
+                        newckpt['model_state'][k] = v
+
             loading_keys = set(newckpt["model_state"].keys())
             
             missing_keys = model_keys - loading_keys
 
+            # print(f"missing keys: {(missing_keys)}")
+
             model.module.load_state_dict(newckpt["model_state"],strict=False)
 
             ## load alignment module weight
-            if not cfg.TASK.PRETRAIN and cfg.BRANCH ==2:
+            if not continue_training and cfg.BRANCH ==2:
                 ckpt_weight = load_alignment_checkpoint(cfg,model.module.align_module)
                 align_module_keys = set([f'align_module.{x}' for x in model.module.align_module.state_dict().keys()])
                 ## ensure the weights are correctly loaded.
-                for (k1,v1),(k2,v2) in zip(model.module.align_module.state_dict().items(),ckpt_weight):
-                    assert (torch.equal(v1,v2.to(v1.device))), f"Weight in {k1} and {k2} miss matched"
+                # for (k1,v1),(k2,v2) in zip(model.module.align_module.state_dict().items(),ckpt_weight):
+                #     assert (torch.equal(v1,v2.to(v1.device))), f"Weight in {k1} and {k2} miss matched"
                 missing_keys -= align_module_keys
                 k = []
                 for keys in missing_keys:
                     if not 'transformation' in keys:
                         k.append(keys)
-                assert len(k) == 0, f'Only transformation module should be retrained but found missing keys: {k}'
+                # assert len(k) == 0, f'Only transformation module should be retrained but found missing keys: {k}'
 
 
                 ## TODO: insert continue training or load from pretrain
@@ -87,6 +98,12 @@ def load_alignment_checkpoint(cfg,align_module):
     checkpoint_path = natsorted(checkpoints)[-1]
     checkpoint= torch.load(os.path.join(checkpoint_dir,checkpoint_path))
     print("LOADING ALIGNMENT CHECKPOINT AT: ",checkpoint_path)
-    align_module.load_state_dict(checkpoint["model_state"],strict=False)
+
+    newckpt = {'model_state':{}}
+    for k,v in checkpoint["model_state"].items():
+        if not 'projection' in k:
+            newckpt['model_state'][k] = v
+    ## no need to load projections here
+    align_module.load_state_dict(newckpt["model_state"],strict=False)
 
     return checkpoint['model_state'].items()

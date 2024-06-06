@@ -21,13 +21,11 @@ def parse_args():
     parser.add_argument('--cfg_file' , type=str, help='absolute path to the config.yaml')
     parser.add_argument('--pretrained_ckpt',type=str,help='absolute path to the pretrained checkpoint, \
                         specify if you want to load a pretrained model which is not in the same directory as the experiment')
+    parser.add_argument('--eval_multi',action='store_true',help='evaluate multiple checkpoints')
     args = parser.parse_args()
 
     config = load_config(args)
     config.args = args
-    
-    
-
 
     return args
 
@@ -47,7 +45,6 @@ def load_config(args):
     cfg.JSONDIR = os.path.join(cfg.LOGDIR,'jsons')
 
     os.makedirs(cfg.LOGDIR,exist_ok=True)
-    os.makedirs(cfg.CKPTDIR,exist_ok=True)
     os.makedirs(cfg.JSONDIR,exist_ok=True)
     return cfg
 
