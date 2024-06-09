@@ -70,8 +70,8 @@ def align(query_embs,key_embs,name) -> (int):
         # start_frame = min_dists.index(min(min_dists)) 
         naive_start_frame = naive_distances.index(min(naive_distances)) ## * the smallest value (set it as start frame)
         # print('naive distances : ' , naive_distances)
-        print("min_dists: " , min_dists)
-        print("min distance : ",min_dists.index(min(min_dists)))
+        # print("min_dists: " , min_dists)
+        # print("min distance : ",min_dists.index(min(min_dists)))
         return naive_start_frame
     
     tmp = key_embs.expand(key_embs.size(0),key_embs.size(0),-1)
@@ -94,7 +94,7 @@ def align(query_embs,key_embs,name) -> (int):
     # result = input_embs[start_frame:start_frame+len(query_embs)]
     # assert result.shape == query_embs.shape
     opt_start_frame = optimized_distance_finder(self_subtraction_matrix,key_embs,query_embs)
-    print('opt start frame : ',opt_start_frame)
+    # print('opt start frame : ',opt_start_frame)
     return opt_start_frame
 
 import unittest
@@ -107,7 +107,7 @@ class TestAlign(unittest.TestCase):
             input_embs = torch.randn(20, 128)
 
             # Call the align function
-            print(align(query_embs, input_embs,None))
+            # print(align(query_embs, input_embs,None))
             
 
 if __name__ == '__main__':

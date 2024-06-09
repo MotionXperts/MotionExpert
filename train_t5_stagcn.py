@@ -13,7 +13,7 @@ from utils import seed_everything,get_lr
 import pickle , sys , logging
 ## add videoalignment to sys path
 sys.path.append(os.path.join('/home/weihsin/projects/MotionExpert','VideoAlignment'))
-from evaluate import eval
+from evaluation import eval
 
 
 from torch.utils.tensorboard import SummaryWriter
@@ -149,8 +149,7 @@ def main():
     
     try:
         ## sanity check
-        eval(cfg,val_dataloader, model,start_epoch,summary_writer,sanity_check=True,
-                            store=store,name_list=name_list,logger=logger)
+        eval(cfg,val_dataloader, model,start_epoch,summary_writer,True,store,name_list,logger)
         if torch.__version__ == '2.2.2':
             print(f"{args.local-rank} Sanity check passed")
         else :

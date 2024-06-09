@@ -5,8 +5,16 @@ class Transformation(nn.Module):
         super().__init__()
         self.fc_layer = []
         drop_rate = .1
-        
+        self.change_layer = []
         self.cfg =cfg
+
+        for _ in range(1):
+            self.change_layer.append(nn.Dropout(drop_rate))
+            self.change_layer.append(nn.Linear(1024,512))
+            self.change_layer.append(nn.BatchNorm1d(512))
+            self.change_layer.append(nn.ReLU(True))
+            in_channel = 512
+        self.change_layer = nn.Sequential(*self.change_layer)
 
         for _ in range(2):
             self.fc_layer.append(nn.Dropout(drop_rate))
@@ -29,6 +37,7 @@ class Transformation(nn.Module):
             ## first convert node dimension to the third dim so that pool2d can work on
             x = F.avg_pool2d(x,(x.size(2),1)).squeeze(2)
         x = x.reshape(-1,C)
+        x = self.change_layer(x)
         x = self.fc_layer(x)
         x = self.video_emb(x)
         x = x.reshape(B,-1,self.t5_channel)

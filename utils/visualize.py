@@ -4,7 +4,7 @@ from utils.dtw import dtw
 from scipy.spatial.distance import cdist
 import numpy as np
 from sklearn import manifold
-
+def create_video():return
 def dist_fn(x, y):
     dist = np.sum((x-y)**2)
     return dist

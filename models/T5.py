@@ -61,7 +61,7 @@ class SimpleT5Model(nn.Module):
         avg_query = nn.AvgPool2d((22,1))(query).squeeze(2) ## b , T , 512
         avg_key = nn.AvgPool2d((22,1))(standard).squeeze(2)     ## 1 , T , 512
         
-        batch_allignment = None
+        batch_alignment = None
         for i in range(len(query)):
             video_alignment = None
             current_len = seq_len[i]
@@ -72,23 +72,35 @@ class SimpleT5Model(nn.Module):
 
             for j in range(0,22):
                 if pretrain == True:
-                    subtraction = standard[i,start_frame:start_frame+current_len,j,:] - query[i,:current_len,j,:]
+                    if (current_len <= standard[i].size(0)): # user <= standard 出來的會是 user 的長度
+                        subtraction = query[i,:current_len,j,:] - standard[i,start_frame:start_frame+current_len,j,:]
+                    else: # user > standard 出來的會是 standard 的長度
+                        subtraction = query[i,start_frame:start_frame+standard[i].size(0),j,:] - standard[i,:standard[i].size(0),j,:] 
                 else:
-                    subtraction = standard[i,start_frame:start_frame+current_len,j,:] - query[0,:current_len,j,:] ## Tu x 1 x C
-                    
-                ## TODO: should add back the original skeletons here
+                    if (current_len <= standard[0].size(0)):
+                        subtraction = query[i,:current_len,j,:] - standard[0,start_frame:start_frame+current_len,j,:] ## Tu x 1 x C
+                    else:
+                        subtraction = query[i,start_frame:start_frame+standard[0].size(0),j,:] - standard[0,:standard[0].size(0),j,:] 
+                
                 subtraction = interpolate_sequence(subtraction) ## seq_len x 1 x C
+                #if (subtraction.size(0) != current_len):
+                #    print("\033[91m" + f"interpolate_sequence wrong current_len : {current_len} subtraction {subtraction.size(0)}" + "\033[0m")
                 subtraction = subtraction.unsqueeze(0) ## 1 x seq_len x 1 x C
                 if j == 0: video_alignment = subtraction
                 else : video_alignment = torch.cat([video_alignment,subtraction],dim=0) # 1,C 1,C  22,C
             
             video_alignment = video_alignment.unsqueeze(0)
-            if i == 0: batch_allignment = video_alignment
-            else : batch_allignment = torch.cat([batch_allignment,video_alignment],dim=0) # T,22,C 
+            if i == 0: batch_alignment = video_alignment
+            else : batch_alignment = torch.cat([batch_alignment,video_alignment],dim=0) # T,22,C 
 
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         # B x 22 x T x C
-        batch_allignment = batch_allignment.permute(0,2,1,3)
-        return batch_allignment.to(query.device)
+        batch_alignment = batch_alignment.permute(0,2,1,3)
+
+        #query = query.permute(0,2,1,3)
+        batch_alignment = torch.cat([query,batch_alignment.to(device)],dim=-1)
+
+        return batch_alignment.to(query.device)
     
     def forward(self, names,keypoints,video_mask,standard,seq_len,decoder_input_ids,labels, videos = None,standard_video = None,subtraction=None):
         embeddings, _, _= self.stagcn(keypoints)
