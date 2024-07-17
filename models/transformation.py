@@ -35,7 +35,7 @@ class Transformation(nn.Module):
             x = F.max_pool2d(x,(x.size(2),1)).squeeze(2)
         elif self.cfg.TRANSFORMATION.REDUCTION_POLICY == 'SKELETON_POOL':
             ## first convert node dimension to the third dim so that pool2d can work on
-            x = F.avg_pool2d(x,(x.size(2),1)).squeeze(2)
+            x = F.max_pool2d(x,(x.size(2),1)).squeeze(2)
         x = x.reshape(-1,C)
         x = self.change_layer(x)
         x = self.fc_layer(x)

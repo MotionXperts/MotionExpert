@@ -17,8 +17,8 @@ import numpy as np
 from datetime import timedelta
 import logging
 import pickle
-# from bert_score import score
-# from nlgmetricverse import NLGMetricverse,load_metric
+from bert_score import score
+from nlgmetricverse import NLGMetricverse,load_metric
 
 logger = logging.getLogger(__name__)
 

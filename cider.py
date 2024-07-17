@@ -28,7 +28,7 @@ def getGTCaptions(annotations):
     for item in annotations:
         video_name = item['video_name']
         output_sentence = item['labels']
-        video_name_to_gts[video_name].append(output_sentence)
+        video_name_to_gts[video_name] = output_sentence
     return video_name_to_gts
 
 class BLEUScore:
