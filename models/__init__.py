@@ -43,40 +43,15 @@ def load_checkpoint(cfg,model,optimizer,name=None):
             else:
                 checkpoint_path = natsorted(checkpoints)[-1]
                 checkpoint = torch.load(os.path.join(checkpoint_dir,checkpoint_path))
-            ## partially load, then print missing keys count
-            model_keys = set(model.module.state_dict().keys())
-
-            if not continue_training: ## the first time load from pretraining, discard transformation layer
-                print("First time training")
-                newckpt = {'model_state':{}}
-                for k,v in checkpoint["model_state"].items():
-                    if not 'transformation' in k and not 'projection' in k:
-                        newckpt['model_state'][k] = v
-            else: ## continue training from previous interruption, only discard projection layer
-                newckpt = {'model_state':{}}
-                for k,v in checkpoint["model_state"].items():
-                    if not 'projection' in k:
-                        newckpt['model_state'][k] = v
-
-            loading_keys = set(newckpt["model_state"].keys())
-            
-            missing_keys = model_keys - loading_keys
+        
+            newckpt = {'model_state':{}}
+            for k,v in checkpoint["model_state"].items():
+                if not 'projection' in k:
+                    newckpt['model_state'][k] = v
 
             model.module.load_state_dict(newckpt["model_state"],strict=False)
-
-            ## load alignment module weight
-            if not continue_training and cfg.BRANCH ==2:
-                ckpt_weight = load_alignment_checkpoint(cfg,model.module.align_module)
-                align_module_keys = set([f'align_module.{x}' for x in model.module.align_module.state_dict().keys()])
-                ## ensure the weights are correctly loaded.
-                # for (k1,v1),(k2,v2) in zip(model.module.align_module.state_dict().items(),ckpt_weight):
-                #     assert (torch.equal(v1,v2.to(v1.device))), f"Weight in {k1} and {k2} miss matched"
-                missing_keys -= align_module_keys
-                k = []
-                for keys in missing_keys:
-                    if not 'transformation' in keys:
-                        k.append(keys)
-            
+            # Use for check the pretrain weight loaded correctly
+            # print(newckpt["model_state"].keys())
             if continue_training or cfg.TASK.PRETRAIN:
                 optimizer.load_state_dict(checkpoint["optimizer_state"])
             if dist.get_rank() == 0:

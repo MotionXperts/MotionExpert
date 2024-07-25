@@ -29,7 +29,6 @@ In case of installation of language_evaluation, you need to install from github 
 
 You will have to first define a config file to run. Examples can be found under configs/
 
-
 Create a folder called ```results``` and an name of the experiment (in the following example, the experiment is named "pretrain") under ```results```, then put the defined config file under it. 
 
 The repo architecture may look like this.
@@ -66,20 +65,23 @@ Example:
 ```
 
 ## Build
-
+### Run template
 ```shell
 $ torchrun --nproc_per_node <specify_how_many_gpus_to_run> main.py --cfg_file <path_to_cfg_file>
 ```
 
 or, if the above yield Error ```detected multiple processes in same device```
 
-run
-
 ```shell
 $ python -m torch.distributed.launch --nproc_per_node <specify_how_many_gpus_to_run> main.py --cfg_file <path_to_cfg_file>
 ```
+### Run pretrain setting
 ```shell
 $ python -m torch.distributed.launch --nproc_per_node 1 main.py --cfg_file /home/weihsin/projects/MotionExpert/results/0719pretrain/config.yaml
+```
+### Run finetune setting
+```shell
+$ python -m torch.distributed.launch --nproc_per_node 1 main.py --cfg_file /home/weihsin/projects/MotionExpert/results/0719/config.yaml 
 ```
 
 ### Submodule
