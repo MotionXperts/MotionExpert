@@ -14,9 +14,8 @@ def draw(joints,num_frame,root):
     ax.set_xlabel('x axis')
     ax.set_ylabel('y axis')
     ax.set_zlabel('z axis')
-    # 设置初始点和目标点的坐标
 
-    # 创建一个函数，用于在每一帧中绘制线段
+
     def animate(frame):
         ax.clear()
         for i in range(0,22) : 
@@ -24,8 +23,7 @@ def draw(joints,num_frame,root):
             y_values = joints[frame][i][1]
             z_values = joints[frame][i][2]            
             ax.scatter(x_values,y_values,z_values)
-        #for i in range(0,22) : 
-        #     print( joints[0][i][0],joints[0][i][1],joints[0][i][2])
+
         skeleton_bone = [[15,12],[12,9],[9,6],[6,3],[3,0]]
         skeleton_left_leg = [[0,1],[1,4],[4,7],[7,10]]
         skeleton_right_leg = [[0,2],[2,5],[5,8],[8,11]]
@@ -58,12 +56,10 @@ def draw(joints,num_frame,root):
         ax.set_xlabel('X coordinate')
         ax.set_ylabel('Y coordinate')
         ax.set_ylabel('Z coordinate')
-        # ax.set_title('从一个点到另一个点的动画') 可以放labels
 
-    # 创建一个动画对象
     ani = animation.FuncAnimation(fig, animate, frames=num_frame, repeat=True)
     save_path = os.path.join(root, 'animation_skeleton.gif')
-    # 保存动画为GIF文件
+    # save to gif file
     print(save_path)
     ani.save(save_path, fps=1000)
 
@@ -97,7 +93,6 @@ def read_folder(folder_path) :
     for root, dirs, files in os.walk(folder_path):
         for file in files:
             if file.lower().endswith('.json'):
-                #os.path.splitext(file)[0]
                 file_path = os.path.join(root, file)
                 file_name = os.path.basename(os.path.dirname(file_path))
                 read_file(file_path,file_name,root)

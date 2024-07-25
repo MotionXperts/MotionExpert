@@ -7,21 +7,20 @@ from IPython.core.display import display, HTML, Javascript
 from .util import format_special_chars, format_attention, num_layers
 
 
-def head_view(
-        attention=None,
-        tokens=None,
-        sentence_b_start=None,
-        prettify_tokens=True,
-        layer=None,
-        heads=None,
-        encoder_attention=None,
-        decoder_attention=None,
-        cross_attention=None,
-        encoder_tokens=None,
-        decoder_tokens=None,
-        include_layers=None,
-        html_action='return'
-):
+def head_view(**input):
+    attention=None
+    tokens=None
+    sentence_b_start=None
+    prettify_tokens=True
+    layer=None
+    heads=None
+    encoder_attention=input['encoder_attention']
+    decoder_attention=input['decoder_attention']
+    cross_attention=input['cross_attention']
+    encoder_tokens=input['encoder_tokens']
+    decoder_tokens=input['decoder_tokens']
+    include_layers=None
+    html_action=input['html_action']
     """Render head view
 
         Args:

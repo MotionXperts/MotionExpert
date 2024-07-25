@@ -9,7 +9,7 @@ from transformers import AutoTokenizer, AdamW, get_linear_schedule_with_warmup
 from utils.parser import parse_args,load_config
 from tqdm import tqdm
 import numpy as np
-from utils import seed_everything,get_lr
+from pytorch_lightning.utilities.seed import seed_everything
 import pickle , sys , logging
 ## add videoalignment to sys path
 sys.path.append(os.path.join('/home/weihsin/projects/MotionExpert','VideoAlignment'))
@@ -33,40 +33,33 @@ def train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer
     Tokenizer = AutoTokenizer.from_pretrained('t5-base', use_fast=True)
     if dist.get_rank() == 0:
         train_dataloader = tqdm(train_dataloader,total=len(train_dataloader), desc='Training')
-    for index, (video_name,src_batch,keypoints_mask_batch,video_mask_batch,standard,seq_len,label_batch,videos,standard_video,subtraction) in enumerate(train_dataloader):
+    for index,batch in enumerate(train_dataloader):
+        (video_name,src_batch,keypoints_mask_batch,standard,seq_len,label_batch) = batch
         model.zero_grad()
         optimizer.zero_grad()
         tgt_batch = Tokenizer(label_batch, return_tensors="pt", padding="max_length", truncation=True, max_length=50)['input_ids'].to(src_batch.device)
         tgt_input = tgt_batch[:, :-1]
         tgt_label = tgt_batch[:, 1:]
-
         with torch.cuda.amp.autocast():
-            if (hasattr(cfg,'BRANCH') and cfg.BRANCH == 1) or (cfg.TRANSFORMATION.REDUCTION_POLICY == 'TIME_POOL' or cfg.TRANSFORMATION.REDUCTION_POLICY == 'ORIGIN'): ## branch 1 uses node as time dimension, no padding needed, thus no mask needed
-                    outputs = model(
-                                keypoints=src_batch.to(model.device),
-                                video_mask= keypoints_mask_batch.to(model.device),
-                                standard=standard.to(model.device),
-                                seq_len=seq_len.to(model.device),
-                                decoder_input_ids=tgt_input.to(model.device),
-                                labels=tgt_label.to(model.device),
-                                names=video_name)
-            else:
-                    outputs = model(
-                                keypoints=src_batch.to(model.device),
-                                video_mask= video_mask_batch.to(model.device),
-                                standard=standard.to(model.device),
-                                seq_len=seq_len.to(model.device),
-                                decoder_input_ids=tgt_input.to(model.device),
-                                labels=tgt_label.to(model.device),
-                                names=video_name,
-                                videos= videos.to(model.device),
-                                standard_video = standard_video.to(model.device),
-                                subtraction = subtraction.to(model.device))
+            inputs = {  "video_name": video_name,
+                        "input_embedding": src_batch.to(model.device),
+                        "input_embedding_mask": keypoints_mask_batch.to(model.device),
+                        "standard": standard.to(model.device),
+                        "seq_len": seq_len.to(model.device),
+                        "decoder_input_ids": tgt_input.to(model.device),
+                        "labels": tgt_label.to(model.device)}
+            '''
+            ## branch 2
+            if not ((hasattr(cfg,'BRANCH') and cfg.BRANCH == 1) or (cfg.TRANSFORMATION.REDUCTION_POLICY == 'TIME_POOL')):
+                inputs['videos'] = videos.to(model.device)     
+                inputs['standard_video'] = standard_video.to(model.device)
+                inputs['subtraction'] = subtraction.to(model.device))
+            '''
+            outputs = model(**inputs)
             loss = outputs.loss
         scaler.scale(loss).backward()
         scaler.step(optimizer)
         scaler.update()
-
         scheduler.step()
 
         loss[torch.isnan(loss)] = 0
@@ -80,14 +73,12 @@ def train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer
             })
     if dist.get_rank() == 0:
         summary_writer.add_scalar('train/loss', np.mean(loss_list), epoch)
-        summary_writer.add_scalar('train/learning_rate', get_lr(optimizer)[0], epoch)
         logger.info(f"Epoch {epoch} : Loss {np.mean(loss_list)}")
 
 
 def main():
     args = parse_args()
     cfg = load_config(args)
-    cfg.args = args
 
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(filename)s %(lineno)d: %(message)s', datefmt='%Y-%m-%d %H:%M:%S',
                             filename=os.path.join(cfg.LOGDIR,'stdout.log'))
@@ -109,12 +100,12 @@ def main():
     ## maintain a name list in main process
     with open(cfg.DATA.TEST, 'rb') as f:
         data = pickle.load(f)
+
     name_list = []
     for d in data:
         if d['video_name'] != 'standard':
             name_list.append(d['video_name'])
 
-    
     dist.init_process_group(backend='nccl', init_method='env://')
 
     if dist.get_rank() == 0:
@@ -138,7 +129,7 @@ def main():
 
     
     train_dataloader =  construct_dataloader('train',cfg)
-    val_dataloader   =  construct_dataloader('val'  ,cfg)
+    test_dataloader  =  construct_dataloader('test' ,cfg)
 
     max_epoch = cfg.OPTIMIZER.MAX_EPOCH
     scheduler = get_linear_schedule_with_warmup(
@@ -146,32 +137,26 @@ def main():
     )
 
     start_epoch = load_checkpoint(cfg,model,optimizer)
-    
     try:
         ## sanity check
-        eval(cfg,val_dataloader, model,start_epoch,summary_writer,True,store,name_list,logger)
-        if torch.__version__ == '2.2.2':
-            print(f"{args.local-rank} Sanity check passed")
-        else :
-            print(f"{args.local_rank} Sanity check passed")
-
+        eval(cfg, test_dataloader, model, start_epoch, summary_writer, True, store, name_list, logger)
         for epoch in range(start_epoch, max_epoch):
             if dist.get_rank() == 0:
                 logger.info(f"Training epoch {epoch}")
             train_dataloader.sampler.set_epoch(epoch)
-            train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer,epoch,logger)
+            train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer, epoch,logger)
             if (epoch+1) < 10 or (epoch+ 1) % 5 == 0:
                 if dist.get_rank() == 0:
                     os.makedirs(cfg.CKPTDIR,exist_ok=True)
                     save_checkpoint(cfg,model,optimizer,epoch+1)
                 dist.barrier()
                 try:
-                    eval(cfg,val_dataloader, model,epoch,summary_writer,sanity_check=False,
-                            store=store,name_list=name_list,logger=logger)
+                    eval(cfg,test_dataloader, model,epoch,summary_writer,False, store=store,name_list=name_list,logger=logger)
                 except Exception as e:
                     print(traceback.format_exc())
                     print(f"Error {e} \n in evaluation at epoch {epoch}, continuing training.")
             dist.barrier()
+
     except Exception as e:
         print(traceback.format_exc())
         print(f"{e} occured, saving model before quitting.")

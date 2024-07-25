@@ -27,13 +27,12 @@ class STA_GCN(nn.Module):
                       A_size=A.size())
 
         # Feature Extractor
-        ## in_channel   6 -> 64
-        f_config = [[in_channels, 32, 1], [32, 32, 1], [32, 32, 1], [32, 64, 1], [64, 64, 1]]
-        self.feature_extractor = Feature_extractor(config=f_config, num_person=num_person, **kwargs)
+        f_config = [[in_channels, 32, 1], [32, 32, 1], [32, 64, 1], [64, 64, 1], [64, 128, 1], [128, 128, 1], [128, 128, 1], [128, 256, 1], [256, 256, 1], [256, 256, 1]]
+        self.feature_extractor = Feature_extractor(config=f_config, **kwargs)
 
         # Attention Branch
         a_config = [[128, 128, 1], [128, 128, 1], [128, 256, 1], [256, 256, 1], [256, 256, 1]]
-        self.attention_branch = Attention_branch(config=a_config,num_class=num_class, num_att_A=num_att_A, **kwargs)
+        self.attention_branch = Attention_branch(config=f_config,num_class=num_class, num_att_A=num_att_A, **kwargs)
 
         # Perception Branch
         p_config = [[128, 128, 1], [128, 128, 1], [128, 256, 1], [256, 256, 1], [256, 256, 1]]
@@ -46,21 +45,19 @@ class STA_GCN(nn.Module):
         N, c, t, v = x.size() # N : number of attention, c : channel, t : time, v : vertex
 
         # Feature Extractor
-        feature = self.feature_extractor(x, self.A)
-
+        feature,feature_last = self.feature_extractor(x, self.A)
         # Attention Branch
-        attention_last , att_node, att_A = self.attention_branch(feature, self.A, N)
+        att_node, att_A = self.attention_branch(feature_last, self.A)
         # Attention Mechanism
         att_x = feature * att_node
         # Perception Branch
         perception_last = self.perception_branch(att_x, self.A, att_A, N)
 
         perception_last = perception_last.permute(0,2,3,1) # batchsize, channel, seq_length, vertex
-        attention_last = attention_last.permute(0,2,3,1)   # batchsize, channel, seq_length, vertex
+        feature_last    = feature_last.permute(0,2,3,1)   # batchsize, channel, seq_length, vertex
 
-        # perception_last torch.Size : ([8, 118, 22, 256])  batchsize, seq_length, vertex, channel 
-        # attention_last torch.Size : ([8, 118, 22, 256])   batchsize, seq_length, vertex, channel 
-        PA_embedding = torch.cat([perception_last, attention_last], dim=-1) # ([8, 118, 22, 512])
-        
+        # perception_last torch.Size : [ batchsize, seq_length, vertex(22), channel(256) ]
+        # attention_last torch.Size : [ batchsize, seq_length, vertex(22), channel(256) ]
+        PA_embedding = torch.cat([perception_last, feature_last], dim=-1) # [ batchsize, seq_length, vertex(22), channel(512) ]
         return PA_embedding, att_node, att_A
 

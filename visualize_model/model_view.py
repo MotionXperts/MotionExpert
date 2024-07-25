@@ -7,21 +7,20 @@ from torch import Tensor
 from .util import format_special_chars, format_attention, num_layers, num_heads
 
 
-def model_view(
-        attention=None,
-        tokens=None,
-        sentence_b_start=None,
-        prettify_tokens=True,
-        display_mode="dark",
-        encoder_attention=None,
-        decoder_attention=None,
-        cross_attention=None,
-        encoder_tokens=None,
-        decoder_tokens=None,
-        include_layers=None,
-        include_heads=None,
-        html_action='return'
-):
+def model_view(**input):
+    attention=None
+    tokens=None
+    sentence_b_start=None
+    prettify_tokens=True
+    display_mode="dark"
+    encoder_attention=input['encoder_attention']
+    decoder_attention=input['decoder_attention']
+    cross_attention=input['cross_attention']
+    encoder_tokens=input['encoder_tokens']
+    decoder_tokens=input['decoder_tokens']
+    include_layers=None
+    include_heads=None
+    html_action=input['html_action']
     """Render model view
 
         Args:

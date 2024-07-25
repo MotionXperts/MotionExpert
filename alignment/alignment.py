@@ -87,7 +87,7 @@ def align(query_embs,key_embs,name) -> (int):
     """
 
     if len(key_embs) < len(query_embs): 
-        print("\033[91m" + f"Typically this shouldn't happen, consider checking the query embs (query embs {name} has shape {query_embs.shape})" + "\033[0m")
+        # print("\033[91m" + f"Typically this shouldn't happen, consider checking the query embs (query embs {name} has shape {query_embs.shape})" + "\033[0m")
         key_embs, query_embs = query_embs, key_embs
     # start_frame = find_min_distance_with_standard(query_embs,key_embs)
     # assert start_frame == opt_start_frame

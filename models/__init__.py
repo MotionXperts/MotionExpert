@@ -22,7 +22,8 @@ def save_checkpoint(cfg, model, optimizer, epoch):
 
 def load_checkpoint(cfg,model,optimizer,name=None):
     continue_training = False
-    logdir = cfg.LOGDIR
+    logdir = cfg.LOGDIR 
+    print("LOGDIR: ",logdir)
     # logdir = '/home/c1l1mo/projects/MotionExpert/results/b2_para6' ## this line is for debugging
     if os.path.exists(os.path.join(logdir,'checkpoints')) and len(os.listdir(os.path.join(logdir,'checkpoints')))>0:
         continue_training = True
@@ -30,7 +31,8 @@ def load_checkpoint(cfg,model,optimizer,name=None):
         checkpoint_dir = os.path.join(logdir, "checkpoints")
     else:
         checkpoint_dir = os.path.join(logdir, "pretrain_checkpoints")
-        assert os.path.exists(checkpoint_dir), f"Checkpoint dir {checkpoint_dir} not found"
+        # os.makedirs(checkpoint_dir, exist_ok=True)
+        # assert os.path.exists(checkpoint_dir), f"Checkpoint dir {checkpoint_dir} not found"
     if os.path.exists(checkpoint_dir):
         checkpoints = os.listdir(checkpoint_dir)
         if len(checkpoints) > 0:
@@ -45,6 +47,7 @@ def load_checkpoint(cfg,model,optimizer,name=None):
             model_keys = set(model.module.state_dict().keys())
 
             if not continue_training: ## the first time load from pretraining, discard transformation layer
+                print("First time training")
                 newckpt = {'model_state':{}}
                 for k,v in checkpoint["model_state"].items():
                     if not 'transformation' in k and not 'projection' in k:
@@ -58,8 +61,6 @@ def load_checkpoint(cfg,model,optimizer,name=None):
             loading_keys = set(newckpt["model_state"].keys())
             
             missing_keys = model_keys - loading_keys
-
-            # print(f"missing keys: {(missing_keys)}")
 
             model.module.load_state_dict(newckpt["model_state"],strict=False)
 
@@ -75,10 +76,6 @@ def load_checkpoint(cfg,model,optimizer,name=None):
                 for keys in missing_keys:
                     if not 'transformation' in keys:
                         k.append(keys)
-                # assert len(k) == 0, f'Only transformation module should be retrained but found missing keys: {k}'
-
-
-                ## TODO: insert continue training or load from pretrain
             
             if continue_training or cfg.TASK.PRETRAIN:
                 optimizer.load_state_dict(checkpoint["optimizer_state"])

@@ -3,7 +3,7 @@ import os,json,sys
 sys.path.append(os.path.join(os.getcwd(),'VideoAlignment'))
 import torch
 import torch.distributed as dist
-from utils import seed_everything
+from pytorch_lightning.utilities.seed import seed_everything
 from utils.parser import parse_args,load_config
 from cider import readJSON, readPickle, getGTCaptions, BLEUScore, CIDERScore
 from dataloaders import construct_dataloader
@@ -27,6 +27,7 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
     assert logger is not None, "Please provide logger object"
     Tokenizer = AutoTokenizer.from_pretrained('t5-base', use_fast=True)
     model.eval()
+    model = model.cuda()
     loss_list = [] 
     att_node_results = {}
     att_A_results = {}  
@@ -34,63 +35,41 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
     with torch.no_grad():
         if dist.get_rank() == 0:
             eval_dataloader = tqdm(eval_dataloader, total=len(eval_dataloader), desc='Evaluating')
-        for index,(video_name,src_batch,keypoints_mask_batch,video_mask_batch,standard,seq_len,label_batch, videos, standard_video,subtraction) in enumerate(eval_dataloader):
-            if cfg.args.eval_multi: ## if evaluating multiple checkpoints, dont do inference but directly load the result jsons
+        for index,batch in enumerate(eval_dataloader):
+            (video_name,src_batch,keypoints_mask_batch,standard,seq_len,label_batch) = batch
+            ## if evaluating multiple checkpoints, dont do inference but directly load the result jsons
+            if cfg.args.eval_multi: 
                 break
-            decoder_input_ids = Tokenizer([prompt],
+            decoder_input_ids = Tokenizer(  [prompt],
                                             return_tensors="pt", 
                                             padding=True, 
                                             truncation=True, 
                                             max_length=50,
                                             add_special_tokens=False)['input_ids']
-
             decoder_input_ids = decoder_input_ids.repeat(src_batch.shape[0], 1).to(src_batch.device)
             tgt_batch = Tokenizer(label_batch, return_tensors="pt", padding="max_length", truncation=True, max_length=50)['input_ids'].to(src_batch.device)
             tgt_input = tgt_batch[:, :-1]
             tgt_label = tgt_batch[:, 1:]
-            inputs = {      
-                        "video_name": video_name,
-                        "input_embeds": src_batch.to(model.device),
-                        "keypoints_mask": keypoints_mask_batch.to(model.device), ## Shouldn't need it in inference time
-                        "attention_mask": video_mask_batch.to(model.device),     ## Shouldn't need it in inference time
-                        "standard": standard.to(model.device),
-                        "seq_len": seq_len.to(model.device),
-                        "decoder_input_ids": decoder_input_ids.to(model.device),
-                        "tokenizer": Tokenizer,
+            inputs = {  "video_name"            : video_name,
+                        "input_embedding"       : src_batch.to(model.device),
+                        "input_embedding_mask"  : keypoints_mask_batch.to(model.device),
+                        "standard"              : standard.to(model.device),
+                        "seq_len"               : seq_len.to(model.device),
+                        "decoder_input_ids"     : decoder_input_ids.to(model.device),
+                        "tokenizer"             : Tokenizer,
                         ## for visualizing attention
-                        "result_dir": cfg.LOGDIR,
-                        "epoch": epoch,
-                        "name": video_name,
-                        ## Branch 2
-                        "videos" : videos.to(model.device),
-                        "standard_video": standard_video.to(model.device),
-                        "subtraction": subtraction.to(model.device)
-                     }
+                        "result_dir"            : cfg.LOGDIR,
+                        "epoch"                 : epoch }
+            
             with torch.cuda.amp.autocast():
                 seed_everything(42) ## seed to ensure reproducibility
                 generated_ids , att_node , att_A = model.module.generate(**inputs)
-                if (hasattr(cfg,'BRANCH') and cfg.BRANCH == 1) or (cfg.TRANSFORMATION.REDUCTION_POLICY == 'TIME_POOL' or cfg.TRANSFORMATION.REDUCTION_POLICY == 'ORIGIN'): ## branch 1 uses node as time dimension, no padding needed, thus no mask needed
-                    loss = model(
-                                keypoints=src_batch.to(model.device),
-                                video_mask= keypoints_mask_batch.to(model.device),
-                                standard=standard.to(model.device),
-                                seq_len=seq_len.to(model.device),
-                                decoder_input_ids=tgt_input.to(model.device),
-                                labels=tgt_label.to(model.device),
-                                names=video_name).loss
-                else:
-                    loss = model(
-                                keypoints=src_batch.to(model.device),
-                                video_mask= video_mask_batch.to(model.device),
-                                standard=standard.to(model.device),
-                                seq_len=seq_len.to(model.device),
-                                decoder_input_ids=tgt_input.to(model.device),
-                                labels=tgt_label.to(model.device),
-                                names=video_name,
-                                videos= videos.to(model.device),
-                                standard_video = standard_video.to(model.device),
-                                subtraction=subtraction.to(model.device)).loss 
-
+                ## Branch 1 
+                if (hasattr(cfg,'BRANCH') and cfg.BRANCH == 1) or (cfg.TRANSFORMATION.REDUCTION_POLICY == 'TIME_POOL'): 
+                    inputs['labels'] = tgt_label.to(model.device)                              
+                    inputs['decoder_input_ids'] = tgt_input.to(model.device)
+                    loss = model(**inputs).loss
+               
             loss[torch.isnan(loss)] = 0
             dist.all_reduce(loss, async_op=False)
             reduced_loss = loss / dist.get_world_size()
@@ -104,23 +83,18 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
                 store.set(name,decoded_text)
             for name, att_node in zip(video_name, att_node):
                 att_node_results[name] = att_node.cpu().numpy().tolist()
-                # store.set(f'att_node_{name}',att_node.cpu().numpy().tolist()) ## store.set only accepts strings 
             for name, att_A in zip(video_name, att_A):
                 att_A_results[name] = att_A.cpu().numpy().tolist()
-                # store.set(f'att_A_{name}',att_A.cpu().numpy().tolist())
 
             if dist.get_rank() == 0:
-                eval_dataloader.set_postfix({
-                    'loss': np.mean(loss_list),
-                })
-
+                eval_dataloader.set_postfix({'loss': np.mean(loss_list),})
             if sanity_check and index > 4:
                 return
+            
     if dist.get_rank() == 0:
         summary_writer.add_scalar('eval/loss', np.mean(loss_list), epoch)
 
         results = {}
-        ## iterate over name_list and get values from store
         for name in name_list:
             results[name] = store.get(name).decode('utf-8')
         
@@ -148,7 +122,9 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
         gts = new_gts
         # Check predictions content is correct
         assert type(predictions) is dict, f"Predictions should be a dictionary but got {type(predictions)}"
-        assert len(predictions.keys()) == len(gts.keys())-1, f"Predictions keys len should be same as gts keys len, but got {len(predictions.keys())} and {len(gts.keys())}" 
+        print("Predictions keys: ",predictions.keys())
+        print("GTS keys: ",gts.keys())
+        assert len(predictions.keys()) == len(gts.keys()), f"Predictions keys len should be same as gts keys len, but got {len(predictions.keys())} and {len(gts.keys())}" 
         assert all([type(pred) is str for pred in predictions.values()])
 
         ## calculate scores
@@ -159,12 +135,6 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
             load_metric("cider"),
         ]
         Evaluator = NLGMetricverse(metrics)
-
-        
-
-        # CIDErScore
-        cider_score = CIDERScore()(predictions, gts)
-        bleu_score = BLEUScore()(predictions, gts)
         ## need to convert predictions and gts to list to fit with bert_score
         ### make sure predictions and gts are in the same order
         predictions = dict(sorted(predictions.items()))
@@ -176,18 +146,17 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
         gts = list(gts.values())
         scores = Evaluator(predictions=predictions,references=gts)
         results = {}
-        results["bleu_1"] = scores["bleu_1"]['score']
-        results["bleu_4"] = scores["bleu_4"]['score']
-        results["rouge"] = scores["rouge"]['rougeL']
-        results["cider"] = scores["cider"]['score']
+        results["bleu_1"]   = scores["bleu_1"]['score']
+        results["bleu_4"]   = scores["bleu_4"]['score']
+        results["rouge"]    = scores["rouge"]['rougeL']
+        results["cider"]    = scores["cider"]['score']
 
         P,R,F1 = score(predictions,gts,lang="en",verbose=False,idf=True,rescale_with_baseline=True)
         results["bertscore"] = F1.mean().item()
         logger.info(f"Epoch {epoch}: Loss {np.mean(loss_list)}")
         for key in results:
             logger.info(f"Epoch {epoch}: {key}: {results[key]}")
-
-        
+      
 
 def main():
     args = parse_args()
@@ -203,8 +172,7 @@ def main():
         cfg.alignment_cfg = load_config(cfg.ALIGNMENT)
 
 
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(filename)s %(lineno)d: %(message)s', datefmt='%Y-%m-%d %H:%M:%S',
-                                filename=os.path.join(cfg.LOGDIR,'stdout.log'))
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(filename)s %(lineno)d: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', filename=os.path.join(cfg.LOGDIR,'stdout.log'))
     model = SimpleT5Model(cfg)
     
     ## maintain a name list in main process
@@ -219,7 +187,7 @@ def main():
     torch.cuda.set_device(args.localrank)
     model = model.cuda()
     model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
-    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.localrank],
+    model = torch.nn.parallel.DistributedDataParallel(  model, device_ids=[args.localrank],
                                                         output_device=args.localrank)
     optimizer = AdamW(model.parameters(), lr=float(cfg.OPTIMIZER.LR))
     summary_writer = SummaryWriter(os.path.join(cfg.LOGDIR, 'train_logs'))
@@ -241,10 +209,8 @@ def main():
         checkpoints = [args.ckpt]
     for ckpt in checkpoints:
         epoch = load_checkpoint(cfg,model,optimizer,ckpt)
-        eval(cfg,val_dataloader, model,epoch,summary_writer,sanity_check=False,
-                        store=store,name_list=name_list,logger=logger)
+        eval(cfg,val_dataloader, model,epoch,summary_writer,store=store,name_list=name_list,logger=logger)
     dist.destroy_process_group()
-
 
 if __name__ == "__main__":
     main()

@@ -1,16 +1,16 @@
 import torch.nn.functional as F
 import torch.nn as nn
 class Transformation(nn.Module):
-    def __init__(self,cfg,in_channel=2048,t5_channel=512):
+    def __init__(self,cfg,in_channel,t5_channel):
         super().__init__()
         self.fc_layer = []
         drop_rate = .1
         self.change_layer = []
         self.cfg =cfg
-
+        
         for _ in range(1):
             self.change_layer.append(nn.Dropout(drop_rate))
-            self.change_layer.append(nn.Linear(1024,512))
+            self.change_layer.append(nn.Linear(in_channel,512))
             self.change_layer.append(nn.BatchNorm1d(512))
             self.change_layer.append(nn.ReLU(True))
             in_channel = 512
@@ -30,7 +30,7 @@ class Transformation(nn.Module):
     def forward(self,x):
         B,T,V,C = x.size()
         ## Either aggregate time and skeleton dimension, avg pool skeleton dimension, or max pool time dimension
-        if self.cfg.TRANSFORMATION.REDUCTION_POLICY == 'TIME_POOL':
+        if   self.cfg.TRANSFORMATION.REDUCTION_POLICY == 'TIME_POOL': ## Cindy's method
             x = x.permute(0,2,1,3)
             x = F.max_pool2d(x,(x.size(2),1)).squeeze(2)
         elif self.cfg.TRANSFORMATION.REDUCTION_POLICY == 'SKELETON_POOL':

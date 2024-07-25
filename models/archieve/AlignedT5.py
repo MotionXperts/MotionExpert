@@ -1,5 +1,5 @@
 from models.T5 import SimpleT5Model
-from models.transformation import Transformation
+from projects.MotionExpert.models.Transformation import Transformation
 import torch.nn
 from VideoAlignment.model.transformer.transformer import CARL
 

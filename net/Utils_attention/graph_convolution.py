@@ -4,18 +4,7 @@ import torch.nn as nn
 
 # =============== Spatial Temporal Graph Convolution Block ===============
 class Stgc_block(nn.Module):
-    def __init__(self, 
-                 in_channels,
-                 out_channels,
-                 stride,
-                 s_kernel_size,
-                 t_kernel_size,
-                 dropout,
-                 residual,
-                 A_size,
-                 bias=True,
-                 use_att_A=False,
-                 num_att_A=0):
+    def __init__(self, in_channels, out_channels, stride, s_kernel_size, t_kernel_size, dropout, residual, A_size, bias=True, use_att_A=False, num_att_A=0):
         super().__init__()
 
         # Spatial Graph Convolution
@@ -25,7 +14,7 @@ class Stgc_block(nn.Module):
                             s_kernel_size=s_kernel_size,
                             bias=bias)
         else:
-            self.sgc = S_GC_att_A(in_channels=in_channels,
+            self.sgc = A_GC(in_channels=in_channels,
                                   out_channels=out_channels,
                                   s_kernel_size=s_kernel_size,
                                   num_att_A=num_att_A,
@@ -123,9 +112,6 @@ class S_GC_att_A(nn.Module):
         # Setting with multihead_STGCN  + attention_head 
         self.s_kernel_size = s_kernel_size + num_att_A  
 
-        # Setting with multihead_STGCN  + attention_head
-        # self.s_kernel_size = num_att_A
-
         self.conv = nn.Conv2d(in_channels=in_channels,
                               out_channels=out_channels * self.s_kernel_size,
                               kernel_size=(1, 1),
@@ -150,3 +136,34 @@ class S_GC_att_A(nn.Module):
         
         # x = torch.einsum('nkctv,nkvw->nctw', (x, att_A)) # 7 * 22 * 22
         # return x.contiguous()
+
+# =============== Spatial Graph Convolution ===============
+class A_GC(nn.Module):
+    def __init__(self,
+                 in_channels,
+                 out_channels,
+                 s_kernel_size,
+                 num_att_A,
+                 bias):
+        super().__init__()
+                                                        
+        self.num_att_A = num_att_A                      
+
+        # Setting with multihead_STGCN  + attention_head 
+        self.s_kernel_size = num_att_A  
+
+        self.conv = nn.Conv2d(in_channels=in_channels,
+                              out_channels=out_channels * self.s_kernel_size,
+                              kernel_size=(1, 1),
+                              padding=(0, 0),
+                              stride=(1, 1),
+                              dilation=(1, 1),
+                              bias=bias)
+
+    def forward(self, x, A, att_A):
+        x = self.conv(x)
+        n, kc, t, v = x.size()
+        x = x.view(n, self.s_kernel_size, kc//self.s_kernel_size, t, v)
+        x = torch.einsum('nkctv,nkvw->nctw', (x, att_A)) # 4 * 22 * 22
+
+        return x.contiguous()

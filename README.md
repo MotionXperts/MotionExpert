@@ -1,5 +1,4 @@
-# Motion2text
-
+# MotionXpert
 ```                            
     __ ( }       __  __       _   _            __   __                _   
   '---. _`---,  |  \/  |     | | (_)           \ \ / /               | |  
@@ -22,6 +21,12 @@ $ pip install -r requirements.txt
 In case of installation of language_evaluation, you need to install from github source code
 
 ## Prepare
+
+### Dataset
+
+
+### Config
+
 You will have to first define a config file to run. Examples can be found under configs/
 
 
@@ -63,7 +68,7 @@ Example:
 ## Build
 
 ```shell
-$ torchrun --nproc_per_node <specify_how_many_gpus_to_run> train_t5_stagcn.py --cfg_file <path_to_cfg_file>
+$ torchrun --nproc_per_node <specify_how_many_gpus_to_run> main.py --cfg_file <path_to_cfg_file>
 ```
 
 or, if the above yield Error ```detected multiple processes in same device```
@@ -71,7 +76,10 @@ or, if the above yield Error ```detected multiple processes in same device```
 run
 
 ```shell
-$ python -m torch.distributed.launch --nproc_per_node <specify_how_many_gpus_to_run> train_t5_stagcn.py --cfg_file <path_to_cfg_file>
+$ python -m torch.distributed.launch --nproc_per_node <specify_how_many_gpus_to_run> main.py --cfg_file <path_to_cfg_file>
+```
+```shell
+$ python -m torch.distributed.launch --nproc_per_node 1 main.py --cfg_file /home/weihsin/projects/MotionExpert/results/0719pretrain/config.yaml
 ```
 
 ### Submodule
@@ -98,7 +106,7 @@ $ git pull
 ## Reference
 * [HybrIK: Hybrid Analytical-Neural Inverse Kinematics for Body Mesh Recovery](https://github.com/Jeff-sjtu/HybrIK)
 * [Spatial Temporal Graph Convolutional Networks for Skeleton-Based Action Recognition (STGCN)](https://github.com/yysijie/st-gcn)
-* [Spatio-Temporal adaptive graph convolutional network model (STAGCN)](https://github.com/QiweiMa-LL/STAGCN)
+* [Spatio-Temporal adaptive graph convolutional network model (STAGCN)](https://github.com/machine-perception-robotics-group/SpatialTemporalAttentionGCN)
 * [T5 model document](https://huggingface.co/docs/transformers/model_doc/t5)
 * [BertViz - Visualize Attention in NLP Models](https://github.com/jessevig/bertviz)
 * [Dynamic time warping](https://github.com/minghchen/CARL_code/blob/master/utils/dtw.py)

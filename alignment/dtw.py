@@ -70,7 +70,6 @@ if __name__ == "__main__":
     y = array([1, 1, 2, 4, 2, 1, 2, 0]).reshape(-1, 1)
 
     # manhattan_distance = lambda x, y: np.abs(x - y)
-
     d, cost_matrix, acc_cost_matrix, path = dtw(x, y, dist=dist_fn)
 
     _, uix = np.unique(path[0], return_index=True)

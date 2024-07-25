@@ -31,7 +31,5 @@ for i in range(len(data2)):
     dictitory[video_name] = labels
 
 with open(filepath, 'w') as f:
-    # wirte dictionary to json file 
-    # will 換行
     json.dump 
     json.dump(dictitory, f, indent=4)
