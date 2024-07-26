@@ -17,7 +17,6 @@ class SimpleT5Model(nn.Module):
         self.cfg    = cfg
         self.stagcn = STA_GCN( num_class=1024, in_channels=6, residual=True, dropout=0.5, num_person=1, t_kernel_size=9, layout='SMPL', strategy='spatial', hop_size=3, num_att_A=4 )
         
-        in_channel= self.stagcn.output_channel
         '''
         if hasattr(self.cfg,"BRANCH") and self.cfg.BRANCH == 2 :
             self.align_module = CARL(cfg.alignment_cfg)
@@ -25,7 +24,12 @@ class SimpleT5Model(nn.Module):
             for param in self.align_module.parameters():
                 param.requires_grad = False
         '''
-        self.transformation = Transformation(cfg,in_channel = 1024,t5_channel=768)
+        if self.cfg.TASK.PRETRAIN_SETTING == 'DIFFERENCE':
+            in_channel = 1024
+        else : 
+            in_channel = self.stagcn.output_channel
+
+        self.transformation = Transformation(cfg,in_channel ,t5_channel=768)
         self.t5 = T5ForConditionalGeneration.from_pretrained('t5-base', config=config) 
     
     '''
@@ -50,10 +54,13 @@ class SimpleT5Model(nn.Module):
                 standard_input_embedding.append(standard[0][:][std_start_batch[i]:std_end_batch[i]].copy())
         return standard_input_embedding
     
-    def get_transformation_feature(self, stagcn_embedding, difference_embedding):
+    def get_transformation_feature(self, stagcn_embedding, difference_embedding,PRETRAIN_SETTING):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        concatenate_embedding = torch.cat([stagcn_embedding,difference_embedding.to(device)],dim=-1)
-        transform_embedding = self.transformation(concatenate_embedding)
+        if PRETRAIN_SETTING== 'DIFFERENCE':
+            concatenate_embedding = torch.cat([stagcn_embedding,difference_embedding.to(device)],dim=-1)
+            transform_embedding = self.transformation(concatenate_embedding)
+        else :
+            transform_embedding = self.transformation(stagcn_embedding)
         return transform_embedding
 
     def forward(self,**kwargs):
@@ -67,8 +74,8 @@ class SimpleT5Model(nn.Module):
         self.stagcn.train()
         stagcn_embedding, _, _ = self.stagcn(input_embedding)
         if hasattr(self.cfg,"BRANCH") and self.cfg.BRANCH != 0: 
-            ## BRAHCH 1 CONFIG: STAGCN 
-            if self.cfg.BRANCH == 1: 
+
+            if self.cfg.TASK.PRETRAIN_SETTING == 'DIFFERENCE': 
                 with torch.no_grad():
                     self.stagcn.eval()
                     if self.cfg.TASK.PRETRAIN : 
@@ -78,21 +85,14 @@ class SimpleT5Model(nn.Module):
                     #    standard_embedding, _ , _ = self.stagcn(standard)  
                     #    standard_embedding = self.get_standard_feature(None, None, self.cfg.TASK.PRETRAIN, standard_embedding, std_start_batch, std_end_batch)                  
 
-            difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding)
-            assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {difference_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
-            
-            ## BRANCH 2 CONFIG: use RGB to align input and standard vids, expand to Tu x 22 x embedding_size, fuse with STAGCN's output, then feed to T5
-            '''
-            elif self.cfg.BRANCH == 2: 
-                concatenation=[]
-                for (b,s) in zip(embeddings,subtraction):
-                    s = s.unsqueeze(1).expand(-1,22,-1)
-                    s = torch.cat([s,torch.zeros(b.shape[0]-s.shape[0],22,128).to(subtraction.device)],dim=0)
-                    concatenation.append(torch.concat([b,s],dim=-1))
-                aligned_embedding = torch.stack(concatenation,dim=0) ## B x T x 22 x (512+512)
-            '''
-        transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding)
-        
+                difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding)
+                assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {difference_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
+                
+                transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_SETTING)
+
+            else: 
+                transform_embedding = self.get_transformation_feature(stagcn_embedding,None,self.cfg.TASK.PRETRAIN_SETTING)
+
         return self.t5(inputs_embeds=transform_embedding.contiguous(), attention_mask=input_embedding_mask, decoder_input_ids=decoder_input_ids, labels=labels.contiguous())        
     
     def generate(self,**kwargs):
@@ -110,8 +110,8 @@ class SimpleT5Model(nn.Module):
         '''
         stagcn_embedding, attention_node, attention_matrix = self.stagcn(input_embedding)
         if hasattr(self.cfg,"BRANCH") and self.cfg.BRANCH !=0: 
-            ## BRAHCH 1 CONFIG: STAGCN
-            if self.cfg.BRANCH == 1: 
+
+            if self.cfg.TASK.PRETRAIN_SETTING == 'DIFFERENCE': 
                 with torch.no_grad():
                     self.stagcn.eval()
                     if self.cfg.TASK.PRETRAIN : 
@@ -121,21 +121,14 @@ class SimpleT5Model(nn.Module):
                     #    standard_embedding, _ , _ = self.stagcn(standard)  
                     #    standard_embedding = self.get_standard_feature(None, None, self.cfg.TASK.PRETRAIN, standard_embedding, std_start_batch, std_end_batch)                  
 
-
                 difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding)
                 assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {stagcn_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
+                
+                transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_SETTING)
+           
+            else :
+                transform_embedding = self.get_transformation_feature(stagcn_embedding,None,self.cfg.TASK.PRETRAIN_SETTING)
         
-            ## BRANCH2 CONFIG: use RGB to align input and standard vids, expand to Tu x 22 x embedding_size, fuse with STAGCN's output, then feed to T5 
-            '''
-            elif self.cfg.BRANCH == 2: 
-                concatenation=[]
-                for b,s in zip(embeddings,subtraction):
-                    s = s.unsqueeze(1).expand(-1,22,-1)
-                    s = torch.cat([s,torch.zeros(b.shape[0]-s.shape[0],22,128).to(subtraction.device)],dim=0)
-                    concatenation.append(torch.concat([b,s],dim=-1))
-                aligned_embedding = torch.stack(concatenation,dim=0) ## B x T x 22 x (512+512)
-            '''
-        transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding)
         generated_ids = self.t5.generate( inputs_embeds             = transform_embedding, 
                                           attention_mask            = input_embedding_mask,
                                           decoder_input_ids         = decoder_input_ids, 
