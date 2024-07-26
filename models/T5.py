@@ -33,69 +33,22 @@ class SimpleT5Model(nn.Module):
     # @ standard : (1, T, 22, 512) 
     # @ user : (batch_size, T, 22, 512) 
     # @ return : batchsize, vertex(22), seq_length, channel (512)
-    '''
-    def get_start_and_end(self, user, standard, seq_len , names):      
-        # Find the nearest interval between user and standard, the interval should be the same across all keypoints, so avg keypoint here.
-        avg_user    = nn.AvgPool2d((22,1))(user).squeeze(2)      ## b , T , 512
-        avg_std     = nn.AvgPool2d((22,1))(standard).squeeze(2)  ## 1 , T , 512
-        batch_start = []
-        batch_end = []
-        for i in range(len(user)):
-         
-            cur_len = seq_len[i]
-     
-            start_frame = align(avg_user[i,:cur_len], avg_std[0] , names[i])
-            batch_start.append(start_frame)
-            
-            standard_length = standard[0].size(0)
-
-            if (cur_len <= standard_length):
-                batch_end.append(start_frame + cur_len)
-            else:         
-                # It is correct           
-                # batch_end.append(start_frame + standard_length)
-                # FIXME: WRONG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                batch_end.append(start_frame + cur_len)
-        
-        return batch_start, batch_end
-    
-    def get_difference_feature(self, user, standard, seq_len, pretrain,std_start,std_end):      
-        batch_diff = []
-        for i in range(len(user)):
-            video_diff = None          
-            # Calculate the difference between user and standard
-            if pretrain == True:    
-                standard_ID = i
-                start_frame = 0
-                end_frame = seq_len[i]
-                video_diff = user[i,:seq_len[i],:,:] - standard[standard_ID,start_frame:end_frame, :, :]  
-            else :                  
-                standard_ID = 0
-                start_frame = std_start[i]
-                end_frame = std_end[i]
-                if (seq_len[i] <= standard[0].size(0)):
-                    # It is correct 
-                    # video_diff = user[i,:,:,:] - standard[standard_ID, start_frame:end_frame,:,:]
-                    # FIXME: WRONG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    video_diff = user[i,:,:,:] 
-                else: 
-                    # It is correct 
-                    # video_diff = user[i,start_frame:end_frame,:,:] - standard[standard_ID, :,:,:]
-                    # FIXME: WRONG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    video_diff = user[i,:,:,:] 
-                    
-            batch_diff.append(video_diff)
-   
-        batch_diff = pad_sequence(batch_diff,batch_first=True,padding_value=0) 
+    '''  
+    def get_difference_feature(self, user, standard):      
+        batch_diff = user-standard
         return batch_diff
 
-    def get_standard_feature(self,keypoints,seq_len):
-        standard = keypoints
-        for i in range(0,keypoints.shape[0]):
-            for j in range(1,seq_len[i]):
-                for k in range(0,6):
-                    standard[i][k][j] = keypoints[i][k][0]
-        return standard
+    def get_standard_feature(self,keypoints,seq_len, pretrain, standard, std_start_batch, std_end_batch):
+        if pretrain :
+            standard_input_embedding = keypoints
+            for i in range(0,keypoints.shape[0]):
+                for j in range(1,seq_len[i]):
+                    standard_input_embedding[i][:][j] = keypoints[i][:][0]
+        else : 
+            standard_input_embedding = []
+            for i in len(std_start_batch):
+                standard_input_embedding.append(standard[0][:][std_start_batch[i]:std_end_batch[i]].copy())
+        return standard_input_embedding
     
     def get_transformation_feature(self, stagcn_embedding, difference_embedding):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -113,22 +66,21 @@ class SimpleT5Model(nn.Module):
         labels               = kwargs['labels']
         self.stagcn.train()
         stagcn_embedding, _, _ = self.stagcn(input_embedding)
-        ## BRANCH 0 CONFIG: STAGCN
         if hasattr(self.cfg,"BRANCH") and self.cfg.BRANCH != 0: 
-            ## BRAHCH 1 CONFIG: STAGCN + Alignment
+            ## BRAHCH 1 CONFIG: STAGCN 
             if self.cfg.BRANCH == 1: 
                 with torch.no_grad():
                     self.stagcn.eval()
-                    if self.cfg.TASK.PRETRAIN :standard = self.get_standard_feature(input_embedding,seq_len)
-                    standard_embedding, _ , _ = self.stagcn(standard)
-                
+                    if self.cfg.TASK.PRETRAIN : 
+                        standard_input_embedding = self.get_standard_feature(input_embedding, seq_len, self.cfg.TASK.PRETRAIN, None, None, None)
+                        standard_embedding, _ , _ = self.stagcn(standard_input_embedding)
+                    # else : 
+                    #    standard_embedding, _ , _ = self.stagcn(standard)  
+                    #    standard_embedding = self.get_standard_feature(None, None, self.cfg.TASK.PRETRAIN, standard_embedding, std_start_batch, std_end_batch)                  
 
-            if self.cfg.TASK.PRETRAIN :
-                difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding, seq_len, self.cfg.TASK.PRETRAIN,std_start = None,std_end = None)
-                assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {difference_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
-            else : 
-                start_frame, end_frame = self.get_start_and_end(stagcn_embedding, standard_embedding, seq_len, video_name)
-                difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding, seq_len, self.cfg.TASK.PRETRAIN,std_start = start_frame,std_end = end_frame)
+            difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding)
+            assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {difference_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
+            
             ## BRANCH 2 CONFIG: use RGB to align input and standard vids, expand to Tu x 22 x embedding_size, fuse with STAGCN's output, then feed to T5
             '''
             elif self.cfg.BRANCH == 2: 
@@ -162,15 +114,17 @@ class SimpleT5Model(nn.Module):
             if self.cfg.BRANCH == 1: 
                 with torch.no_grad():
                     self.stagcn.eval()
-                    if self.cfg.TASK.PRETRAIN : standard = self.get_standard_feature(input_embedding,seq_len)
-                    standard_embedding, _ , _ = self.stagcn(standard)
+                    if self.cfg.TASK.PRETRAIN : 
+                        standard_input_embedding = self.get_standard_feature(input_embedding, seq_len, self.cfg.TASK.PRETRAIN, None, None, None)
+                        standard_embedding, _ , _ = self.stagcn(standard_input_embedding)
+                    # else : 
+                    #    standard_embedding, _ , _ = self.stagcn(standard)  
+                    #    standard_embedding = self.get_standard_feature(None, None, self.cfg.TASK.PRETRAIN, standard_embedding, std_start_batch, std_end_batch)                  
 
-                if self.cfg.TASK.PRETRAIN :
-                    difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding, seq_len, self.cfg.TASK.PRETRAIN,std_start = None,std_end = None)
-                    assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {stagcn_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
-                else : 
-                    start_frame, end_frame = self.get_start_and_end(stagcn_embedding, standard_embedding, seq_len, video_name)
-                    difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding, seq_len, self.cfg.TASK.PRETRAIN,std_start = start_frame,std_end = end_frame)
+
+                difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding)
+                assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {stagcn_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
+        
             ## BRANCH2 CONFIG: use RGB to align input and standard vids, expand to Tu x 22 x embedding_size, fuse with STAGCN's output, then feed to T5 
             '''
             elif self.cfg.BRANCH == 2: 
