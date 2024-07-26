@@ -18,7 +18,6 @@ class Perception_branch(nn.Module):
                  use_att_A=True):
         super().__init__()
 
-        # STGC Block
         kwargs = dict(s_kernel_size=s_kernel_size,
                       t_kernel_size=t_kernel_size,
                       dropout=dropout,
@@ -26,6 +25,7 @@ class Perception_branch(nn.Module):
                       A_size=A_size,
                       use_att_A=use_att_A,
                       num_att_A=num_att_A)
+        
         self.stgc_block0 = Stgc_block(config[0][0], config[0][1], config[0][2], **kwargs)
         self.stgc_block1 = Stgc_block(config[1][0], config[1][1], config[1][2], **kwargs)
         self.stgc_block2 = Stgc_block(config[2][0], config[2][1], config[2][2], **kwargs)
@@ -33,12 +33,9 @@ class Perception_branch(nn.Module):
         self.stgc_block4 = Stgc_block(config[4][0], config[4][1], config[4][2], **kwargs)
 
     def forward(self, x, A, att_A, N):
-        # STGC Block
         x = self.stgc_block0(x, A, att_A)
         x = self.stgc_block1(x, A, att_A)
         x = self.stgc_block2(x, A, att_A)
         x = self.stgc_block3(x, A, att_A)
         x = self.stgc_block4(x, A, att_A)
-
-        # embedding torch.Size([8, 118, 22, 512])
         return x

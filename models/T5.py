@@ -1,14 +1,12 @@
 from transformers import T5ForConditionalGeneration, AutoConfig
 from torch import nn
-from visualize_model import model_view, head_view, neuron_view
+from visualize_model import model_view, head_view
 from .STAGCN import STA_GCN
 from .Transformation import Transformation
 from VideoAlignment.model.transformer.transformer import CARL
 import torch,os
 import torch.distributed as dist
-from alignment.alignment import align
-import sys
-from torch.nn.utils.rnn import pad_sequence
+
 class SimpleT5Model(nn.Module):
     def __init__(self,cfg):
         super(SimpleT5Model, self).__init__()
@@ -17,13 +15,6 @@ class SimpleT5Model(nn.Module):
         self.cfg    = cfg
         self.stagcn = STA_GCN( num_class=1024, in_channels=6, residual=True, dropout=0.5, num_person=1, t_kernel_size=9, layout='SMPL', strategy='spatial', hop_size=3, num_att_A=4 )
         
-        '''
-        if hasattr(self.cfg,"BRANCH") and self.cfg.BRANCH == 2 :
-            self.align_module = CARL(cfg.alignment_cfg)
-            in_channel += self.align_module.cfg.MODEL.EMBEDDER_MODEL.EMBEDDING_SIZE
-            for param in self.align_module.parameters():
-                param.requires_grad = False
-        '''
         if self.cfg.TASK.PRETRAIN_SETTING == 'DIFFERENCE':
             in_channel = 1024
         else : 
@@ -31,6 +22,8 @@ class SimpleT5Model(nn.Module):
 
         self.transformation = Transformation(cfg,in_channel ,t5_channel=768)
         self.t5 = T5ForConditionalGeneration.from_pretrained('t5-base', config=config) 
+        # Distributed Training
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     '''
     # - get_alignment_feature()
@@ -103,11 +96,7 @@ class SimpleT5Model(nn.Module):
         seq_len = kwargs['seq_len']
         decoder_input_ids = kwargs['decoder_input_ids']
         tokenizer = kwargs['tokenizer']
-        '''
-        #videos = kwargs['videos'] if 'videos' in kwargs else None
-        #standard_video = kwargs['standard_video'] if 'standard_video' in kwargs else None
-        #subtraction = kwargs['subtraction'] if 'subtraction' in kwargs else None
-        '''
+
         stagcn_embedding, attention_node, attention_matrix = self.stagcn(input_embedding)
         if hasattr(self.cfg,"BRANCH") and self.cfg.BRANCH !=0: 
 
@@ -141,6 +130,7 @@ class SimpleT5Model(nn.Module):
                                           # Set do_sample           = True if you want to demo
                                           do_sample                 = False,           
                                           early_stopping            = True)
+        # Distributed Training
         if(not self.cfg.TASK.PRETRAIN) and dist.get_rank() == 0 and (hasattr(self.cfg,'BRANCH') and self.cfg.BRANCH ==1):
             decoded_text = tokenizer.convert_ids_to_tokens(generated_ids.sequences[0])
             out = self.t5(  inputs_embeds       = transform_embedding[0].unsqueeze(0), 

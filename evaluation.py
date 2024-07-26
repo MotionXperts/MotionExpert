@@ -33,11 +33,12 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
     att_A_results = {}  
     prompt =  "Motion Instruction : " if cfg.TASK.PRETRAIN else "Motion Description : "
     with torch.no_grad():
+        # Distributed Training
         if dist.get_rank() == 0:
             eval_dataloader = tqdm(eval_dataloader, total=len(eval_dataloader), desc='Evaluating')
         for index,batch in enumerate(eval_dataloader):
             (video_name,src_batch,keypoints_mask_batch,standard,seq_len,label_batch) = batch
-            ## if evaluating multiple checkpoints, dont do inference but directly load the result jsons
+            # If evaluating multiple checkpoints, dont do inference but directly load the result jsons
             if cfg.args.eval_multi: 
                 break
             decoder_input_ids = Tokenizer(  [prompt],
@@ -57,29 +58,34 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
                         "seq_len"               : seq_len.to(model.device),
                         "decoder_input_ids"     : decoder_input_ids.to(model.device),
                         "tokenizer"             : Tokenizer,
-                        ## for visualizing attention
+                        # For visualizing attention
                         "result_dir"            : cfg.LOGDIR,
                         "epoch"                 : epoch }
             
             with torch.cuda.amp.autocast():
-                seed_everything(42) ## seed to ensure reproducibility
+                seed_everything(42) 
+
                 generated_ids , att_node , att_A = model.module.generate(**inputs)
-                ## Branch 1 
+
                 if (hasattr(cfg,'BRANCH') and cfg.BRANCH == 1) or (cfg.TRANSFORMATION.REDUCTION_POLICY == 'TIME_POOL'): 
                     inputs['labels'] = tgt_label.to(model.device)                              
                     inputs['decoder_input_ids'] = tgt_input.to(model.device)
                     loss = model(**inputs).loss
-               
+            
             loss[torch.isnan(loss)] = 0
+            # Distributed Training
             dist.all_reduce(loss, async_op=False)
             reduced_loss = loss / dist.get_world_size()
             loss_list.append(reduced_loss.detach().cpu())
+
             for name, gen_id,label in zip(video_name, generated_ids,label_batch):
                 decoded_text = Tokenizer.decode(gen_id, skip_special_tokens=True, clean_up_tokenization_spaces=True).split(prompt)
                 if len(decoded_text) > 1:
                     decoded_text = decoded_text[1].strip()
                 else:
                     decoded_text = ""
+
+                # Distributed Training
                 store.set(name,decoded_text)
             for name, att_node in zip(video_name, att_node):
                 att_node_results[name] = att_node.cpu().numpy().tolist()
@@ -91,11 +97,13 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
             if sanity_check and index > 4:
                 return
             
+    # Distributed Training
     if dist.get_rank() == 0:
         summary_writer.add_scalar('eval/loss', np.mean(loss_list), epoch)
 
         results = {}
         for name in name_list:
+            # Distributed Training
             results[name] = store.get(name).decode('utf-8')
         
         if not cfg.args.eval_multi:
@@ -127,7 +135,7 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
         assert len(predictions.keys()) == len(gts.keys()), f"Predictions keys len should be same as gts keys len, but got {len(predictions.keys())} and {len(gts.keys())}" 
         assert all([type(pred) is str for pred in predictions.values()])
 
-        ## calculate scores
+        # Calculate scores
         metrics = [
             load_metric("bleu",resulting_name="bleu_1",compute_kwargs={"max_order":1}),
             load_metric("bleu",resulting_name="bleu_4",compute_kwargs={"max_order":4}),
@@ -135,10 +143,10 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
             load_metric("cider"),
         ]
         Evaluator = NLGMetricverse(metrics)
-        ## need to convert predictions and gts to list to fit with bert_score
-        ### make sure predictions and gts are in the same order
+        # Need to convert predictions and gts to list to fit with bert_score
+        # Make sure predictions and gts are in the same order
         predictions = dict(sorted(predictions.items()))
-        ## del standard in gts since there is no standard in predictions
+        # Del standard in gts since there is no standard in predictions
         del gts['standard']
         gts = dict(sorted(gts.items()))
 
@@ -157,13 +165,12 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
         for key in results:
             logger.info(f"Epoch {epoch}: {key}: {results[key]}")
       
-
 def main():
     args = parse_args()
     cfg = load_config(args)
     cfg.args = args
 
-    ## Dummy check to avoid overwriting
+    # Dummy check to avoid overwriting
     cfg_path = os.path.join(cfg.LOGDIR,'config.yaml').replace('./',f'{os.getcwd()}/')
     assert cfg_path == args.cfg_file, f"config file path should be {cfg_path} but got {args.cfg_file}"
 
@@ -175,7 +182,7 @@ def main():
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(filename)s %(lineno)d: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', filename=os.path.join(cfg.LOGDIR,'stdout.log'))
     model = SimpleT5Model(cfg)
     
-    ## maintain a name list in main process
+    # Maintain a name list in main process
     with open(cfg.DATA.TEST, 'rb') as f:
         data = pickle.load(f)
     name_list = []
@@ -183,15 +190,20 @@ def main():
         if d['video_name'] != 'standard':
             name_list.append(d['video_name'])
 
+    # Distributed Training
     dist.init_process_group(backend='nccl', init_method='env://')
     torch.cuda.set_device(args.localrank)
+
     model = model.cuda()
+
+    # Distributed Training
     model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
     model = torch.nn.parallel.DistributedDataParallel(  model, device_ids=[args.localrank],
                                                         output_device=args.localrank)
     optimizer = AdamW(model.parameters(), lr=float(cfg.OPTIMIZER.LR))
     summary_writer = SummaryWriter(os.path.join(cfg.LOGDIR, 'train_logs'))
 
+    # Distributed Training
     if dist.get_rank() == 0:
         store = dist.TCPStore("127.0.0.1", 1238, dist.get_world_size(), True, timedelta(seconds=30))
     else:

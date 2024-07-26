@@ -7,17 +7,14 @@ class Feature_extractor(nn.Module):
     def __init__(self, config, s_kernel_size, t_kernel_size, dropout, residual, A_size):
         super().__init__()
 
-        # Batch Normalization
         self.bn = nn.BatchNorm1d(config[0][0] * A_size[2])
 
-        # STGC-Block config
         kwargs = dict(s_kernel_size=s_kernel_size,
                       t_kernel_size=t_kernel_size,
                       dropout=dropout,
                       residual=residual,
                       A_size=A_size)
-
-        # branch1
+        
         self.stgc_block0 = Stgc_block(  in_channels=6,
                                         out_channels=config[0][1],
                                         stride=config[0][2],
@@ -42,12 +39,12 @@ class Feature_extractor(nn.Module):
         x = self.bn(x)
         x = x.view(N, V, C, T).permute(0, 2, 3,1).contiguous().view(N, C, T, V)
 
-        # branch1 : bone and joints
+        # Combine bone and joints
         x = self.stgc_block0(x, A, None)
         x = self.stgc_block1(x, A, None)
         x = self.stgc_block2(x, A, None)
         x = self.stgc_block3(x, A, None)
-        x = self.stgc_block4(x, A, None)  # N*M, C=64, T, V
+        x = self.stgc_block4(x, A, None)  
         x_last = self.stgc_block5(x, A, None)
         x_last = self.stgc_block6(x_last, A, None)
         x_last = self.stgc_block7(x_last, A, None)

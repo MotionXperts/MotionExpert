@@ -38,11 +38,12 @@ class STA_GCN(nn.Module):
         p_config = [[128, 128, 1], [128, 128, 1], [128, 256, 1], [256, 256, 1], [256, 256, 1]]
         self.perception_branch = Perception_branch(config=p_config,num_class=num_class, num_att_A=num_att_A, **kwargs)
 
-        self.output_channel = p_config[-1][1] + a_config[-1][1] ## output channel is concatnating these 2 embeddings
+        self.output_channel = p_config[-1][1] + a_config[-1][1] 
 
 
     def forward(self, x):
-        N, c, t, v = x.size() # N : number of attention, c : channel, t : time, v : vertex
+        # N : number of attention, c : channel, t : time, v : vertex
+        N, c, t, v = x.size() 
 
         # Feature Extractor
         feature,feature_last = self.feature_extractor(x, self.A)
@@ -53,11 +54,10 @@ class STA_GCN(nn.Module):
         # Perception Branch
         perception_last = self.perception_branch(att_x, self.A, att_A, N)
 
-        perception_last = perception_last.permute(0,2,3,1) # batchsize, channel, seq_length, vertex
-        feature_last    = feature_last.permute(0,2,3,1)   # batchsize, channel, seq_length, vertex
+        perception_last = perception_last.permute(0,2,3,1)  # batchsize, channel, seq_length, vertex
+        feature_last    = feature_last.permute(0,2,3,1)     # batchsize, channel, seq_length, vertex
 
-        # perception_last torch.Size : [ batchsize, seq_length, vertex(22), channel(256) ]
-        # attention_last torch.Size : [ batchsize, seq_length, vertex(22), channel(256) ]
+        # perception_last torch.Size :  [ batchsize, seq_length, vertex(22), channel(256) ]
+        # attention_last torch.Size :   [ batchsize, seq_length, vertex(22), channel(256) ]
         PA_embedding = torch.cat([perception_last, feature_last], dim=-1) # [ batchsize, seq_length, vertex(22), channel(512) ]
         return PA_embedding, att_node, att_A
-

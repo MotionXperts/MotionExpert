@@ -10,7 +10,7 @@ def save_checkpoint(cfg, model, optimizer, epoch):
         path = os.path.join(cfg.LOGDIR, "pretrain_checkpoints")
     os.makedirs(path, exist_ok=True)
     ckpt_path = os.path.join(path, "checkpoint_epoch_{:05d}.pth".format(epoch))
-    # Record the state.
+    # Record the state
     checkpoint = {
         "epoch": epoch,
         "model_state": model.module.state_dict(),
@@ -24,7 +24,7 @@ def load_checkpoint(cfg,model,optimizer,name=None):
     continue_training = False
     logdir = cfg.LOGDIR 
     print("LOGDIR: ",logdir)
-    # logdir = '/home/c1l1mo/projects/MotionExpert/results/b2_para6' ## this line is for debugging
+
     if os.path.exists(os.path.join(logdir,'checkpoints')) and len(os.listdir(os.path.join(logdir,'checkpoints')))>0:
         continue_training = True
     if continue_training:
@@ -36,7 +36,7 @@ def load_checkpoint(cfg,model,optimizer,name=None):
     if os.path.exists(checkpoint_dir):
         checkpoints = os.listdir(checkpoint_dir)
         if len(checkpoints) > 0:
-            ## sort the files in checkpoint dir
+            # Sort the files in checkpoint dir
             if name is not None:
                 checkpoint_path = name
                 checkpoint = torch.load(checkpoint_path)
@@ -54,11 +54,13 @@ def load_checkpoint(cfg,model,optimizer,name=None):
             # print(newckpt["model_state"].keys())
             if continue_training or cfg.TASK.PRETRAIN:
                 optimizer.load_state_dict(checkpoint["optimizer_state"])
+            # Distributed Training
             if dist.get_rank() == 0:
                 print(f"LOADING CHECKPOINT AT {checkpoint_path}")
             if continue_training:
                 return checkpoint["epoch"] 
             return 0
+    # Distributed Training
     if dist.get_rank() == 0:
         print("CHECKPOINT NOT FOUND")
     return 0 
@@ -75,7 +77,7 @@ def load_alignment_checkpoint(cfg,align_module):
     for k,v in checkpoint["model_state"].items():
         if not 'projection' in k:
             newckpt['model_state'][k] = v
-    ## no need to load projections here
+    # No need to load projections here
     align_module.load_state_dict(newckpt["model_state"],strict=False)
 
     return checkpoint['model_state'].items()

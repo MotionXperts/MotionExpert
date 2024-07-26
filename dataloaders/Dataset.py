@@ -2,10 +2,8 @@ import pickle
 import torch
 import numpy as np
 from torch.utils.data import Dataset
-from torchvision.io import read_video
 # from VideoAlignment.dataset.data_augment import create_data_augment
 import os
-import torch.distributed as dist
 
 USER = os.environ['USER']
 

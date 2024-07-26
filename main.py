@@ -11,12 +11,13 @@ from tqdm import tqdm
 import numpy as np
 from pytorch_lightning.utilities.seed import seed_everything
 import pickle , sys , logging
-## add videoalignment to sys path
+# Add videoalignment to sys path
 sys.path.append(os.path.join('/home/weihsin/projects/MotionExpert','VideoAlignment'))
 from evaluation import eval
 
 
 from torch.utils.tensorboard import SummaryWriter
+# Distributed Training
 import torch.distributed as dist
 from dataloaders import construct_dataloader
 from models.T5 import SimpleT5Model
@@ -62,6 +63,7 @@ def train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer
         scaler.update()
         scheduler.step()
 
+        # Distributed Training
         loss[torch.isnan(loss)] = 0
         dist.all_reduce(loss, async_op=False)
         reduced_loss = loss / dist.get_world_size()
@@ -83,10 +85,6 @@ def main():
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(filename)s %(lineno)d: %(message)s', datefmt='%Y-%m-%d %H:%M:%S',
                             filename=os.path.join(cfg.LOGDIR,'stdout.log'))
 
-    ## Dummy check to avoid overwriting
-    cfg_path = os.path.join(cfg.LOGDIR,'config.yaml').replace('./',f'{os.getcwd()}/')
-    ## assert cfg_path == args.cfg_file, f"config file path should be {cfg_path} but got {args.cfg_file}"
-
     cfg.alignment_cfg = None
 
     if not cfg.TASK.PRETRAIN:
@@ -104,18 +102,17 @@ def main():
     name_list = []
     for d in data:
         if d['video_name'] != 'standard':
-            name_list.append(d['video_name'])
+            name_list.append(d['video_name'])    
 
     dist.init_process_group(backend='nccl', init_method='env://')
-
     if dist.get_rank() == 0:
         store = dist.TCPStore("127.0.0.1", 8080, dist.get_world_size(), True,timedelta(seconds=30))
     else:
         store = dist.TCPStore("127.0.0.1", 8080, dist.get_world_size(), False,timedelta(seconds=30))
-
+        
     seed_everything(42)
     model = model.cuda()
-    model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
+
 
     if torch.__version__ == '2.2.2':
         model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.local-rank],
@@ -123,11 +120,11 @@ def main():
     else : 
         model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.local_rank],
                                                     output_device=args.local_rank, find_unused_parameters=True)
+    
     scaler = torch.cuda.amp.GradScaler()
     optimizer = AdamW(model.parameters(), lr=float(cfg.OPTIMIZER.LR))
     summary_writer = SummaryWriter(os.path.join(cfg.LOGDIR, 'train_logs'))
 
-    
     train_dataloader =  construct_dataloader('train',cfg)
     test_dataloader  =  construct_dataloader('test' ,cfg)
 
@@ -138,23 +135,30 @@ def main():
 
     start_epoch = load_checkpoint(cfg,model,optimizer)
     try:
-        ## sanity check
+        # Sanity check
         eval(cfg, test_dataloader, model, start_epoch, summary_writer, True, store, name_list, logger)
         for epoch in range(start_epoch, max_epoch):
+
+            # Distributed Training
             if dist.get_rank() == 0:
                 logger.info(f"Training epoch {epoch}")
+            
             train_dataloader.sampler.set_epoch(epoch)
             train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer, epoch,logger)
             if (epoch+1) < 10 or (epoch+ 1) % 5 == 0:
+
+                # Distributed Training
                 if dist.get_rank() == 0:
                     os.makedirs(cfg.CKPTDIR,exist_ok=True)
                     save_checkpoint(cfg,model,optimizer,epoch+1)
                 dist.barrier()
+
                 try:
                     eval(cfg,test_dataloader, model,epoch,summary_writer,False, store=store,name_list=name_list,logger=logger)
                 except Exception as e:
                     print(traceback.format_exc())
                     print(f"Error {e} \n in evaluation at epoch {epoch}, continuing training.")
+
             dist.barrier()
 
     except Exception as e:

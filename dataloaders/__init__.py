@@ -44,9 +44,11 @@ def construct_dataloader(split,cfg):
     dataset = DatasetLoader(cfg.TASK.PRETRAIN,pkl_file)
 
     if split == 'train':
+        # Distributed Training
         sampler = torch.utils.data.distributed.DistributedSampler(dataset,shuffle=True)
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, drop_last=True, sampler=sampler,collate_fn=collate_fn)
     elif split == "test":
+        # Distributed Training
         sampler = torch.utils.data.distributed.DistributedSampler(dataset,shuffle=False)
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, drop_last=False,sampler=sampler,collate_fn=collate_fn)
 
