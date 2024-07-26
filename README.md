@@ -12,7 +12,7 @@
 ---
 
 ## Install 
-#### create and activate a virtual env
+create and activate a virtual env
 ```shell
 $ conda create -n motion2text python=3.7
 $ conda activate motion2text
@@ -25,66 +25,125 @@ In case of installation of language_evaluation, you need to install from github 
 ### Dataset
 
 
-### Config
+### Config File
 
-You will have to first define a config file to run. Examples can be found under configs/
-
-Create a folder called ```results``` and an name of the experiment (in the following example, the experiment is named "pretrain") under ```results```, then put the defined config file under it. 
-
-The repo architecture may look like this.
+The template config file for pretrain :
+```shell
+HIDDEN_CHANNEL: 32
+OUT_CHANNEL: 128
+TRANSFORMATION:
+  REDUCTION_POLICY: 'TIME_POOL'
+TASK:
+  PRETRAIN: true
+DATA: 
+  TRAIN: '{The PATH of the pretrain training dataset}'
+  TEST: '{The PATH of the pretrain testing dataset}'
+  BATCH_SIZE: 16
+OPTIMIZER:
+  LR: 1e-4
+  MAX_EPOCH: 50
+  WARMUP_STEPS: 5000
+BRANCH: 1
+LOGDIR: ./results/pretrain
+args:
+  eval_multi: false
 ```
-    <root>
-    |    -  alignment
-    |    -  configs
-    |    -  dataloaders
-    |    -  results
-               |    -     pretrain
-                              |      -  config.yaml
-    ...
-    |    -  train_t5.py  
+The template config file for finetune :
+```shell
+HIDDEN_CHANNEL: 32
+OUT_CHANNEL: 128
+TRANSFORMATION:
+  REDUCTION_POLICY: 'TIME_POOL'
+TASK:
+  PRETRAIN: false
+WEIGHT_PATH: '{The PATH of MotionExpert}/MotionExpert/results/pretrain/pretrain_checkpoints/checkpoint_epoch_00008.pth'
+DATA: 
+  TRAIN: '{The PATH of the finetune training dataset}'
+  TEST: '{The PATH of the finetune testing dataset}'
+  BATCH_SIZE: 16
+OPTIMIZER:
+  LR: 1e-4
+  MAX_EPOCH: 50
+  WARMUP_STEPS: 5000
+BRANCH: 1
+LOGDIR: ./results/finetune
+args:
+  eval_multi: false
 ```
-Make sure to change the ```LOGDIR``` path in config.yaml to the related path from repo root.
+Create the directory `results` in the directory `{The PATH of MotionExpert}/MotionExpert`.
+
+### Pretrain
+Step 1 : create the `pretrain` directory.
+
+Step 2 : Put the `config.yaml` (for example : The template config file for pretrain) `pretrain` directory.
+
+Step 3 : After pretrain, the `pretrain_checkpoints` directory will be created automatically like the following :
+
+```
+Motion Expert
+    | - results
+        | - pretrain
+            | -  pretrain_checkpoints
+                | - ...
+            | -  config.yaml 
+```
+For the users : 
+
+After suspending the training, it will continue training from the last epoch next time.
+
+For the developers : 
+
+If you want to **restart** the whole training process, you need to delete whole `pretrain_checkpoints` directory, otherwise it training from the last epoch next time.
 
 ### Finetuning
+Step 1 : create the `finetune` directory.
+
+Step 2 : create the `pretrain_checkpoints` directory.
+
+Step 3 : Put the pretrained checkpoint file (for example : checkpoint_epoch_00008.pth) in `pretrain_checkpoints` directory.
+
+Step 4 : Put the `config.yaml` (for example : The template config file for finetune) `finetune` directory.
+
+Step 5 : After finetuning, the `checkpoints` directory will be created automatically like the following :
+
+```
+Motion Expert
+    | - results
+        | - finetune
+            | - checkpoints
+                | ...
+            | - pretrain_checkpoints
+                | - checkpoint_epoch_00008.pth
+            | - config.yaml 
+```
 
 Additionally, if you are finetuning from an existing checkpoint, you will have to further create a folder called pretrain_checkpoints, and put the desired checkpoint into that folder.
 
-Example: 
-```
-    <root>
-    |    -  alignment
-    |    -  configs
-    |    -  dataloaders
-    |    -  results
-               |    -     finetune-branch2
-                              |      -  pretrain_checkpoints
-                                                |        -     (put your pretrain checkpoint here) 
-                              |      -  config.yaml
-    ...
-    |    -  train_t5.py  
-```
+For the developers: 
+
+If you want to **restart** the whole training process, you need to delete whole `checkpoints` directory, otherwise it training from the last epoch next time.
+
 
 ## Build
-### Run template
+#### template command
 ```shell
 $ torchrun --nproc_per_node <specify_how_many_gpus_to_run> main.py --cfg_file <path_to_cfg_file>
 ```
-
 or, if the above yield Error ```detected multiple processes in same device```
 
 ```shell
 $ python -m torch.distributed.launch --nproc_per_node <specify_how_many_gpus_to_run> main.py --cfg_file <path_to_cfg_file>
 ```
-### Run pretrain setting
+#### Run pretrain setting
 ```shell
-$ python -m torch.distributed.launch --nproc_per_node 1 main.py --cfg_file /home/weihsin/projects/MotionExpert/results/0719pretrain/config.yaml
+$ python -m torch.distributed.launch --nproc_per_node 1 main.py --cfg_file {The PATH of MotionExpert}/MotionExpert/results/pretrain/config.yaml
 ```
-### Run finetune setting
+#### Run finetune setting
 ```shell
-$ python -m torch.distributed.launch --nproc_per_node 1 main.py --cfg_file /home/weihsin/projects/MotionExpert/results/0719/config.yaml 
+$ python -m torch.distributed.launch --nproc_per_node 1 main.py --cfg_file {The PATH of MotionExpert}/MotionExpert/results/finetune/config.yaml 
 ```
 
-### Submodule
+### Submodule - VideoAlignment
 
 We use [VideoAlignment](https://github.com/MotionXperts/VideoAlignment) as our submodule to handle branch2 alignment code.
 

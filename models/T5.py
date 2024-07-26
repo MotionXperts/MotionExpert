@@ -97,7 +97,7 @@ class SimpleT5Model(nn.Module):
                     standard[i][k][j] = keypoints[i][k][0]
         return standard
     
-    def get_transforma_feature(self, stagcn_embedding, difference_embedding):
+    def get_transformation_feature(self, stagcn_embedding, difference_embedding):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         concatenate_embedding = torch.cat([stagcn_embedding,difference_embedding.to(device)],dim=-1)
         transform_embedding = self.transformation(concatenate_embedding)
@@ -139,7 +139,7 @@ class SimpleT5Model(nn.Module):
                     concatenation.append(torch.concat([b,s],dim=-1))
                 aligned_embedding = torch.stack(concatenation,dim=0) ## B x T x 22 x (512+512)
             '''
-        transform_embedding = self.get_transforma_feature(stagcn_embedding,difference_embedding)
+        transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding)
         
         return self.t5(inputs_embeds=transform_embedding.contiguous(), attention_mask=input_embedding_mask, decoder_input_ids=decoder_input_ids, labels=labels.contiguous())        
     
@@ -181,7 +181,7 @@ class SimpleT5Model(nn.Module):
                     concatenation.append(torch.concat([b,s],dim=-1))
                 aligned_embedding = torch.stack(concatenation,dim=0) ## B x T x 22 x (512+512)
             '''
-        transform_embedding = self.get_transforma_feature(stagcn_embedding,difference_embedding)
+        transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding)
         generated_ids = self.t5.generate( inputs_embeds             = transform_embedding, 
                                           attention_mask            = input_embedding_mask,
                                           decoder_input_ids         = decoder_input_ids, 
