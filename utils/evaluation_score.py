@@ -30,7 +30,7 @@ def calculate_scores(predictions,gts):
         score_results["bertscore"] = F1.mean().item()
         return score_results
 def gts():
-    pkl_file = "/home/c1l1mo/projects/VideoAlignment/result/scl_skating_long_50/output_test_label_para6.pkl"
+    pkl_file = "/home/andrewchen/MotionGPT_v2/HumanML3D/HumanML3D/test.pkl"
     groud_truth = {}
     with open(pkl_file, 'rb') as f:
         data_list = pickle.load(f)
@@ -43,10 +43,10 @@ def gts():
 
 def main():
     groud_truth = gts()
-    path_name = "/home/weihsin/projects/MotionExpert_prtrain_gt.json"
-    '''
+    path_name = "/home/weihsin/projects/MotionExpert/results/pretrainAttention/Metrics_pretrainAttention.json"
+    
     All_file = {}
-    folder_path = "/home/weihsin/projects/MotionExpert/STAGCN_output_local_new"
+    folder_path = "/home/weihsin/projects/MotionExpert/results/pretrainAttention/jsons"
     for file_name in os.listdir(folder_path):
         if file_name.endswith('.json') and file_name.startswith('results_epoch'):
             file_path = os.path.join(folder_path, file_name)
@@ -57,8 +57,6 @@ def main():
                    if k == 'standard' :
                         print("standard")
                         continue
-                   if 'Motion Instruction : ' in v:
-                       v = v.replace('Motion Instruction : ', '')
                    predictions[k] = v
                 All_file[file_name] = calculate_scores(predictions,groud_truth)
     '''
@@ -75,9 +73,9 @@ def main():
                        v = v.replace('Motion Instruction : ', '')
                    predictions[k] = v
         All_file['TM2T'] = calculate_scores(predictions,groud_truth)
+    '''
     #All_file 先用 bertscore sort 再用其他的 bleu1, bleu4, rouge, cider
     All_file = dict(sorted(All_file.items(), key=lambda item: item[1]['bertscore'], reverse=True))
-    path_name = "/home/weihsin/projects/TM2T_score.json"
     with open(path_name, 'w') as f:
         json.dump(All_file, f, indent=4)
     

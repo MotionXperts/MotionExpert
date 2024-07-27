@@ -147,7 +147,7 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
         # Make sure predictions and gts are in the same order
         predictions = dict(sorted(predictions.items()))
         # Del standard in gts since there is no standard in predictions
-        del gts['standard']
+        if 'standard' in gts: del gts['standard']
         gts = dict(sorted(gts.items()))
 
         predictions = list(predictions.values())

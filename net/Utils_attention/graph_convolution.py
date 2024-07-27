@@ -2,8 +2,9 @@ import torch
 import torch.nn as nn
 ''' Spatial Temporal Graph Convolution Block '''
 class Stgc_block(nn.Module):
-    def __init__(self, in_channels, out_channels, stride, s_kernel_size, t_kernel_size, dropout, residual, A_size, bias=True, use_att_A=False, num_att_A=0):
+    def __init__(self, in_channels, out_channels, stride, s_kernel_size, t_kernel_size, dropout, residual, A_size, PRETRAIN_SETTING, bias=True, use_att_A=False, num_att_A=0):
         super().__init__()
+        self.PRETRAIN_SETTING = PRETRAIN_SETTING
 
         # Spatial Graph Convolution
         if not use_att_A:
@@ -12,7 +13,16 @@ class Stgc_block(nn.Module):
                             s_kernel_size=s_kernel_size,
                             bias=bias)
         else:
-            self.sgc = A_GC(in_channels=in_channels,
+            if self.PRETRAIN_SETTING == 'STAGCN':
+                self.sgc = S_GC_att_A(in_channels=in_channels,
+                                  out_channels=out_channels,
+                                  s_kernel_size=s_kernel_size,
+                                  num_att_A=num_att_A,
+                                  bias=bias)
+                
+            # PRETRAIN_SETTING : 'Attention':
+            else : 
+                self.sgc = A_GC(in_channels=in_channels,
                                   out_channels=out_channels,
                                   s_kernel_size=s_kernel_size,
                                   num_att_A=num_att_A,
@@ -24,11 +34,13 @@ class Stgc_block(nn.Module):
         # Temporal Graph Convolution unit
         self.tgc = nn.Sequential(nn.BatchNorm2d(out_channels),
                                  nn.ReLU(),
-                                 nn.Conv2d(out_channels,
-                                           out_channels,
-                                           (t_kernel_size, 1), # (temporal kernel size dimension, spatial kernel size dimension)
-                                           (stride, 1),        # (temporal stride dimension, spatial stride dimension)
-                                           ((t_kernel_size - 1) // 2, 0), # (temporal padding kernel size, spatial padding kernel size)
+                                 nn.Conv2d(out_channels, out_channels,
+                                           # (temporal kernel size dimension, spatial kernel size dimension)
+                                           (t_kernel_size, 1), 
+                                           # (temporal stride dimension, spatial stride dimension)
+                                           (stride, 1),        
+                                           # (temporal padding kernel size, spatial padding kernel size)
+                                           ((t_kernel_size - 1) // 2, 0), 
                                            bias=bias),
                                  nn.BatchNorm2d(out_channels),
                                  nn.Dropout(dropout),
@@ -100,10 +112,13 @@ class S_GC(nn.Module):
         x = self.conv(x)  
         n, kc, t, v = x.size()
         x = x.view(n, self.s_kernel_size, kc//self.s_kernel_size, t, v)
-        x = torch.einsum('nkctv,kvw->nctw', (x, A))     # 7 * 22 * 22
+        x = torch.einsum('nkctv,kvw->nctw', (x, A)) # 7 * 22 * 22
         return x.contiguous()
-
-''' Spatial Graph and Attention Graph Convolution ''' 
+    
+''' 
+    PRETRAIN_SETTING : 'STAGCN' 
+    Spatial Graph and Attention Graph Convolution
+'''
 class S_GC_att_A(nn.Module):
     def __init__(self,
                  in_channels,
@@ -132,15 +147,18 @@ class S_GC_att_A(nn.Module):
         x1 = x[:, :self.s_kernel_size-self.num_att_A, :, :, :]
         x2 = x[:, -self.num_att_A:, :, :, :]
         '''
-            x1 : batchsize, # of multihead_STGCN , channel, sequence length, vertex
-            x2 : batchsize, # of attention_head, channel, sequence length, vertex
+            x1 : [batchsize, # of multihead_STGCN , channel, sequence length, vertex]
+            x2 : [batchsize, # of attention_head, channel, sequence length, vertex]
         '''
         x1 = torch.einsum('nkctv,kvw->nctw', (x1, A))       
         x2 = torch.einsum('nkctv,nkvw->nctw', (x2, att_A))  
         x_sum = x1 + x2
         return x_sum.contiguous()
 
-''' Attention Graph Convolution '''
+''' 
+    PRETRAIN_SETTING : 'Attention' 
+    Attention Graph Convolution
+'''
 class A_GC(nn.Module):
     def __init__(self,
                  in_channels,
