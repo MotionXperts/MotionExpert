@@ -24,10 +24,15 @@ In case of installation of language_evaluation, you need to install from github 
 
 ### Dataset
 
-
 ### Config File
-
 The template config file for pretrain :
+
+`TASK.PRETRAIN_SETTING` can choose to use `STAGCN` or `Attention`.
+The first one is the implementation of [Spatial Temporal Attention Graph Convolutional Networks with Mechanics-Stream for Skeleton-based](https://openaccess.thecvf.com/content/ACCV2020/papers/Shiraki_Spatial_Temporal_Attention_Graph_Convolutional_Networks_with_Mechanics-Stream_for_Skeleton-based_ACCV_2020_paper.pdf) and the second one is Ours implementation.
+
+`TASK.PRETRAIN_DIFFERENCE` can choose to be `true` or `false`. 
+If the `TASK.PRETRAIN_DIFFERENCE` is `true`, the model will use the difference information.
+
 ```shell
 HIDDEN_CHANNEL: 32
 OUT_CHANNEL: 128
@@ -35,6 +40,8 @@ TRANSFORMATION:
   REDUCTION_POLICY: 'TIME_POOL'
 TASK:
   PRETRAIN: true
+  PRETRAIN_SETTING: 'Attention'
+  PRETRAIN_DIFFERENCE : true
 DATA: 
   TRAIN: '{The PATH of the pretrain training dataset}'
   TEST: '{The PATH of the pretrain testing dataset}'
@@ -56,6 +63,8 @@ TRANSFORMATION:
   REDUCTION_POLICY: 'TIME_POOL'
 TASK:
   PRETRAIN: false
+  PRETRAIN_SETTING: 'Attention'
+  PRETRAIN_DIFFERENCE : true
 WEIGHT_PATH: '{The PATH of MotionExpert}/MotionExpert/results/pretrain/pretrain_checkpoints/checkpoint_epoch_00008.pth'
 DATA: 
   TRAIN: '{The PATH of the finetune training dataset}'
