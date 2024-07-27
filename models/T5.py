@@ -40,7 +40,8 @@ class SimpleT5Model(nn.Module):
             standard_input_embedding = keypoints
             for i in range(0,keypoints.shape[0]):
                 for j in range(1,seq_len[i]):
-                    standard_input_embedding[i][:][j] = keypoints[i][:][0]
+                    for k in range(0,6):
+                        standard_input_embedding[i][k][j] = keypoints[i][k][0]
         else : 
             standard_input_embedding = []
             for i in len(std_start_batch):

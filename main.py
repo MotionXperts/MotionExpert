@@ -1,4 +1,5 @@
 import os,sys
+import torch.cuda
 os.environ['NUMEXPR_MAX_THREADS'] = '16'
 os.environ['TOKENIZERS_PARALLELISM'] = "false"
 import warnings
@@ -104,6 +105,7 @@ def main():
         if d['video_name'] != 'standard':
             name_list.append(d['video_name'])    
 
+    # Distributed Training
     dist.init_process_group(backend='nccl', init_method='env://')
     if dist.get_rank() == 0:
         store = dist.TCPStore("127.0.0.1", 8080, dist.get_world_size(), True,timedelta(seconds=30))
@@ -111,16 +113,14 @@ def main():
         store = dist.TCPStore("127.0.0.1", 8080, dist.get_world_size(), False,timedelta(seconds=30))
         
     seed_everything(42)
-    model = model.cuda()
-
-
-    if torch.__version__ == '2.2.2':
-        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.local-rank],
-                                                    output_device=args.local-rank, find_unused_parameters=True)
-    else : 
-        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.local_rank],
-                                                    output_device=args.local_rank, find_unused_parameters=True)
     
+    # Distributed Training
+    id = dist.get_rank()
+    device = id % torch.cuda.device_count()
+    model = model.to(device)
+    torch.cuda.set_device(id)
+    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[device], output_device=device, find_unused_parameters=True)
+
     scaler = torch.cuda.amp.GradScaler()
     optimizer = AdamW(model.parameters(), lr=float(cfg.OPTIMIZER.LR))
     summary_writer = SummaryWriter(os.path.join(cfg.LOGDIR, 'train_logs'))

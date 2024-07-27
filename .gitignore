@@ -23,3 +23,4 @@ output
 output_finetune
 output_Attention
 output_STAGCN
+output_pretrainSTAGCN_difference
