@@ -1,6 +1,6 @@
 import os,sys
 import torch.cuda
-os.environ['NUMEXPR_MAX_THREADS'] = '16'
+os.environ['NUMEXPR_MAX_THREADS'] = '2'
 os.environ['TOKENIZERS_PARALLELISM'] = "false"
 import warnings
 warnings.filterwarnings("ignore",category=UserWarning)

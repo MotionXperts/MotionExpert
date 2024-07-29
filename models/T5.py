@@ -38,9 +38,13 @@ class SimpleT5Model(nn.Module):
     def get_standard_feature(self,keypoints,seq_len, pretrain, standard, std_start_batch, std_end_batch):
         if pretrain :
             standard_input_embedding = keypoints
+            # batch size
             for i in range(0,keypoints.shape[0]):
+                # number of frames
                 for j in range(1,seq_len[i]):
+                    # joints coordinates (3) + bones coordinates (3)
                     for k in range(0,6):
+                        # copy the 22 joints of every coordinate
                         standard_input_embedding[i][k][j] = keypoints[i][k][0]
         else : 
             standard_input_embedding = []
