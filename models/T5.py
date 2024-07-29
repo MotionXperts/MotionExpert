@@ -3,7 +3,6 @@ from torch import nn
 from visualize_model import model_view, head_view
 from .STAGCN import STA_GCN
 from .Transformation import Transformation
-from VideoAlignment.model.transformer.transformer import CARL
 import torch,os
 import torch.distributed as dist
 
@@ -25,14 +24,15 @@ class SimpleT5Model(nn.Module):
         # Distributed Training
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    '''
-    # - get_alignment_feature()
-    # @ standard : (1, T, 22, 512) 
-    # @ user : (batch_size, T, 22, 512) 
-    # @ return : batchsize, vertex(22), seq_length, channel (512)
-    '''  
-    def get_difference_feature(self, user, standard):      
-        batch_diff = user-standard
+    def get_difference_feature(self, user, standard, DIFFERENCE_SETTING):     
+        if DIFFERENCE_SETTING == 'Subtraction':
+            batch_diff = user-standard 
+
+        # DIFFERENCE_SETTING == 'Padding':
+        else :
+            batch_diff = torch.zeros(user.shape[0], user.shape[1], user.shape[2], user.shape[3])
+
+        # batch_diff : [batchsize, seq_length, vertex(22), channel (512)]
         return batch_diff
 
     def get_standard_feature(self,keypoints,seq_len, pretrain, standard, std_start_batch, std_end_batch):
@@ -83,7 +83,7 @@ class SimpleT5Model(nn.Module):
                     #    standard_embedding, _ , _ = self.stagcn(standard)  
                     #    standard_embedding = self.get_standard_feature(None, None, self.cfg.TASK.PRETRAIN, standard_embedding, std_start_batch, std_end_batch)                  
 
-                difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding)
+                difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding, self.cfg.TASK.DIFFERENCE_SETTING)
                 assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {difference_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
                 
                 transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
@@ -115,7 +115,7 @@ class SimpleT5Model(nn.Module):
                     #    standard_embedding, _ , _ = self.stagcn(standard)  
                     #    standard_embedding = self.get_standard_feature(None, None, self.cfg.TASK.PRETRAIN, standard_embedding, std_start_batch, std_end_batch)                  
 
-                difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding)
+                difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding, self.cfg.TASK.DIFFERENCE_SETTING)
                 assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {stagcn_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
                 
                 transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
