@@ -14,13 +14,15 @@ class SimpleT5Model(nn.Module):
         self.cfg    = cfg
         self.stagcn = STA_GCN( num_class=1024, in_channels=6, residual=True, dropout=0.5, t_kernel_size=9, layout='SMPL', strategy='spatial', hop_size=3, num_att_A=4, PRETRAIN_SETTING = self.cfg.TASK.PRETRAIN_SETTING )
         
-        if self.cfg.TASK.PRETRAIN_DIFFERENCE:
+        if self.cfg.TASK.PRETRAIN_DIFFERENCE or hasattr(self.cfg.TASK,'DIFFERENCE_TYPE') and self.cfg.TASK.DIFFERENCE_TYPE== 'RGB':
             in_channel = 1024
         else : 
             in_channel = self.stagcn.output_channel
 
         self.transformation = Transformation(cfg,in_channel ,t5_channel=768)
         self.t5 = T5ForConditionalGeneration.from_pretrained('t5-base', config=config) 
+
+        self.RGB_lifting = nn.Linear(128, 512)
         # Distributed Training
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
@@ -57,6 +59,11 @@ class SimpleT5Model(nn.Module):
         if PRETRAIN_DIFFERENCE:
             concatenate_embedding = torch.cat([stagcn_embedding,difference_embedding.to(device)],dim=-1)
             transform_embedding = self.transformation(concatenate_embedding)
+        elif self.cfg.TASK.DIFFERENCE_TYPE == 'RGB':
+            difference_embedding = self.RGB_lifting(difference_embedding)
+            difference_embedding = difference_embedding[:,:(stagcn_embedding).shape[1],:,:]
+            concatenate_embedding = torch.cat([stagcn_embedding,difference_embedding.to(device)],dim=-1)
+            transform_embedding = self.transformation(concatenate_embedding)
         else :
             transform_embedding = self.transformation(stagcn_embedding)
         return transform_embedding
@@ -69,6 +76,7 @@ class SimpleT5Model(nn.Module):
         seq_len              = kwargs['seq_len']
         decoder_input_ids    = kwargs['decoder_input_ids']
         labels               = kwargs['labels']
+        subtraction = kwargs['subtraction']
         self.stagcn.train()
         stagcn_embedding, _, _ = self.stagcn(input_embedding)
         if hasattr(self.cfg,"BRANCH") and self.cfg.BRANCH != 0: 
@@ -87,7 +95,10 @@ class SimpleT5Model(nn.Module):
                 assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {difference_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
                 
                 transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
-
+            elif hasattr(self.cfg.TASK,'DIFFERENCE_TYPE') and self.cfg.TASK.DIFFERENCE_TYPE== 'RGB':
+                difference_embedding = subtraction ## batch size, seq length, 1, 128
+                difference_embedding = subtraction.unsqueeze(2).expand(-1,-1,22,-1) ## batch size, seq length, 22, 128
+                transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
             else: 
                 transform_embedding = self.get_transformation_feature(stagcn_embedding,None,self.cfg.TASK.PRETRAIN_DIFFERENCE)
 
@@ -101,7 +112,7 @@ class SimpleT5Model(nn.Module):
         seq_len = kwargs['seq_len']
         decoder_input_ids = kwargs['decoder_input_ids']
         tokenizer = kwargs['tokenizer']
-
+        subtraction = kwargs['subtraction']
         stagcn_embedding, attention_node, attention_matrix = self.stagcn(input_embedding)
         if hasattr(self.cfg,"BRANCH") and self.cfg.BRANCH !=0: 
 
@@ -119,7 +130,10 @@ class SimpleT5Model(nn.Module):
                 assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {stagcn_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
                 
                 transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
-           
+            elif hasattr(self.cfg.TASK,'DIFFERENCE_TYPE') and self.cfg.TASK.DIFFERENCE_TYPE== 'RGB':
+                difference_embedding = subtraction ## batch size, seq length, 1, 128
+                difference_embedding = subtraction.unsqueeze(2).expand(-1,-1,22,-1) ## batch size, seq length, 22, 128
+                transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
             else :
                 transform_embedding = self.get_transformation_feature(stagcn_embedding,None,self.cfg.TASK.PRETRAIN_DIFFERENCE)
         

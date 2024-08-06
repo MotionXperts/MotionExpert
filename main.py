@@ -10,7 +10,7 @@ from transformers import AutoTokenizer, AdamW, get_linear_schedule_with_warmup
 from utils.parser import parse_args,load_config
 from tqdm import tqdm
 import numpy as np
-from pytorch_lightning.utilities.seed import seed_everything
+from pytorch_lightning import seed_everything
 import pickle , sys , logging
 # Add videoalignment to sys path
 sys.path.append(os.path.join('/home/weihsin/projects/MotionExpert','VideoAlignment'))
@@ -36,7 +36,7 @@ def train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer
     if dist.get_rank() == 0:
         train_dataloader = tqdm(train_dataloader,total=len(train_dataloader), desc='Training')
     for index,batch in enumerate(train_dataloader):
-        (video_name,src_batch,keypoints_mask_batch,standard,seq_len,label_batch) = batch
+        (video_name,src_batch,keypoints_mask_batch,standard,seq_len,label_batch,subtraction) = batch
         model.zero_grad()
         optimizer.zero_grad()
         tgt_batch = Tokenizer(label_batch, return_tensors="pt", padding="max_length", truncation=True, max_length=50)['input_ids'].to(src_batch.device)
@@ -49,7 +49,9 @@ def train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer
                         "standard": standard.to(model.device),
                         "seq_len": seq_len.to(model.device),
                         "decoder_input_ids": tgt_input.to(model.device),
-                        "labels": tgt_label.to(model.device)}
+                        "labels": tgt_label.to(model.device),
+                        "subtraction": subtraction.to(model.device)
+                        }
             '''
             ## branch 2
             if not ((hasattr(cfg,'BRANCH') and cfg.BRANCH == 1) or (cfg.TRANSFORMATION.REDUCTION_POLICY == 'TIME_POOL')):
@@ -108,9 +110,9 @@ def main():
     # Distributed Training
     dist.init_process_group(backend='nccl', init_method='env://')
     if dist.get_rank() == 0:
-        store = dist.TCPStore("127.0.0.1", 8080, dist.get_world_size(), True,timedelta(seconds=30))
+        store = dist.TCPStore("127.0.0.1", 2221, dist.get_world_size(), True,timedelta(seconds=30))
     else:
-        store = dist.TCPStore("127.0.0.1", 8080, dist.get_world_size(), False,timedelta(seconds=30))
+        store = dist.TCPStore("127.0.0.1", 2221, dist.get_world_size(), False,timedelta(seconds=30))
         
     seed_everything(42)
     
@@ -145,7 +147,7 @@ def main():
             
             train_dataloader.sampler.set_epoch(epoch)
             train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer, epoch,logger)
-            if (epoch+1) < 10 or (epoch+ 1) % 5 == 0:
+            if (epoch+ 1) % 5 == 0:
 
                 # Distributed Training
                 if dist.get_rank() == 0:

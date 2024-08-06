@@ -10,7 +10,7 @@ from torch.nn.utils.rnn import pad_sequence
 import numpy as np
 
 def collate_fn(batch):
-    video_name, keypoints, keypoints_mask, standard, seq_len, label = zip(*batch)
+    video_name, keypoints, keypoints_mask, standard, seq_len, label, subtraction = zip(*batch)
     def collect_video_from_batch(batch):
         seq = []
         # convert to [number of frame , coordinates(6), joints(22)]
@@ -28,20 +28,19 @@ def collate_fn(batch):
 
     standard = torch.stack(standard,dim=0)
     seq_len = torch.stack(seq_len,dim=0)
+    subtraction =pad_sequence(subtraction,batch_first=True,padding_value=0) 
 
-    return (video_name), padded_keypoints, keypoints_mask, (standard), (seq_len), (label), 
+    return (video_name), padded_keypoints, keypoints_mask, (standard), (seq_len), (label), subtraction
 
-def construct_dataloader(split,cfg):
+def construct_dataloader(split,cfg,pkl_file):
     if split == 'train' : 
-        pkl_file = cfg.DATA.TRAIN
         batch_size = cfg.DATA.BATCH_SIZE
     elif split == 'test' :
-        pkl_file = cfg.DATA.TEST
-        batch_size = cfg.DATA.BATCH_SIZE
-        if(not cfg.TASK.PRETRAIN):
-            batch_size = 1
+        batch_size = cfg.DATA.BATCH_SIZE * 5
+        # if(not cfg.TASK.PRETRAIN):
+        #     batch_size = 1
 
-    dataset = DatasetLoader(cfg.TASK.PRETRAIN,pkl_file)
+    dataset = DatasetLoader(cfg,cfg.TASK.PRETRAIN,pkl_file)
 
     if split == 'train':
         # Distributed Training

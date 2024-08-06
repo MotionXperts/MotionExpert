@@ -33,16 +33,21 @@ def load_checkpoint(cfg,model,optimizer,name=None):
         checkpoint_dir = os.path.join(logdir, "pretrain_checkpoints")
         # os.makedirs(checkpoint_dir, exist_ok=True)
         # assert os.path.exists(checkpoint_dir), f"Checkpoint dir {checkpoint_dir} not found"
-    if os.path.exists(checkpoint_dir):
-        checkpoints = os.listdir(checkpoint_dir)
-        if len(checkpoints) > 0:
+    if os.path.exists(checkpoint_dir) or hasattr(cfg,'WEIGHT_PATH'):
+        if os.path.exists(checkpoint_dir):
+            checkpoints = os.listdir(checkpoint_dir)
+        else:
+            checkpoints = []
+        if len(checkpoints) > 0 or hasattr(cfg,'WEIGHT_PATH'):
             # Sort the files in checkpoint dir
-            if name is not None:
-                checkpoint_path = name
-                checkpoint = torch.load(checkpoint_path)
-            else:
+            if len(checkpoints) > 0: ## current checkpoint should have higher priority
                 checkpoint_path = natsorted(checkpoints)[-1]
                 checkpoint = torch.load(os.path.join(checkpoint_dir,checkpoint_path))
+            elif name is not None or hasattr(cfg,'WEIGHT_PATH'):
+                checkpoint_path = name if name is not None else cfg.WEIGHT_PATH
+                checkpoint = torch.load(checkpoint_path)
+            else:
+                raise ValueError("No checkpoint found. No weight path provided.")
         
             newckpt = {'model_state':{}}
             for k,v in checkpoint["model_state"].items():

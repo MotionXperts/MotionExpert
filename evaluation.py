@@ -3,7 +3,7 @@ import os,json,sys
 sys.path.append(os.path.join(os.getcwd(),'VideoAlignment'))
 import torch
 import torch.distributed as dist
-from pytorch_lightning.utilities.seed import seed_everything
+from pytorch_lightning import seed_everything
 from utils.parser import parse_args,load_config
 from cider import readJSON, readPickle, getGTCaptions, BLEUScore, CIDERScore
 from dataloaders import construct_dataloader
@@ -22,7 +22,7 @@ from nlgmetricverse import NLGMetricverse,load_metric
 
 logger = logging.getLogger(__name__)
 
-def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,store=None,name_list = None,logger=None):       
+def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,store=None,name_list = None,logger=None, eval_name=""):       
     
     assert logger is not None, "Please provide logger object"
     Tokenizer = AutoTokenizer.from_pretrained('t5-base', use_fast=True)
@@ -37,7 +37,7 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
         if dist.get_rank() == 0:
             eval_dataloader = tqdm(eval_dataloader, total=len(eval_dataloader), desc='Evaluating')
         for index,batch in enumerate(eval_dataloader):
-            (video_name,src_batch,keypoints_mask_batch,standard,seq_len,label_batch) = batch
+            (video_name,src_batch,keypoints_mask_batch,standard,seq_len,label_batch,subtraction) = batch
             # If evaluating multiple checkpoints, dont do inference but directly load the result jsons
             if cfg.args.eval_multi: 
                 break
@@ -57,10 +57,12 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
                         "standard"              : standard.to(model.device),
                         "seq_len"               : seq_len.to(model.device),
                         "decoder_input_ids"     : decoder_input_ids.to(model.device),
+                        "subtraction"           : subtraction.to(model.device),
                         "tokenizer"             : Tokenizer,
                         # For visualizing attention
                         "result_dir"            : cfg.LOGDIR,
-                        "epoch"                 : epoch }
+                        "epoch"                 : epoch 
+                        }
             
             with torch.cuda.amp.autocast():
                 seed_everything(42) 
@@ -107,11 +109,11 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
             results[name] = store.get(name).decode('utf-8')
         
         if not cfg.args.eval_multi:
-            with open(cfg.JSONDIR+'/results_epoch'+str(epoch)+'.json', 'w') as f:
+            with open(cfg.JSONDIR+'/results_epoch'+eval_name+str(epoch)+'.json', 'w') as f:
                 json.dump(results, f,indent = 1)
-            with open(cfg.JSONDIR+'/att_node_results_epoch'+str(epoch)+'.json', 'w') as f:
+            with open(cfg.JSONDIR+'/att_node_results_epoch'+eval_name+str(epoch)+'.json', 'w') as f:
                 json.dump(att_node_results, f)
-            with open(cfg.JSONDIR+'/att_A_results_epoch'+str(epoch)+'.json', 'w') as f:
+            with open(cfg.JSONDIR+'/att_A_results_epoch'+eval_name+str(epoch)+'.json', 'w') as f:
                 json.dump(att_A_results, f)
         
         if cfg.args.eval_multi:
@@ -176,30 +178,34 @@ def main():
 
     if not cfg.TASK.PRETRAIN:
         assert hasattr(cfg,'BRANCH'), "BRANCH should be defined in config for finetuning."
-        cfg.alignment_cfg = load_config(cfg.ALIGNMENT)
+        # cfg.alignment_cfg = load_config(cfg.ALIGNMENT)
 
 
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(filename)s %(lineno)d: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', filename=os.path.join(cfg.LOGDIR,'stdout.log'))
     model = SimpleT5Model(cfg)
     
+    pickle_file = cfg.DATA.TRAIN
     # Maintain a name list in main process
-    with open(cfg.DATA.TEST, 'rb') as f:
+    with open(pickle_file, 'rb') as f:
         data = pickle.load(f)
+
     name_list = []
     for d in data:
         if d['video_name'] != 'standard':
             name_list.append(d['video_name'])
 
-    # Distributed Training
     dist.init_process_group(backend='nccl', init_method='env://')
-    torch.cuda.set_device(args.localrank)
+    id = dist.get_rank()
+    device = id % torch.cuda.device_count()
+    # Distributed Training
+    torch.cuda.set_device(id)
 
     model = model.cuda()
 
     # Distributed Training
     model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
-    model = torch.nn.parallel.DistributedDataParallel(  model, device_ids=[args.localrank],
-                                                        output_device=args.localrank)
+    model = torch.nn.parallel.DistributedDataParallel(  model, device_ids=[device],
+                                                        output_device=device        )
     optimizer = AdamW(model.parameters(), lr=float(cfg.OPTIMIZER.LR))
     summary_writer = SummaryWriter(os.path.join(cfg.LOGDIR, 'train_logs'))
 
@@ -208,7 +214,7 @@ def main():
         store = dist.TCPStore("127.0.0.1", 1238, dist.get_world_size(), True, timedelta(seconds=30))
     else:
         store = dist.TCPStore("127.0.0.1", 1238, dist.get_world_size(), False, timedelta(seconds=30))
-    val_dataloader = construct_dataloader('val',cfg.DATA.TEST,cfg.TASK.PRETRAIN,5,alignment_cfg=cfg.alignment_cfg)
+    val_dataloader  =  construct_dataloader('test' ,cfg,pickle_file)
     summary_writer = SummaryWriter()
     
     if args.eval_multi:
@@ -221,7 +227,7 @@ def main():
         checkpoints = [args.ckpt]
     for ckpt in checkpoints:
         epoch = load_checkpoint(cfg,model,optimizer,ckpt)
-        eval(cfg,val_dataloader, model,epoch,summary_writer,store=store,name_list=name_list,logger=logger)
+        eval(cfg,val_dataloader, model,epoch,summary_writer,store=store,name_list=name_list,logger=logger,eval_name='train')
     dist.destroy_process_group()
 
 if __name__ == "__main__":

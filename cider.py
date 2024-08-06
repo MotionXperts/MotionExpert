@@ -27,7 +27,7 @@ def getGTCaptions(annotations):
     video_name_to_gts = defaultdict(list)
     for item in annotations:
         video_name = item['video_name']
-        output_sentence = item['labels']
+        output_sentence = item['revised_label']
         video_name_to_gts[video_name] = output_sentence
     return video_name_to_gts
 
