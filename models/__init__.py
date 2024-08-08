@@ -41,12 +41,12 @@ def load_checkpoint(cfg,model,optimizer,name=None):
             checkpoints = []
         if len(checkpoints) > 0 or hasattr(cfg,'WEIGHT_PATH'):
             # Sort the files in checkpoint dir
-            if name is not None or hasattr(cfg,'WEIGHT_PATH'):
-                checkpoint_path = name if name is not None else cfg.WEIGHT_PATH
-                checkpoint = torch.load(checkpoint_path)
-            elif len(checkpoints) > 0: ## current checkpoint should have higher priority
+            if len(checkpoints) > 0: ## current checkpoint should have higher priority
                 checkpoint_path = natsorted(checkpoints)[-1]
                 checkpoint = torch.load(os.path.join(checkpoint_dir,checkpoint_path))
+            elif name is not None or hasattr(cfg,'WEIGHT_PATH'):
+                checkpoint_path = name if name is not None else cfg.WEIGHT_PATH
+                checkpoint = torch.load(checkpoint_path)
             else:
                 raise ValueError("No checkpoint found. No weight path provided.")
         

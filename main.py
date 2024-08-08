@@ -112,9 +112,9 @@ def main():
     # Distributed Training
     dist.init_process_group(backend='nccl', init_method='env://')
     if dist.get_rank() == 0:
-        store = dist.TCPStore("127.0.0.1", 5050, dist.get_world_size(), True,timedelta(seconds=30))
+        store = dist.TCPStore("127.0.0.1", 8081, dist.get_world_size(), True,timedelta(seconds=30))
     else:
-        store = dist.TCPStore("127.0.0.1", 5050, dist.get_world_size(), False,timedelta(seconds=30))
+        store = dist.TCPStore("127.0.0.1", 8081, dist.get_world_size(), False,timedelta(seconds=30))
         
     seed_everything(42)
     
