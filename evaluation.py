@@ -22,7 +22,7 @@ from nlgmetricverse import NLGMetricverse,load_metric
 
 logger = logging.getLogger(__name__)
 
-def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,store=None,name_list = None,logger=None, eval_name=""):       
+def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,store=None,name_list = None,logger=None, eval_name="",pkl_file=None):       
     
     assert logger is not None, "Please provide logger object"
     Tokenizer = AutoTokenizer.from_pretrained('t5-base', use_fast=True)
@@ -59,6 +59,7 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
                         "decoder_input_ids"     : decoder_input_ids.to(model.device),
                         "subtraction"           : subtraction.to(model.device),
                         "tokenizer"             : Tokenizer,
+                        "labels"                 : tgt_label.to(model.device),    
                         # For visualizing attention
                         "result_dir"            : cfg.LOGDIR,
                         "epoch"                 : epoch 
@@ -69,7 +70,10 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
 
                 generated_ids , att_node , att_A = model.module.generate(**inputs)
 
+                # print("Genrated text:" , Tokenizer.decode(generated_ids[0], skip_special_tokens=True, clean_up_tokenization_spaces=True))
+
                 if (hasattr(cfg,'BRANCH') and cfg.BRANCH == 1) or (cfg.TRANSFORMATION.REDUCTION_POLICY == 'TIME_POOL'): 
+                    # print('Label: ', label_batch)
                     inputs['labels'] = tgt_label.to(model.device)                              
                     inputs['decoder_input_ids'] = tgt_input.to(model.device)
                     loss = model(**inputs).loss
@@ -79,7 +83,6 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
             dist.all_reduce(loss, async_op=False)
             reduced_loss = loss / dist.get_world_size()
             loss_list.append(reduced_loss.detach().cpu())
-
             for name, gen_id,label in zip(video_name, generated_ids,label_batch):
                 decoded_text = Tokenizer.decode(gen_id, skip_special_tokens=True, clean_up_tokenization_spaces=True).split(prompt)
                 if len(decoded_text) > 1:
@@ -109,7 +112,8 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
             results[name] = store.get(name).decode('utf-8')
         
         if not cfg.args.eval_multi:
-            with open(cfg.JSONDIR+'/results_epoch'+eval_name+str(epoch)+'.json', 'w') as f:
+            result_json = cfg.JSONDIR+'/results_epoch'+eval_name+str(epoch)+'.json' 
+            with open(result_json, 'w') as f:
                 json.dump(results, f,indent = 1)
             with open(cfg.JSONDIR+'/att_node_results_epoch'+eval_name+str(epoch)+'.json', 'w') as f:
                 json.dump(att_node_results, f)
@@ -119,21 +123,18 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
         if cfg.args.eval_multi:
             predictions = readJSON(cfg.JSONDIR+'/results_epoch'+str(epoch-1)+'.json')
         else:
-            predictions = readJSON(cfg.JSONDIR+'/results_epoch'+str(epoch)+'.json')
+            predictions = readJSON(result_json)
         
-        annotations = readPickle(cfg.DATA.TEST)
+        annotations = readPickle(cfg.DATA.TEST) if pkl_file is None else readPickle(pkl_file)
         
         gts = getGTCaptions(annotations)
         new_gts = {}
         for name in results:
             new_gts[name] = gts[name]
-            # summary_writer.add_text('eval/pred', name +": " + results[name], (epoch+1)*index) ## no index here, think of workarounds
-            # summary_writer.add_text('eval/label', name + ": " +  new_gts[name], (epoch+1)*index)
         gts = new_gts
+
         # Check predictions content is correct
         assert type(predictions) is dict, f"Predictions should be a dictionary but got {type(predictions)}"
-        print("Predictions keys: ",predictions.keys())
-        print("GTS keys: ",gts.keys())
         assert len(predictions.keys()) == len(gts.keys()), f"Predictions keys len should be same as gts keys len, but got {len(predictions.keys())} and {len(gts.keys())}" 
         assert all([type(pred) is str for pred in predictions.values()])
 
@@ -174,7 +175,7 @@ def main():
 
     # Dummy check to avoid overwriting
     cfg_path = os.path.join(cfg.LOGDIR,'config.yaml').replace('./',f'{os.getcwd()}/')
-    assert cfg_path == args.cfg_file, f"config file path should be {cfg_path} but got {args.cfg_file}"
+    # assert cfg_path == args.cfg_file, f"config file path should be {cfg_path} but got {args.cfg_file}"
 
     if not cfg.TASK.PRETRAIN:
         assert hasattr(cfg,'BRANCH'), "BRANCH should be defined in config for finetuning."
@@ -184,15 +185,16 @@ def main():
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(filename)s %(lineno)d: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', filename=os.path.join(cfg.LOGDIR,'stdout.log'))
     model = SimpleT5Model(cfg)
     
-    pickle_file = cfg.DATA.TRAIN
+    pickle_file = cfg.DATA.TEST
+    eval_name = 'train' if 'train' in pickle_file else ''
     # Maintain a name list in main process
     with open(pickle_file, 'rb') as f:
         data = pickle.load(f)
 
     name_list = []
     for d in data:
-        if d['video_name'] != 'standard':
-            name_list.append(d['video_name'])
+        # if d['video_name'] != 'standard':
+        name_list.append(d['video_name'])
 
     dist.init_process_group(backend='nccl', init_method='env://')
     id = dist.get_rank()
@@ -227,7 +229,7 @@ def main():
         checkpoints = [args.ckpt]
     for ckpt in checkpoints:
         epoch = load_checkpoint(cfg,model,optimizer,ckpt)
-        eval(cfg,val_dataloader, model,epoch,summary_writer,store=store,name_list=name_list,logger=logger,eval_name='train')
+        eval(cfg,val_dataloader, model,epoch,summary_writer,store=store,name_list=name_list,logger=logger,eval_name=eval_name,pkl_file=pickle_file)
     dist.destroy_process_group()
 
 if __name__ == "__main__":

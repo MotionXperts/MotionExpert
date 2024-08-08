@@ -50,7 +50,8 @@ def train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer
                         "seq_len": seq_len.to(model.device),
                         "decoder_input_ids": tgt_input.to(model.device),
                         "labels": tgt_label.to(model.device),
-                        "subtraction": subtraction.to(model.device)
+                        "subtraction": subtraction.to(model.device),
+                        "tokenizer": Tokenizer
                         }
             '''
             ## branch 2
@@ -104,15 +105,16 @@ def main():
 
     name_list = []
     for d in data:
-        if d['video_name'] != 'standard':
-            name_list.append(d['video_name'])    
+        name_list.append(d['video_name'])
+        if d['video_name'] == 'standard':
+            print(d['video_name'])
 
     # Distributed Training
     dist.init_process_group(backend='nccl', init_method='env://')
     if dist.get_rank() == 0:
-        store = dist.TCPStore("127.0.0.1", 2221, dist.get_world_size(), True,timedelta(seconds=30))
+        store = dist.TCPStore("127.0.0.1", 5050, dist.get_world_size(), True,timedelta(seconds=30))
     else:
-        store = dist.TCPStore("127.0.0.1", 2221, dist.get_world_size(), False,timedelta(seconds=30))
+        store = dist.TCPStore("127.0.0.1", 5050, dist.get_world_size(), False,timedelta(seconds=30))
         
     seed_everything(42)
     
@@ -127,8 +129,8 @@ def main():
     optimizer = AdamW(model.parameters(), lr=float(cfg.OPTIMIZER.LR))
     summary_writer = SummaryWriter(os.path.join(cfg.LOGDIR, 'train_logs'))
 
-    train_dataloader =  construct_dataloader('train',cfg)
-    test_dataloader  =  construct_dataloader('test' ,cfg)
+    train_dataloader =  construct_dataloader('train',cfg,cfg.DATA.TRAIN)
+    test_dataloader  =  construct_dataloader('test' ,cfg,cfg.DATA.TEST)
 
     max_epoch = cfg.OPTIMIZER.MAX_EPOCH
     scheduler = get_linear_schedule_with_warmup(

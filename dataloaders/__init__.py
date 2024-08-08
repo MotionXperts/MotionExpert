@@ -11,11 +11,11 @@ import numpy as np
 
 def collate_fn(batch):
     video_name, keypoints, keypoints_mask, standard, seq_len, label, subtraction = zip(*batch)
-    def collect_video_from_batch(batch):
+    def collect_video_from_batch(batch, idx=1):
         seq = []
         # convert to [number of frame , coordinates(6), joints(22)]
         for b in batch:
-            seq.append(b[1].permute(1,0,2)) 
+            seq.append(b[idx].permute(1,0,2)) 
         return seq
 
     keypoints = collect_video_from_batch(batch)
@@ -26,11 +26,14 @@ def collate_fn(batch):
     # convert to [Batch size, coordinates(6), number of frame, joints(22)]
     padded_keypoints = padded_keypoints.permute(0,2,1,3) 
 
-    standard = torch.stack(standard,dim=0)
+    # standard = torch.stack(standard,dim=0)
+    standard = collect_video_from_batch(batch, 3)
+    padded_standard = pad_sequence(standard,batch_first=True,padding_value=0) # B , F , coordinates, nodes
+    
     seq_len = torch.stack(seq_len,dim=0)
     subtraction =pad_sequence(subtraction,batch_first=True,padding_value=0) 
-
-    return (video_name), padded_keypoints, keypoints_mask, (standard), (seq_len), (label), subtraction
+    # change standard to padded_standard
+    return (video_name), padded_keypoints, keypoints_mask, (padded_standard), (seq_len), (label), subtraction
 
 def construct_dataloader(split,cfg,pkl_file):
     if split == 'train' : 
@@ -39,6 +42,7 @@ def construct_dataloader(split,cfg,pkl_file):
         batch_size = cfg.DATA.BATCH_SIZE * 5
         # if(not cfg.TASK.PRETRAIN):
         #     batch_size = 1
+    batch_size = 1
 
     dataset = DatasetLoader(cfg,cfg.TASK.PRETRAIN,pkl_file)
 

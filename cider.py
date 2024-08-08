@@ -12,8 +12,8 @@ def readJSON(file_path):
         with open(file_path) as f:
             data = json.load(f)
         return data
-    except:
-        return None
+    except Exception as e:
+        raise Exception(f"Error reading json file: {e}")
 
 def readPickle(file_path):
     try:
