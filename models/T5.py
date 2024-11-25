@@ -58,15 +58,15 @@ class SimpleT5Model(nn.Module):
     def get_transformation_feature(self, stagcn_embedding, difference_embedding,PRETRAIN_DIFFERENCE):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if PRETRAIN_DIFFERENCE:
-            concatenate_embedding = torch.cat([stagcn_embedding,difference_embedding.to(device)],dim=-1)
-            transform_embedding = self.transformation(concatenate_embedding)
+            concatenate_embedding   = torch.cat([stagcn_embedding,difference_embedding.to(device)],dim=-1)
+            transform_embedding     = self.transformation(concatenate_embedding)
         elif self.cfg.TASK.DIFFERENCE_TYPE == 'RGB':
-            difference_embedding = self.RGB_lifting(difference_embedding)
-            difference_embedding = difference_embedding[:,:(stagcn_embedding).shape[1],:,:]
-            concatenate_embedding = torch.cat([stagcn_embedding,difference_embedding.to(device)],dim=-1)
-            transform_embedding = self.transformation(concatenate_embedding)
+            difference_embedding    = self.RGB_lifting(difference_embedding)
+            difference_embedding    = difference_embedding[:,:(stagcn_embedding).shape[1],:,:]
+            concatenate_embedding   = torch.cat([stagcn_embedding,difference_embedding.to(device)],dim=-1)
+            transform_embedding     = self.transformation(concatenate_embedding)
         else :
-            transform_embedding = self.transformation(stagcn_embedding)
+            transform_embedding     = self.transformation(stagcn_embedding)
         return transform_embedding
 
     def forward(self,**kwargs):
@@ -91,7 +91,7 @@ class SimpleT5Model(nn.Module):
                     else : # skeleton difference
                         standard = standard.permute(0,2,1,3)
                         standard_embedding, _ , _ = self.stagcn(standard)  # standard(coach) skeleton -> stagcn embeddings
-                    #    standard_embedding = self.get_standard_feature(None, None, self.cfg.TASK.PRETRAIN, standard_embedding)                  
+                    #   standard_embedding = self.get_standard_feature(None, None, self.cfg.TASK.PRETRAIN, standard_embedding)                  
 
                 difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding, self.cfg.TASK.DIFFERENCE_SETTING)
                 assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {difference_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
@@ -111,14 +111,14 @@ class SimpleT5Model(nn.Module):
         return self.t5(inputs_embeds=transform_embedding.contiguous(), attention_mask=input_embedding_mask, decoder_input_ids=decoder_input_ids, labels=labels.contiguous())        
     
     def generate(self,**kwargs):
-        video_name = kwargs['video_name']
-        input_embedding = kwargs['input_embedding']
-        input_embedding_mask = kwargs['input_embedding_mask']
-        standard = kwargs['standard']
-        seq_len = kwargs['seq_len']
-        decoder_input_ids = kwargs['decoder_input_ids']
-        tokenizer = kwargs['tokenizer']
-        subtraction = kwargs['subtraction']
+        video_name              = kwargs['video_name']
+        input_embedding         = kwargs['input_embedding']
+        input_embedding_mask    = kwargs['input_embedding_mask']
+        standard                = kwargs['standard']
+        seq_len                 = kwargs['seq_len']
+        decoder_input_ids       = kwargs['decoder_input_ids']
+        tokenizer               = kwargs['tokenizer']
+        subtraction             = kwargs['subtraction']
         stagcn_embedding, attention_node, attention_matrix = self.stagcn(input_embedding)
         if hasattr(self.cfg,"BRANCH") and self.cfg.BRANCH !=0: 
 
@@ -147,9 +147,8 @@ class SimpleT5Model(nn.Module):
         generated_ids = self.t5.generate( inputs_embeds             = transform_embedding, 
                                           attention_mask            = input_embedding_mask,
                                           decoder_input_ids         = decoder_input_ids, 
-                                          max_length                = 50,
-                                        #   num_beams                 = 3,
-                                          num_beams                 = 1, 
+                                          max_length                = 160,
+                                          num_beams                 = 3,
                                           repetition_penalty        = 2.5,
                                           length_penalty            = 1.0,
                                           return_dict_in_generate   = True,

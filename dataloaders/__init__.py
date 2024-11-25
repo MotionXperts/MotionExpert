@@ -39,7 +39,7 @@ def construct_dataloader(split,cfg,pkl_file):
     if split == 'train' : 
         batch_size = cfg.DATA.BATCH_SIZE
     elif split == 'test' :
-        batch_size = cfg.DATA.BATCH_SIZE * 5
+        batch_size = cfg.DATA.BATCH_SIZE
         # if(not cfg.TASK.PRETRAIN):
         #     batch_size = 1
     batch_size = 1

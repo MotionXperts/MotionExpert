@@ -28,6 +28,7 @@ def getGTCaptions(annotations):
     for item in annotations:
         video_name = item['video_name']
         output_sentence = item['revised_label']
+        # output_sentence = item['labels']
         video_name_to_gts[video_name] = output_sentence
     return video_name_to_gts
 
@@ -83,8 +84,8 @@ def main(args):
 if __name__ == "__main__":
     parser = ArgumentParser()
 
-    parser.add_argument("--pred_file",default='/home/peihsin/projects/MotionExpert/results_epoch15.json', help="Prediction json file")
-    parser.add_argument("--annotation_file", default="/home/peihsin/projects/humanML/dataset/rm_test.pkl", help="Annotation json file")
+    parser.add_argument("--pred_file"       ,default='/home/peihsin/projects/MotionExpert/results_epoch15.json',    help="Prediction json file")
+    parser.add_argument("--annotation_file" ,default="/home/peihsin/projects/humanML/dataset/rm_test.pkl",          help="Annotation json file")
 
     args = parser.parse_args()
 

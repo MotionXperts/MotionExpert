@@ -19,6 +19,11 @@ import logging
 import pickle
 from bert_score import score
 from nlgmetricverse import NLGMetricverse,load_metric
+from utils.data_information import convert
+import dotenv
+
+logging.getLogger().setLevel(logging.WARNING)  # 設置最低日誌級別為WARNING
+dotenv.load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +36,7 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
     loss_list = [] 
     att_node_results = {}
     att_A_results = {}  
-    prompt =  "Motion Instruction : " if cfg.TASK.PRETRAIN else "Motion Description : "
+    prompt = "Motion Description : " if cfg.TASK.PRETRAIN else "Motion Instruction : "
     with torch.no_grad():
         # Distributed Training
         if dist.get_rank() == 0:
@@ -45,10 +50,10 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
                                             return_tensors="pt", 
                                             padding=True, 
                                             truncation=True, 
-                                            max_length=50,
+                                            max_length=160,
                                             add_special_tokens=False)['input_ids']
             decoder_input_ids = decoder_input_ids.repeat(src_batch.shape[0], 1).to(src_batch.device)
-            tgt_batch = Tokenizer(label_batch, return_tensors="pt", padding="max_length", truncation=True, max_length=50)['input_ids'].to(src_batch.device)
+            tgt_batch = Tokenizer(label_batch, return_tensors="pt", padding="max_length", truncation=True, max_length=160)['input_ids'].to(src_batch.device)
             tgt_input = tgt_batch[:, :-1]
             tgt_label = tgt_batch[:, 1:]
             inputs = {  "video_name"            : video_name,
@@ -64,12 +69,10 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
                         "result_dir"            : cfg.LOGDIR,
                         "epoch"                 : epoch 
                         }
-            
             with torch.cuda.amp.autocast():
                 seed_everything(42) 
 
                 generated_ids , att_node , att_A = model.module.generate(**inputs)
-
                 # print("Genrated text:" , Tokenizer.decode(generated_ids[0], skip_special_tokens=True, clean_up_tokenization_spaces=True))
 
                 if (hasattr(cfg,'BRANCH') and cfg.BRANCH == 1) or (cfg.TRANSFORMATION.REDUCTION_POLICY == 'TIME_POOL'): 
@@ -77,7 +80,6 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
                     inputs['labels'] = tgt_label.to(model.device)                              
                     inputs['decoder_input_ids'] = tgt_input.to(model.device)
                     loss = model(**inputs).loss
-            
             loss[torch.isnan(loss)] = 0
             # Distributed Training
             dist.all_reduce(loss, async_op=False)
@@ -96,7 +98,6 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
                 att_node_results[name] = att_node.cpu().numpy().tolist()
             for name, att_A in zip(video_name, att_A):
                 att_A_results[name] = att_A.cpu().numpy().tolist()
-
             if dist.get_rank() == 0:
                 eval_dataloader.set_postfix({'loss': np.mean(loss_list),})
             if sanity_check and index > 4:
@@ -112,9 +113,11 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
             results[name] = store.get(name).decode('utf-8')
         
         if not cfg.args.eval_multi:
+            print("Saving results")
             result_json = cfg.JSONDIR+'/results_epoch'+eval_name+str(epoch)+'.json' 
             with open(result_json, 'w') as f:
                 json.dump(results, f,indent = 1)
+                print(f"Results saved in {result_json}")
             with open(cfg.JSONDIR+'/att_node_results_epoch'+eval_name+str(epoch)+'.json', 'w') as f:
                 json.dump(att_node_results, f)
             with open(cfg.JSONDIR+'/att_A_results_epoch'+eval_name+str(epoch)+'.json', 'w') as f:
@@ -127,12 +130,34 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
         
         annotations = readPickle(cfg.DATA.TEST) if pkl_file is None else readPickle(pkl_file)
         
+        # GPT chooses the most similar label from the choices
+        if cfg.args.gpt_sim:
+            from utils.retrieve_most_similar_label import compute_similar_score
+            key = os.getenv("API_KEY")
+            print("API_KEY: ",key)
+            annotations,abandoned = compute_similar_score(cfg,predictions,key,eval_name,epoch)
+            for ab in abandoned:
+                print(f"Abandoned: {ab}")
+                del predictions[ab]
+        if cfg.args.no_calc_score:
+            print("\033[91m {} \033[00m".format("Result saved in ",result_json,". Skipping score calculation."))
+        print("length of annotations: ",len(annotations))
         gts = getGTCaptions(annotations)
+        print("length of gts: ",len(gts))
         new_gts = {}
+        print("length of results: ",len(results))
         for name in results:
+            # if name in abandoned:
+            #     print(f"Skipping {name} in results")
+            #     continue
             new_gts[name] = gts[name]
         gts = new_gts
-
+        # gts['front'] = ""
+        # gts['back'] = ""
+        # gts['Axel'] = ""
+        # gts['Axel_com'] = ""
+        # gts['Loop'] = ""
+        # gts['Lutz'] = ""
         # Check predictions content is correct
         assert type(predictions) is dict, f"Predictions should be a dictionary but got {type(predictions)}"
         assert len(predictions.keys()) == len(gts.keys()), f"Predictions keys len should be same as gts keys len, but got {len(predictions.keys())} and {len(gts.keys())}" 
@@ -155,7 +180,7 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
 
         predictions = list(predictions.values())
         gts = list(gts.values())
-        scores = Evaluator(predictions=predictions,references=gts)
+        scores = Evaluator(predictions=predictions,references=gts, reduce_fn="max")
         results = {}
         results["bleu_1"]   = scores["bleu_1"]['score']
         results["bleu_4"]   = scores["bleu_4"]['score']
@@ -163,7 +188,8 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
         results["cider"]    = scores["cider"]['score']
 
         P,R,F1 = score(predictions,gts,lang="en",verbose=False,idf=True,rescale_with_baseline=True)
-        results["bertscore"] = F1.mean().item()
+        # results["bertscore"] = F1.mean().item()
+        results["bertscore"] = F1.max().item()
         logger.info(f"Epoch {epoch}: Loss {np.mean(loss_list)}")
         for key in results:
             logger.info(f"Epoch {epoch}: {key}: {results[key]}")
@@ -186,7 +212,27 @@ def main():
     model = SimpleT5Model(cfg)
     
     pickle_file = cfg.DATA.TEST
-    eval_name = 'train' if 'train' in pickle_file else ''
+    # eval_name = 'train' if 'train' in pickle_file else ''
+    eval_name =''
+    if cfg.args.eval_name == '' or cfg.args.eval_name == 'test':
+        pickle_file = cfg.DATA.TEST
+        json_path = cfg.LOGDIR + "/" + 'test.json'
+    elif cfg.args.eval_name == 'train':
+        pickle_file = cfg.DATA.TRAIN
+        json_path = cfg.LOGDIR + "/" + 'train.json'
+        eval_name = 'train'
+    elif cfg.args.eval_name == 'untrimmed':
+        pickle_file = cfg.DATA.UNTRIMMED
+        json_path = cfg.LOGDIR + "/" + 'untrimmed.json'
+        eval_name = 'untrimmed'
+    elif cfg.args.eval_name == 'segment':
+        pickle_file = cfg.DATA.SEGMENT
+        json_path = cfg.LOGDIR + "/" + 'segment.json'
+        eval_name = 'segment'
+    else:
+        raise ValueError("Invalid eval_name. Should be either 'train', 'test' or 'untrimmed'")
+    print("Eval_name: ",eval_name)
+    convert(pickle_file,json_path)
     # Maintain a name list in main process
     with open(pickle_file, 'rb') as f:
         data = pickle.load(f)
@@ -194,7 +240,17 @@ def main():
     name_list = []
     for d in data:
         # if d['video_name'] != 'standard':
+        # to_skip = ['485952733385064626_0','479777895377011047_0'] # skip for segment
+        # if d['video_name'] not in to_skip:
         name_list.append(d['video_name'])
+        # else:
+        #     print(f"Skipping {d['video_name']} in name_list")
+    # name_list.append('back')
+    # name_list.append('front')
+    # name_list.append('Axel')
+    # name_list.append('Axel_com')
+    # name_list.append('Loop')
+    # name_list.append('Lutz')
 
     dist.init_process_group(backend='nccl', init_method='env://')
     id = dist.get_rank()
@@ -213,9 +269,9 @@ def main():
 
     # Distributed Training
     if dist.get_rank() == 0:
-        store = dist.TCPStore("127.0.0.1", 1238, dist.get_world_size(), True, timedelta(seconds=30))
+        store = dist.TCPStore("127.0.0.1", 5052, dist.get_world_size(), True, timedelta(seconds=30))
     else:
-        store = dist.TCPStore("127.0.0.1", 1238, dist.get_world_size(), False, timedelta(seconds=30))
+        store = dist.TCPStore("127.0.0.1", 5052, dist.get_world_size(), False, timedelta(seconds=30))
     val_dataloader  =  construct_dataloader('test' ,cfg,pickle_file)
     summary_writer = SummaryWriter()
     

@@ -39,7 +39,7 @@ def train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer
         (video_name,src_batch,keypoints_mask_batch,standard,seq_len,label_batch,subtraction) = batch
         model.zero_grad()
         optimizer.zero_grad()
-        tgt_batch = Tokenizer(label_batch, return_tensors="pt", padding="max_length", truncation=True, max_length=50)['input_ids'].to(src_batch.device)
+        tgt_batch = Tokenizer(label_batch, return_tensors="pt", padding="max_length", truncation=True, max_length=160)['input_ids'].to(src_batch.device)
         tgt_input = tgt_batch[:, :-1]
         tgt_label = tgt_batch[:, 1:]
         with torch.cuda.amp.autocast():
@@ -112,9 +112,9 @@ def main():
     # Distributed Training
     dist.init_process_group(backend='nccl', init_method='env://')
     if dist.get_rank() == 0:
-        store = dist.TCPStore("127.0.0.1", 8081, dist.get_world_size(), True,timedelta(seconds=30))
+        store = dist.TCPStore("127.0.0.1", 8082, dist.get_world_size(), True,timedelta(seconds=30))
     else:
-        store = dist.TCPStore("127.0.0.1", 8081, dist.get_world_size(), False,timedelta(seconds=30))
+        store = dist.TCPStore("127.0.0.1", 8082, dist.get_world_size(), False,timedelta(seconds=30))
         
     seed_everything(42)
     
@@ -158,7 +158,7 @@ def main():
                 dist.barrier()
 
                 try:
-                    eval(cfg,test_dataloader, model,epoch,summary_writer,False, store=store,name_list=name_list,logger=logger)
+                    eval(cfg,test_dataloader, model,epoch+1,summary_writer,False, store=store,name_list=name_list,logger=logger)
                 except Exception as e:
                     print(traceback.format_exc())
                     print(f"Error {e} \n in evaluation at epoch {epoch}, continuing training.")

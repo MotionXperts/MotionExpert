@@ -170,6 +170,11 @@ $ git submodule update
 $ git pull
 ```
 
+### Boxing
+```shell
+$ CUDA_VISIBLE_DEVICES=6 torchrun --nproc_per_node=1 --master_port=29051 evaluation.py --cfg_file /home/andrewchen/MotionExpert_v2/MotionExpert/results/finetune_skeleton_boxing/config_err.yaml --ckpt /home/andrewchen/MotionExpert_v2/MotionExpert/results/finetune_skeleton_boxing/checkpoints/checkpoint_epoch_00020.pth > output/finetune_skeleton_boxing
+```
+
 ## All you need to know in SportTech
 [開發紀錄](https://hackmd.io/@weihsinyeh/MotionXperts)
 
@@ -182,3 +187,5 @@ $ git pull
 * [Dynamic time warping](https://github.com/minghchen/CARL_code/blob/master/utils/dtw.py)
 * [CARL](https://arxiv.org/abs/2203.14957)
 * [Temporal Cycle-Consistency Learning](https://arxiv.org/abs/1904.07846)
+
+

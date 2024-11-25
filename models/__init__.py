@@ -41,15 +41,15 @@ def load_checkpoint(cfg,model,optimizer,name=None):
             checkpoints = []
         if len(checkpoints) > 0 or hasattr(cfg,'WEIGHT_PATH'):
             # Sort the files in checkpoint dir
-            if len(checkpoints) > 0: ## current checkpoint should have higher priority
-                checkpoint_path = natsorted(checkpoints)[-1]
-                checkpoint = torch.load(os.path.join(checkpoint_dir,checkpoint_path))
-            elif name is not None or hasattr(cfg,'WEIGHT_PATH'):
+            if name is not None or hasattr(cfg,'WEIGHT_PATH'):
                 checkpoint_path = name if name is not None else cfg.WEIGHT_PATH
                 checkpoint = torch.load(checkpoint_path)
+            elif len(checkpoints) > 0: ## current checkpoint should have higher priority
+                checkpoint_path = natsorted(checkpoints)[-1]
+                checkpoint = torch.load(os.path.join(checkpoint_dir,checkpoint_path))
             else:
                 raise ValueError("No checkpoint found. No weight path provided.")
-        
+            print("CHECKPOINT PATH: ",checkpoint_path)
             newckpt = {'model_state':{}}
             for k,v in checkpoint["model_state"].items():
                 if not 'projection' in k:
@@ -59,7 +59,9 @@ def load_checkpoint(cfg,model,optimizer,name=None):
             # Use for check the pretrain weight loaded correctly
             # print(newckpt["model_state"].keys())
             if continue_training or cfg.TASK.PRETRAIN:
-                optimizer.load_state_dict(checkpoint["optimizer_state"])
+                if not cfg.args.no_calc_score:
+                    print("args.no_calc_score is: ",cfg.args.no_calc_score)
+                    optimizer.load_state_dict(checkpoint["optimizer_state"])
             # Distributed Training
             if dist.get_rank() == 0:
                 print(f"LOADING CHECKPOINT AT {checkpoint_path}")

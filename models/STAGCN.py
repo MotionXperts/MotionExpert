@@ -29,13 +29,13 @@ class STA_GCN(nn.Module):
 
         
         if self.PRETRAIN_SETTING == 'STAGCN' :
-            f_config = [[in_channels, 32, 1],   [32, 32, 1],    [32, 32, 1],    [32, 64, 2],    [64, 64, 1]]
+            f_config = [[in_channels, 32, 1],   [ 32,  32, 1],  [ 32,  32, 1],  [ 32, 64, 2],   [ 64,  64, 1]]
             a_config = [[128, 128, 1],          [128, 128, 1],  [128, 256, 2],  [256, 256, 1],  [256, 256, 1]]
             p_config = [[128, 128, 1],          [128, 128, 1],  [128, 256, 2],  [256, 256, 1],  [256, 256, 1]]
 
         # PRETRAIN_SETTING : 'Attention'
         else : 
-            f_config = [[in_channels, 32, 1],   [32, 32, 1],    [32, 64, 1],    [64, 64, 1],    [64, 128, 1], 
+            f_config = [[in_channels, 32, 1],   [ 32,  32, 1],  [ 32, 64, 1],   [ 64, 64, 1],    [64, 128, 1], 
                         [128, 128, 1],          [128, 128, 1],  [128, 256, 1],  [256, 256, 1],  [256, 256, 1]]
             a_config = [[256, 256, 1]]
             p_config = [[128, 128, 1],          [128, 128, 1],  [128, 256, 1],  [256, 256, 1],  [256, 256, 1]]
@@ -51,12 +51,10 @@ class STA_GCN(nn.Module):
  
         if self.PRETRAIN_SETTING == 'STAGCN' :
             feature = self.feature_extractor(x, self.A)
-
             attention_last , att_node, att_A = self.attention_branch(feature, self.A)
 
         else :
             feature,feature_last = self.feature_extractor(x, self.A)
-
             att_node, att_A = self.attention_branch(feature_last, self.A)
 
         # Attention Mechanism
