@@ -62,7 +62,7 @@ def main():
                    predictions[k] = v
                 All_file[file_name] = calculate_scores(predictions,groud_truth)
 
-    #All_file 先用 bertscore sort 再用其他的 bleu1, bleu4, rouge, cider
+    # All_file calculate bertscore sort and then calculate bleu1, bleu4, rouge, cider
     All_file = dict(sorted(All_file.items(), key=lambda item: item[1]['bertscore'], reverse=True))
     path_name = 'pretrained_metrics_2.json'
     with open(path_name, 'w') as f:

@@ -1,10 +1,12 @@
 import os,json,sys
+sys.path.append('/home/weihsin/projects/MotionExpert')
 ## add videoalignment to sys path
-sys.path.append(os.path.join(os.getcwd(),'VideoAlignment'))
+## sys.path.append(os.path.join(os.getcwd(),'VideoAlignment'))
 import torch
 import torch.distributed as dist
 from pytorch_lightning import seed_everything
 from utils.parser import parse_args,load_config
+from utils.data_information import convert
 from cider import readJSON, readPickle, getGTCaptions, BLEUScore, CIDERScore
 from dataloaders import construct_dataloader
 from models.T5 import SimpleT5Model
@@ -19,10 +21,9 @@ import logging
 import pickle
 from bert_score import score
 from nlgmetricverse import NLGMetricverse,load_metric
-from utils.data_information import convert
 import dotenv
 
-logging.getLogger().setLevel(logging.WARNING)  # 設置最低日誌級別為WARNING
+logging.getLogger().setLevel(logging.WARNING)
 dotenv.load_dotenv()
 
 logger = logging.getLogger(__name__)

@@ -51,7 +51,8 @@ class DatasetLoader(Dataset):
 
         for item in self.data_list:
             features =  generate_data(item['features'])
-            # Figure Skating
+            ## Figure Skating
+            '''
             if   'Axel'     in item['original_video_file']:
                 std_features = self.standard_features_list[0]
             elif 'Axel_com' in item['original_video_file']:
@@ -60,11 +61,12 @@ class DatasetLoader(Dataset):
                 std_features = self.standard_features_list[2]
             else:
                 std_features = self.standard_features_list[3]
-            # # Boxing
-            # if 'back'         in item['video_name']:
-            #     std_features = self.standard_features_list[0]
-            # elif 'front'    in item['video_name']:
-            #     std_features = self.standard_features_list[1]
+            '''
+            ## Boxing
+            if 'back'         in item['video_name']:
+                std_features = self.standard_features_list[0]
+            elif 'front'    in item['video_name']:
+                std_features = self.standard_features_list[1]
 
             video_name = item['video_name']
             trimmed_start = item['trimmed_start'] if 'trimmed_start' in item else 0
@@ -82,13 +84,18 @@ class DatasetLoader(Dataset):
             
             if 'train' in pkl_file:
                 # labels = item['augmented_labels']
-                labels.append(item['revised_label'])
-                # labels = item['labels']
-            elif self.cfg.args.no_calc_score: ## Dummy label to make sure there is a sample for the video,but the label should be calculated externally. Used for untrimmed evaluation
+                # Skating Setting
+                # labels.append(item['revised_label'])
+                # Boxing Setting
+                labels = item['labels']
+             ## Dummy label to make sure there is a sample for the video,but the label should be calculated externally. Used for untrimmed evaluation
+            elif self.cfg.args.no_calc_score:
                 labels = ['']
             else:
-                labels = [item['revised_label']]
-                # labels = item['labels']
+                # Skating Setting
+                # labels = [item['revised_label']]
+                # Boxing Setting
+                labels = item['labels']
             if hasattr(self.cfg.TASK,'DIFFERENCE_TYPE') and self.cfg.TASK.DIFFERENCE_TYPE== 'RGB':
                 subtraction = item['subtraction']
                 features = features[:,start_frame:end_frame] 
@@ -157,12 +164,12 @@ class DatasetLoader(Dataset):
                     continue
                 self.samples.append((features, label, video_name,subtraction, std_features)) 
         # generate a tensor that is zero, shape is (64,128)
-        # self.samples.append((self.standard_features_list[0], '', 'back',  torch.zeros(self.standard_features_list[0].shape[1],128), self.standard_features_list[0])) 
-        # self.samples.append((self.standard_features_list[1], '', 'front',  torch.zeros(self.standard_features_list[1].shape[1],128), self.standard_features_list[1])) 
-        # self.samples.append((self.standard_features_list[0], '', 'Axel',  torch.zeros(self.standard_features_list[0].shape[1],128), self.standard_features_list[0])) 
+        # self.samples.append((self.standard_features_list[0], '', 'back',      torch.zeros(self.standard_features_list[0].shape[1],128), self.standard_features_list[0])) 
+        # self.samples.append((self.standard_features_list[1], '', 'front',     torch.zeros(self.standard_features_list[1].shape[1],128), self.standard_features_list[1])) 
+        # self.samples.append((self.standard_features_list[0], '', 'Axel',      torch.zeros(self.standard_features_list[0].shape[1],128), self.standard_features_list[0])) 
         # self.samples.append((self.standard_features_list[1], '', 'Axel_com',  torch.zeros(self.standard_features_list[1].shape[1],128), self.standard_features_list[1])) 
-        # self.samples.append((self.standard_features_list[2], '', 'Loop',  torch.zeros(self.standard_features_list[2].shape[1],128), self.standard_features_list[2])) 
-        # self.samples.append((self.standard_features_list[3], '', 'Lutz',  torch.zeros(self.standard_features_list[3].shape[1],128), self.standard_features_list[3])) 
+        # self.samples.append((self.standard_features_list[2], '', 'Loop',      torch.zeros(self.standard_features_list[2].shape[1],128), self.standard_features_list[2])) 
+        # self.samples.append((self.standard_features_list[3], '', 'Lutz',      torch.zeros(self.standard_features_list[3].shape[1],128), self.standard_features_list[3])) 
         print('Sample length:', len(self.samples))
         self.max_len = max_len  
 
