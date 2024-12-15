@@ -1,5 +1,6 @@
 import torch.nn.functional as F
 import torch.nn as nn
+import loralib as lora
 class Transformation(nn.Module):
     def __init__(self,cfg,in_channel,t5_channel):
         super().__init__()
@@ -10,7 +11,12 @@ class Transformation(nn.Module):
         
         for _ in range(1):
             self.change_layer.append(nn.Dropout(drop_rate))
-            self.change_layer.append(nn.Linear(in_channel,512))
+            ## Linear Layer
+            if cfg.TASK.PRETRAIN:
+                self.change_layer.append(nn.Linear(in_channel,512))
+            else:
+                self.change_layer.append(lora.Linear(in_channel,512, r = 32, lora_alpha = 64, lora_dropout = 0.1))
+
             self.change_layer.append(nn.BatchNorm1d(512))
             self.change_layer.append(nn.ReLU(True))
             in_channel = 512
@@ -18,15 +24,24 @@ class Transformation(nn.Module):
 
         for _ in range(2):
             self.fc_layer.append(nn.Dropout(drop_rate))
-            self.fc_layer.append(nn.Linear(in_channel,512))
+            ## Linear Layer
+            if cfg.TASK.PRETRAIN:
+                self.fc_layer.append(nn.Linear(in_channel,512))
+            else:
+                self.fc_layer.append(lora.Linear(in_channel,512, r = 32, lora_alpha = 64, lora_dropout = 0.1))
+
             self.fc_layer.append(nn.BatchNorm1d(512))
             self.fc_layer.append(nn.ReLU(True))
             in_channel = 512
         self.fc_layer = nn.Sequential(*self.fc_layer)
 
         self.t5_channel = t5_channel
-        self.video_emb= nn.Linear(512,self.t5_channel)
-            
+        ## Linear Layer
+        if cfg.TASK.PRETRAIN:
+            self.video_emb= nn.Linear(512,self.t5_channel)
+        else:
+            self.video_emb= lora.Linear(512,self.t5_channel, r = 32, lora_alpha = 64, lora_dropout = 0.1)
+
     def forward(self,x):
         B,T,V,C = x.size()
         ## Either aggregate time and skeleton dimension, avg pool skeleton dimension, or max pool time dimension

@@ -4,12 +4,12 @@ import torch.nn as nn
 from .graph_convolution import Stgc_block
 
 class Feature_extractor(nn.Module):
-    def __init__(self, config, s_kernel_size, t_kernel_size, dropout, residual, A_size, PRETRAIN_SETTING):
+    def __init__(self, config, s_kernel_size, t_kernel_size, dropout, residual, A_size, PRETRAIN_SETTING, PRETRAIN):
         super().__init__()
 
         self.bn = nn.BatchNorm1d(config[0][0] * A_size[2])
         self.PRETRAIN_SETTING = PRETRAIN_SETTING
-
+        self.PRETRAIN = PRETRAIN
         kwargs = dict(s_kernel_size=s_kernel_size,
                       t_kernel_size=t_kernel_size,
                       dropout=dropout,
@@ -28,7 +28,9 @@ class Feature_extractor(nn.Module):
                                             dropout=0,
                                             residual=False,
                                             A_size=A_size,
-                                            PRETRAIN_SETTING = self.PRETRAIN_SETTING)
+                                            PRETRAIN_SETTING = self.PRETRAIN_SETTING,
+                                            PRETAIN = self.PRETRAIN)
+
             self.stgc_block1_1 = Stgc_block(config[1][0], config[1][1], config[1][2], **kwargs)
             self.stgc_block1_2 = Stgc_block(config[2][0], config[2][1], config[2][2], **kwargs)
             self.stgc_block1_3 = Stgc_block(config[3][0], config[3][1], config[3][2], **kwargs)

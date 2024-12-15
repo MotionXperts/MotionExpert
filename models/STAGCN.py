@@ -10,9 +10,10 @@ from net.Utils_attention.make_graph import Graph
 
 class STA_GCN(nn.Module):
     def __init__(self, num_class, in_channels, residual, dropout, 
-                 t_kernel_size, layout, strategy, hop_size, num_att_A, PRETRAIN_SETTING):
+                 t_kernel_size, layout, strategy, hop_size, num_att_A, PRETRAIN_SETTING, PRETRAIN = True):
         super().__init__()
         self.PRETRAIN_SETTING = PRETRAIN_SETTING
+        self.PRETRAIN = PRETRAIN
         # Graph
         graph = Graph(layout=layout, strategy=strategy, hop_size=hop_size)
         A = torch.tensor(graph.A, dtype=torch.float32, requires_grad=False)
@@ -24,8 +25,9 @@ class STA_GCN(nn.Module):
                       dropout=dropout,
                       residual=residual,
                       A_size=A.size(),
-                      PRETRAIN_SETTING = self.PRETRAIN_SETTING)
-
+                      PRETRAIN_SETTING = self.PRETRAIN_SETTING,
+                      PRETRAIN = self.PRETRAIN)
+        print(kwargs)
 
         
         if self.PRETRAIN_SETTING == 'STAGCN' :

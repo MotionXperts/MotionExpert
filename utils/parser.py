@@ -32,6 +32,7 @@ def parse_args():
     parser.add_argument('--eval_name', default='test', help='name of the evaluation')
     parser.add_argument('--multi_label_evals',action='store_true',help='evaluate multiple labels')
     parser.add_argument('--gpt_sim',default=False,action='store_true',help='use gpt to find similarity between predictions and ground truth')
+    parser.add_argument('--Finetune', type=bool, default=True)
     args = parser.parse_args()
 
     config = load_config(args)

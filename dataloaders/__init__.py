@@ -40,9 +40,8 @@ def construct_dataloader(split,cfg,pkl_file):
         batch_size = cfg.DATA.BATCH_SIZE
     elif split == 'test' :
         batch_size = cfg.DATA.BATCH_SIZE
-        # if(not cfg.TASK.PRETRAIN):
-        #     batch_size = 1
-    batch_size = 1
+        if(not cfg.TASK.PRETRAIN):
+            batch_size = 1
 
     dataset = DatasetLoader(cfg,cfg.TASK.PRETRAIN,pkl_file)
 

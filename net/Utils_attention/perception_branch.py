@@ -6,9 +6,10 @@ from .graph_convolution import Stgc_block
 
 
 class Perception_branch(nn.Module):
-    def __init__(self, config, num_class, num_att_A, s_kernel_size, t_kernel_size, dropout, residual, A_size, PRETRAIN_SETTING):
+    def __init__(self, config, num_class, num_att_A, s_kernel_size, t_kernel_size, dropout, residual, A_size, PRETRAIN_SETTING, PRETRAIN):
         super().__init__()
         self.PRETRAIN_SETTING = PRETRAIN_SETTING
+        self.PRETRAIN = PRETRAIN
         kwargs = dict(s_kernel_size=s_kernel_size,
                       t_kernel_size=t_kernel_size,
                       dropout=dropout,
@@ -16,7 +17,8 @@ class Perception_branch(nn.Module):
                       A_size=A_size,
                       PRETRAIN_SETTING=self.PRETRAIN_SETTING,
                       use_att_A=True,
-                      num_att_A=num_att_A)
+                      num_att_A=num_att_A,
+                      PRETRAIN = self.PRETRAIN)
         
         self.stgc_block0 = Stgc_block(config[0][0], config[0][1], config[0][2], **kwargs)
         self.stgc_block1 = Stgc_block(config[1][0], config[1][1], config[1][2], **kwargs)

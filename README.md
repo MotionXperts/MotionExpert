@@ -171,10 +171,13 @@ $ git pull
 ```
 
 ### Boxing
-```shell
+```shell!
 $ CUDA_VISIBLE_DEVICES=6 torchrun --nproc_per_node=1 --master_port=29051 evaluation.py --cfg_file /home/andrewchen/MotionExpert_v2/MotionExpert/results/finetune_skeleton_boxing/config_err.yaml --ckpt /home/andrewchen/MotionExpert_v2/MotionExpert/results/finetune_skeleton_boxing/checkpoints/checkpoint_epoch_00020.pth > output/finetune_skeleton_boxing
 ```
-
+### Skating
+```shell!
+$ CUDA_VISIBLE_DEVICES=6 torchrun --nproc_per_node=1 --master_port=29051 main.py --cfg_file ./results/finetune_joint_training/config.yaml > output/finetune_skeleton_skating
+```
 ## All you need to know in SportTech
 [開發紀錄](https://hackmd.io/@weihsinyeh/MotionXperts)
 

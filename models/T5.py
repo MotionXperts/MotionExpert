@@ -12,7 +12,17 @@ class SimpleT5Model(nn.Module):
         config = AutoConfig.from_pretrained('t5-base')
 
         self.cfg    = cfg
-        self.stagcn = STA_GCN( num_class=1024, in_channels=6, residual=True, dropout=0.5, t_kernel_size=9, layout='SMPL', strategy='spatial', hop_size=3, num_att_A=4, PRETRAIN_SETTING = self.cfg.TASK.PRETRAIN_SETTING )
+        self.stagcn = STA_GCN(num_class=1024,
+                              in_channels=6,
+                              residual=True,
+                              dropout=0.5,
+                              t_kernel_size=9,
+                              layout='SMPL',
+                              strategy='spatial',
+                              hop_size=3,
+                              num_att_A=4,
+                              PRETRAIN_SETTING = self.cfg.TASK.PRETRAIN_SETTING,
+                              PRETRAIN = cfg.TASK.PRETRAIN)
         
         if self.cfg.TASK.PRETRAIN_DIFFERENCE or hasattr(self.cfg.TASK,'DIFFERENCE_TYPE') and self.cfg.TASK.DIFFERENCE_TYPE== 'RGB':
             in_channel = 1024
@@ -78,8 +88,8 @@ class SimpleT5Model(nn.Module):
         decoder_input_ids    = kwargs['decoder_input_ids']
         labels               = kwargs['labels']
         tokenizer            = kwargs['tokenizer']
-        subtraction = kwargs['subtraction']
-        # self.stagcn.train()
+        subtraction          = kwargs['subtraction']
+        self.stagcn.train()
         stagcn_embedding, _, _ = self.stagcn(input_embedding)
         if hasattr(self.cfg,"BRANCH") and self.cfg.BRANCH != 0: 
             if self.cfg.TASK.PRETRAIN_DIFFERENCE : 

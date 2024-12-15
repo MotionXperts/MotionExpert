@@ -1,51 +1,70 @@
 import torch
 import torch.nn as nn
+import loralib as lora
 ''' Spatial Temporal Graph Convolution Block '''
 class Stgc_block(nn.Module):
-    def __init__(self, in_channels, out_channels, stride, s_kernel_size, t_kernel_size, dropout, residual, A_size, PRETRAIN_SETTING, bias=True, use_att_A=False, num_att_A=0):
+    def __init__(self, in_channels, out_channels, stride, s_kernel_size, t_kernel_size, dropout, residual, A_size, PRETRAIN_SETTING, bias=True, use_att_A=False, num_att_A=0, PRETRAIN = True):
         super().__init__()
         self.PRETRAIN_SETTING = PRETRAIN_SETTING
-
+        self.PRETRAIN = PRETRAIN
         # Spatial Graph Convolution
         if not use_att_A:
             self.sgc = S_GC(in_channels=in_channels,
                             out_channels=out_channels,
                             s_kernel_size=s_kernel_size,
-                            bias=bias)
+                            bias=bias,
+                            PRETRAIN=self.PRETRAIN)
         else:
             if self.PRETRAIN_SETTING == 'STAGCN':
                 self.sgc = S_GC_att_A(in_channels=in_channels,
                                   out_channels=out_channels,
                                   s_kernel_size=s_kernel_size,
                                   num_att_A=num_att_A,
-                                  bias=bias)
-                
+                                  bias=bias,
+                                  PRETRAIN=self.PRETRAIN)
+
             # PRETRAIN_SETTING : 'Attention':
             else : 
                 self.sgc = A_GC(in_channels=in_channels,
                                   out_channels=out_channels,
                                   s_kernel_size=s_kernel_size,
                                   num_att_A=num_att_A,
-                                  bias=bias)
+                                  bias=bias,
+                                  PRETRAIN=self.PRETRAIN)
 
         # Learnable weight matrix M
         self.M = nn.Parameter(torch.ones(A_size))
 
         # Temporal Graph Convolution unit
-        self.tgc = nn.Sequential(nn.BatchNorm2d(out_channels),
-                                 nn.ReLU(),
-                                 nn.Conv2d(out_channels, out_channels,
-                                           # (temporal kernel size dimension, spatial kernel size dimension)
-                                           (t_kernel_size, 1), 
-                                           # (temporal stride dimension, spatial stride dimension)
-                                           (stride, 1),        
-                                           # (temporal padding kernel size, spatial padding kernel size)
-                                           ((t_kernel_size - 1) // 2, 0), 
-                                           bias=bias),
-                                 nn.BatchNorm2d(out_channels),
-                                 nn.Dropout(dropout),
-                                 nn.ReLU())
-
+        if self.PRETRAIN :
+            self.tgc = nn.Sequential(nn.BatchNorm2d(out_channels),
+                                    nn.ReLU(),
+                                    nn.Conv2d(out_channels, out_channels,
+                                            # (temporal kernel size dimension, spatial kernel size dimension)
+                                            (t_kernel_size, 1),
+                                            # (temporal stride dimension, spatial stride dimension)
+                                            (stride, 1),
+                                            # (temporal padding kernel size, spatial padding kernel size)
+                                            ((t_kernel_size - 1) // 2, 0),
+                                            bias=bias),
+                                    nn.BatchNorm2d(out_channels),
+                                    nn.Dropout(dropout),
+                                    nn.ReLU())
+        else:
+            self.tgc = nn.Sequential(nn.BatchNorm2d(out_channels),
+                                    nn.ReLU(),
+                                    lora.Conv2d(in_channels = out_channels,
+                                                out_channels = out_channels,
+                                                # (temporal kernel size dimension, spatial kernel size dimension)
+                                                kernel_size = t_kernel_size,
+                                                # (temporal stride dimension, spatial stride dimension)
+                                                stride = stride,
+                                                # (temporal padding kernel size, spatial padding kernel size)
+                                                padding = (t_kernel_size - 1) // 2,
+                                                bias=bias, r = 32, lora_alpha = 64, lora_dropout = 0.1),
+                                    nn.BatchNorm2d(out_channels),
+                                    nn.Dropout(dropout),
+                                    nn.ReLU())
         ''' 
             Residual
             If residual is False, then self.residual is set to a lambda function that maps the input x 
@@ -72,12 +91,20 @@ class Stgc_block(nn.Module):
         elif(in_channels == out_channels) and (stride == 1):
             self.residual = lambda x: x
         else:
-            self.residual = nn.Sequential(nn.Conv2d(in_channels,
-                                                    out_channels,
-                                                    kernel_size=1,
-                                                    stride=(stride, 1),
-                                                    bias=bias),
-                                                    nn.BatchNorm2d(out_channels))
+            if self.PRETRAIN :
+                self.residual = nn.Sequential(nn.Conv2d(in_channels,
+                                                        out_channels,
+                                                        kernel_size=1,
+                                                        stride=(stride, 1),
+                                                        bias=bias),
+                                                        nn.BatchNorm2d(out_channels))
+            else :
+                self.residual = nn.Sequential(lora.Conv2d(in_channels,
+                                                        out_channels,
+                                                        kernel_size=1,
+                                                        stride=(stride, 1),
+                                                        bias=bias, r = 32, lora_alpha = 64, lora_dropout = 0.1),
+                                                        nn.BatchNorm2d(out_channels))
         self.relu = nn.ReLU()
 
     def forward(self, x, A, att_A):
@@ -96,18 +123,27 @@ class S_GC(nn.Module):
                  in_channels,
                  out_channels,
                  s_kernel_size,
-                 bias):
+                 bias,
+                 PRETRAIN):
         super().__init__()
 
         self.s_kernel_size = s_kernel_size
-        self.conv = nn.Conv2d(in_channels=in_channels,
-                              out_channels=out_channels * s_kernel_size,
-                              kernel_size=(1, 1),
-                              padding=(0, 0),
-                              stride=(1, 1), 
-                              dilation=(1, 1),
-                              bias=bias)
-
+        if PRETRAIN :
+            self.conv = nn.Conv2d(in_channels=in_channels,
+                                out_channels=out_channels * s_kernel_size,
+                                kernel_size=(1, 1),
+                                padding=(0, 0),
+                                stride=(1, 1),
+                                dilation=(1, 1),
+                                bias=bias)
+        else :
+            self.conv = lora.Conv2d(in_channels=in_channels,
+                                out_channels=out_channels * s_kernel_size,
+                                kernel_size=(1, 1),
+                                padding=(0, 0),
+                                stride=(1, 1),
+                                dilation=(1, 1),
+                                bias=bias, r = 32, lora_alpha = 64, lora_dropout = 0.1)
     def forward(self, x, A, att_A):
         x = self.conv(x)  
         n, kc, t, v = x.size()
@@ -125,19 +161,28 @@ class S_GC_att_A(nn.Module):
                  out_channels,
                  s_kernel_size,
                  num_att_A,
-                 bias):
+                 bias,
+                 PRETRAIN):
         super().__init__()
         self.num_att_A = num_att_A                     
  
         self.s_kernel_size = s_kernel_size + num_att_A  
-
-        self.conv = nn.Conv2d(in_channels=in_channels,
-                              out_channels=out_channels * self.s_kernel_size,
-                              kernel_size=(1, 1),
-                              padding=(0, 0),
-                              stride=(1, 1),
-                              dilation=(1, 1),
-                              bias=bias)
+        if PRETRAIN :
+            self.conv = nn.Conv2d(in_channels=in_channels,
+                                out_channels=out_channels * self.s_kernel_size,
+                                kernel_size=(1, 1),
+                                padding=(0, 0),
+                                stride=(1, 1),
+                                dilation=(1, 1),
+                                bias=bias)
+        else :
+            self.conv = lora.Conv2d(in_channels=in_channels,
+                                out_channels=out_channels * self.s_kernel_size,
+                                kernel_size=(1, 1),
+                                padding=(0, 0),
+                                stride=(1, 1),
+                                dilation=(1, 1),
+                                bias=bias, r = 32, lora_alpha = 64, lora_dropout = 0.1)
 
     def forward(self, x, A, att_A):
         x = self.conv(x)
@@ -165,20 +210,29 @@ class A_GC(nn.Module):
                  out_channels,
                  s_kernel_size,
                  num_att_A,
-                 bias):
+                 bias,
+                 PRETRAIN):
         super().__init__()
                                                         
         self.num_att_A = num_att_A                      
 
         self.s_kernel_size = num_att_A  
-
-        self.conv = nn.Conv2d(in_channels=in_channels,
-                              out_channels=out_channels * self.s_kernel_size,
-                              kernel_size=(1, 1),
-                              padding=(0, 0),
-                              stride=(1, 1),
-                              dilation=(1, 1),
-                              bias=bias)
+        if PRETRAIN :
+            self.conv = nn.Conv2d(in_channels=in_channels,
+                                out_channels=out_channels * self.s_kernel_size,
+                                kernel_size=(1, 1),
+                                padding=(0, 0),
+                                stride=(1, 1),
+                                dilation=(1, 1),
+                                bias=bias)
+        else :
+            self.conv = lora.Conv2d(in_channels=in_channels,
+                                out_channels=out_channels * self.s_kernel_size,
+                                kernel_size=1,
+                                padding=0,
+                                stride=1,
+                                dilation=1,
+                                bias=bias, r = 32, lora_alpha = 64, lora_dropout = 0.1)
 
     def forward(self, x, A, att_A):
         x = self.conv(x)

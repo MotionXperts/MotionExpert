@@ -27,10 +27,10 @@ class DatasetLoader(Dataset):
         with open(pkl_file, 'rb') as f:
             self.data_list = pickle.load(f)
         if not pretrain:
-            # Fintuen Setting : Skating
-            standard_path = '/home/andrewchen/Error_Localize/standard_features.pkl'
-            # Fintuen Setting : Boxing
-            # standard_path = '/home/andrewchen/Error_Localize/standard_features_boxing.pkl'
+            if cfg.TASK.SPORT == 'Skating' :
+                standard_path = '/home/andrewchen/Error_Localize/standard_features.pkl'
+            if cfg.TASK.SPORT == 'Boxing' :
+                standard_path = '/home/andrewchen/Error_Localize/standard_features_boxing.pkl'
 
             with open(standard_path, 'rb') as f:
                 standard_features_file = pickle.load(f)
@@ -52,21 +52,21 @@ class DatasetLoader(Dataset):
         for item in self.data_list:
             features =  generate_data(item['features'])
             ## Figure Skating
-            '''
-            if   'Axel'     in item['original_video_file']:
-                std_features = self.standard_features_list[0]
-            elif 'Axel_com' in item['original_video_file']:
-                std_features = self.standard_features_list[1]
-            elif 'Loop'     in item['original_video_file']:
-                std_features = self.standard_features_list[2]
-            else:
-                std_features = self.standard_features_list[3]
-            '''
-            ## Boxing
-            if 'back'         in item['video_name']:
-                std_features = self.standard_features_list[0]
-            elif 'front'    in item['video_name']:
-                std_features = self.standard_features_list[1]
+            if cfg.TASK.SPORT == 'Skating' :
+                if   'Axel'     in item['original_video_file']:
+                    std_features = self.standard_features_list[0]
+                elif 'Axel_com' in item['original_video_file']:
+                    std_features = self.standard_features_list[1]
+                elif 'Loop'     in item['original_video_file']:
+                    std_features = self.standard_features_list[2]
+                else:
+                    std_features = self.standard_features_list[3]
+
+            if cfg.TASK.SPORT == 'Boxing' :
+                if 'back'         in item['video_name']:
+                    std_features = self.standard_features_list[0]
+                elif 'front'    in item['video_name']:
+                    std_features = self.standard_features_list[1]
 
             video_name = item['video_name']
             trimmed_start = item['trimmed_start'] if 'trimmed_start' in item else 0
@@ -83,19 +83,20 @@ class DatasetLoader(Dataset):
             max_len = max(max_len, len(features[0]))
             
             if 'train' in pkl_file:
-                # labels = item['augmented_labels']
-                # Skating Setting
-                # labels.append(item['revised_label'])
-                # Boxing Setting
-                labels = item['labels']
-             ## Dummy label to make sure there is a sample for the video,but the label should be calculated externally. Used for untrimmed evaluation
-            elif self.cfg.args.no_calc_score:
-                labels = ['']
+                if cfg.TASK.SPORT == 'Skating' :
+                    labels = item['augmented_labels']
+                    labels.append(item['revised_label'])
+                if cfg.TASK.SPORT == 'Boxing' :
+                    labels = item['labels']
+            ## Dummy label to make sure there is a sample for the video,but the label should be calculated externally. Used for untrimmed evaluation
+            ## elif self.cfg.args.no_calc_score:
+            ##    labels = ['']
             else:
                 # Skating Setting
-                # labels = [item['revised_label']]
-                # Boxing Setting
-                labels = item['labels']
+                if cfg.TASK.SPORT == 'Skating' :
+                    labels = [item['revised_label']]
+                if cfg.TASK.SPORT == 'Boxing' :
+                    labels = item['labels']
             if hasattr(self.cfg.TASK,'DIFFERENCE_TYPE') and self.cfg.TASK.DIFFERENCE_TYPE== 'RGB':
                 subtraction = item['subtraction']
                 features = features[:,start_frame:end_frame] 
