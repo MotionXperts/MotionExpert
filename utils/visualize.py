@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from utils.dtw import dtw
+from VideoAlignment.utils.dtw import dtw
 from scipy.spatial.distance import cdist
 import numpy as np
 from sklearn import manifold
@@ -109,7 +109,14 @@ def align(query_feats, candidate_feats, use_dtw):
     return nns
 
 def viz_tSNE(embs,output_path,use_dtw=False,query=0,labels=None,cfg=None):
-    embs = [embs[1],embs[0]] ## key (which has the longer length) should be put at first to correctly perform the followings)
+    embs0 = embs[0].view(embs[0].shape[0], -1)  # [B, N]
+    embs1 = embs[1].view(embs[1].shape[0], -1)
+    embs0_np = embs0.detach().cpu().numpy()
+    embs1_np = embs1.detach().cpu().numpy()
+    merged_embs_v = np.vstack((embs0_np, embs1_np))
+    labels = np.array([0] * 71 + [1] * 71)
+    embs = [embs1_np,embs0_np] ## key (which has the longer length) should be put at first to correctly perform the followings)
+    print("merged_embs_v",merged_embs_v.shape)
     nns = []
     distances = []
     idx = np.arange(len(embs))
@@ -122,7 +129,7 @@ def viz_tSNE(embs,output_path,use_dtw=False,query=0,labels=None,cfg=None):
         dis = cdist(embs[query], embs[candidate][nn], dist_fn)
         min_index,min_value = np.argmin(dis,axis=1),np.min(dis,axis=1)
         distances.append((min_index,min_value))
-    X = np.empty((0, 128))
+    X = np.empty((0, 22*512))
     y = []
     frame_idx = []
 
@@ -136,6 +143,7 @@ def viz_tSNE(embs,output_path,use_dtw=False,query=0,labels=None,cfg=None):
     frame_idx = np.array(frame_idx)
 
     #t-SNE
+    '''
     X_tsne = manifold.TSNE(n_components=2, init='random', random_state=5, verbose=0).fit_transform(X)
     plt.figure(figsize=(8, 8))
 
@@ -151,3 +159,19 @@ def viz_tSNE(embs,output_path,use_dtw=False,query=0,labels=None,cfg=None):
     plt.yticks([])
     plt.savefig(output_path)
     plt.close('all')
+    '''
+    tsne = manifold.TSNE(n_components=2, random_state=6)
+    embs_2d = tsne.fit_transform(merged_embs_v)
+
+    plt.figure(figsize=(10,10))
+    #for label in np.unique(labels):
+    #    plt.scatter(embs_2d[labels == label, 0], embs_2d[labels == label, 1], label=f'Class {label}')
+    for i in range(71):
+        plt.scatter(embs_2d[i, 0], embs_2d[i, 1], color='dodgerblue', alpha=1, s=5)
+        plt.text(embs_2d[i, 0], embs_2d[i, 1], str(i), fontsize=9, color='dodgerblue')
+    for i in range(71, 142):
+        plt.scatter(embs_2d[i, 0], embs_2d[i, 1], color='red', alpha=1, s=5)
+        plt.text(embs_2d[i, 0], embs_2d[i, 1], str(i - 71), fontsize=9, color='red')
+
+    plt.savefig(output_path)
+    plt.show()

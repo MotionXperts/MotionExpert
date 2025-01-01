@@ -1,11 +1,12 @@
 from transformers import T5ForConditionalGeneration, AutoConfig
 from torch import nn
 from visualize_model import model_view, head_view
+from utils.visualize import viz_tSNE
 from .STAGCN import STA_GCN
 from .Transformation import Transformation
 import torch,os
 import torch.distributed as dist
-
+import torch.nn.functional as F
 class SimpleT5Model(nn.Module):
     def __init__(self,cfg):
         super(SimpleT5Model, self).__init__()
@@ -36,11 +37,12 @@ class SimpleT5Model(nn.Module):
         # Distributed Training
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    def get_difference_feature(self, user, standard, DIFFERENCE_SETTING):     
+    def get_difference_feature(self, user, standard, DIFFERENCE_SETTING):
+        # DIFFERENCE_SETTING : 'Subtraction':
         if DIFFERENCE_SETTING == 'Subtraction':
             batch_diff = user-standard 
 
-        # DIFFERENCE_SETTING == 'Padding':
+        # DIFFERENCE_SETTING : 'Padding':
         else :
             batch_diff = torch.zeros(user.shape[0], user.shape[1], user.shape[2], user.shape[3])
 
@@ -102,14 +104,22 @@ class SimpleT5Model(nn.Module):
                         standard = standard.permute(0,2,1,3)
                         standard_embedding, _ , _ = self.stagcn(standard)  # standard(coach) skeleton -> stagcn embeddings
                     #   standard_embedding = self.get_standard_feature(None, None, self.cfg.TASK.PRETRAIN, standard_embedding)                  
-
+                interpolated_tensor = F.interpolate(
+                        stagcn_embedding.permute(0, 2, 3, 1),  # Change to (Batch, Time, 22, 512)
+                        size=(standard_embedding.shape[3], standard_embedding.shape[1]),  # Spatial dimensions only
+                        mode="bilinear",
+                        align_corners=True
+                    ).permute(0, 3, 1, 2)  # Restore to (Batch, Time, 22, 512)
+                stagcn_embedding = interpolated_tensor
                 difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding, self.cfg.TASK.DIFFERENCE_SETTING)
                 assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {difference_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
                 
                 transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
             elif hasattr(self.cfg.TASK,'DIFFERENCE_TYPE') and self.cfg.TASK.DIFFERENCE_TYPE== 'RGB':
-                difference_embedding = subtraction ## batch size, seq length, 1, 128
-                difference_embedding = subtraction.unsqueeze(2).expand(-1,-1,22,-1) ## batch size, seq length, 22, 128
+                # [batch size, seq length, 1, 128]
+                difference_embedding = subtraction
+                # [batch size, seq length, 22, 128]
+                difference_embedding = subtraction.unsqueeze(2).expand(-1,-1,22,-1)
                 transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
             else: 
                 transform_embedding = self.get_transformation_feature(stagcn_embedding,None,self.cfg.TASK.PRETRAIN_DIFFERENCE)
@@ -143,7 +153,13 @@ class SimpleT5Model(nn.Module):
                         standard = standard.permute(0,2,1,3)
                         standard_embedding, _ , _ = self.stagcn(standard)  # standard(coach) skeleton -> stagcn embeddings
                     #    standard_embedding = self.get_standard_feature(None, None, self.cfg.TASK.PRETRAIN, standard_embedding)          
-
+                    interpolated_tensor = F.interpolate(
+                        stagcn_embedding.permute(0, 2, 3, 1),  # Change to (Batch, Time, 22, 512)
+                        size=(standard_embedding.shape[3], standard_embedding.shape[1]),  # Spatial dimensions only
+                        mode="bilinear",
+                        align_corners=True
+                    ).permute(0, 3, 1, 2)  # Restore to (Batch, Time, 22, 512)
+                stagcn_embedding = interpolated_tensor
                 difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding, self.cfg.TASK.DIFFERENCE_SETTING)
                 assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {stagcn_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
                 
@@ -162,8 +178,9 @@ class SimpleT5Model(nn.Module):
                                           repetition_penalty        = 2.5,
                                           length_penalty            = 1.0,
                                           return_dict_in_generate   = True,
-                                          output_attentions         = True,   
-                                          # Set do_sample           = True if you want to demo
+                                          output_attentions         = True,
+                                          # Demo, set do_sample = True
+                                          do_sample                 = False,
                                           do_sample                 = False,           
                                           early_stopping            = True)
         # Distributed Training

@@ -115,17 +115,17 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
         
         if not cfg.args.eval_multi:
             print("Saving results")
-            result_json = cfg.JSONDIR+'/results_epoch'+eval_name+str(epoch)+'.json' 
+            result_json = cfg.JSONDIR+'/eval_epoch'+eval_name+str(epoch)+'.json'
             with open(result_json, 'w') as f:
                 json.dump(results, f,indent = 1)
                 print(f"Results saved in {result_json}")
-            with open(cfg.JSONDIR+'/att_node_results_epoch'+eval_name+str(epoch)+'.json', 'w') as f:
+            with open(cfg.JSONDIR+'/att_node_eval_epoch'+eval_name+str(epoch)+'.json', 'w') as f:
                 json.dump(att_node_results, f)
-            with open(cfg.JSONDIR+'/att_A_results_epoch'+eval_name+str(epoch)+'.json', 'w') as f:
+            with open(cfg.JSONDIR+'/att_A_eval_epoch'+eval_name+str(epoch)+'.json', 'w') as f:
                 json.dump(att_A_results, f)
         
         if cfg.args.eval_multi:
-            predictions = readJSON(cfg.JSONDIR+'/results_epoch'+str(epoch-1)+'.json')
+            predictions = readJSON(cfg.JSONDIR+'/eval_epoch'+str(epoch-1)+'.json')
         else:
             predictions = readJSON(result_json)
         

@@ -5,8 +5,8 @@ from torch.utils.data import Dataset
 # from VideoAlignment.dataset.data_augment import create_data_augment
 USER = os.environ['USER']
 
-bonelink = [(0, 1), (0, 2), (0, 3), (1, 4), (2,5), (3,6), (4, 7), (5, 8), (6, 9), (7, 10), 
-            (8, 11), (9, 12), (9, 13), (9, 14), (12, 15), (13, 16), (14, 17), (16, 18), (17, 19), (18,  20), (19, 21)]
+bonelink = [( 0,  1), ( 0,  2), ( 0,  3), ( 1,  4), ( 2,  5), ( 3,  6), ( 4,  7), ( 5,  8), ( 6,  9), ( 7, 10),
+            ( 8, 11), ( 9, 12), ( 9, 13), ( 9, 14), (12, 15), (13, 16), (14, 17), (16, 18), (17, 19), (18, 20), (19, 21)]
 
 def generate_data(current_keypoints ):
     joint_coordinate    = np.zeros((3,len(current_keypoints),22))
@@ -51,7 +51,7 @@ class DatasetLoader(Dataset):
 
         for item in self.data_list:
             features =  generate_data(item['features'])
-            ## Figure Skating
+            # Figure Skating
             if cfg.TASK.SPORT == 'Skating' :
                 if   'Axel'     in item['original_video_file']:
                     std_features = self.standard_features_list[0]
@@ -61,9 +61,9 @@ class DatasetLoader(Dataset):
                     std_features = self.standard_features_list[2]
                 else:
                     std_features = self.standard_features_list[3]
-
+            # Boxing
             if cfg.TASK.SPORT == 'Boxing' :
-                if 'back'         in item['video_name']:
+                if   'back'     in item['video_name']:
                     std_features = self.standard_features_list[0]
                 elif 'front'    in item['video_name']:
                     std_features = self.standard_features_list[1]
@@ -164,13 +164,6 @@ class DatasetLoader(Dataset):
                     print(f"Skipping {video_name} as no frames found")
                     continue
                 self.samples.append((features, label, video_name,subtraction, std_features)) 
-        # generate a tensor that is zero, shape is (64,128)
-        # self.samples.append((self.standard_features_list[0], '', 'back',      torch.zeros(self.standard_features_list[0].shape[1],128), self.standard_features_list[0])) 
-        # self.samples.append((self.standard_features_list[1], '', 'front',     torch.zeros(self.standard_features_list[1].shape[1],128), self.standard_features_list[1])) 
-        # self.samples.append((self.standard_features_list[0], '', 'Axel',      torch.zeros(self.standard_features_list[0].shape[1],128), self.standard_features_list[0])) 
-        # self.samples.append((self.standard_features_list[1], '', 'Axel_com',  torch.zeros(self.standard_features_list[1].shape[1],128), self.standard_features_list[1])) 
-        # self.samples.append((self.standard_features_list[2], '', 'Loop',      torch.zeros(self.standard_features_list[2].shape[1],128), self.standard_features_list[2])) 
-        # self.samples.append((self.standard_features_list[3], '', 'Lutz',      torch.zeros(self.standard_features_list[3].shape[1],128), self.standard_features_list[3])) 
         print('Sample length:', len(self.samples))
         self.max_len = max_len  
 

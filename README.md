@@ -178,6 +178,11 @@ $ CUDA_VISIBLE_DEVICES=6 torchrun --nproc_per_node=1 --master_port=29051 evaluat
 ```shell!
 $ CUDA_VISIBLE_DEVICES=6 torchrun --nproc_per_node=1 --master_port=29051 main.py --cfg_file ./results/finetune_joint_training/config.yaml > output/finetune_skeleton_skating
 ```
+```shell!
+$ CUDA_VISIBLE_DEVICES=0 torchrun --nproc_per_node=1 --master_port=29051 evaluation.py --cfg_file ./results/finetune_joint_training/config.yaml --ckpt /home/weihsin/projects/MotionExpert/results/finetune_joint_training/checkpoints/checkpoint_epoch_00055.pth > output/finetune_skeleton_skating_eval
+
+$ CUDA_VISIBLE_DEVICES=0 torchrun --nproc_per_node=1 --master_port=29051 evaluation.py --cfg_file ./home/weihsin/projects/MotionExpert/results/pretrain_skating/config.yaml --ckpt /home/weihsin/projects/MotionExpert/results/pretrainAttention_difference/pretrain_checkpoints/checkpoint_epoch_00009.pth > output/finetune_skeleton_skating_eval
+```
 ## All you need to know in SportTech
 [開發紀錄](https://hackmd.io/@weihsinyeh/MotionXperts)
 
