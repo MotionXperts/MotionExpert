@@ -69,15 +69,15 @@ class SimpleT5Model(nn.Module):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if PRETRAIN_DIFFERENCE:
             concatenate_embedding   = torch.cat([stagcn_embedding,difference_embedding.to(device)],dim=-1)
-            transform_embedding     = self.transformation(concatenate_embedding)
+            transform_embedding, max_indices     = self.transformation(concatenate_embedding)
         elif self.cfg.TASK.DIFFERENCE_TYPE == 'RGB':
             difference_embedding    = self.RGB_lifting(difference_embedding)
             difference_embedding    = difference_embedding[:,:(stagcn_embedding).shape[1],:,:]
             concatenate_embedding   = torch.cat([stagcn_embedding,difference_embedding.to(device)],dim=-1)
-            transform_embedding     = self.transformation(concatenate_embedding)
+            transform_embedding, max_indices     = self.transformation(concatenate_embedding)
         else :
-            transform_embedding     = self.transformation(stagcn_embedding)
-        return transform_embedding
+            transform_embedding, max_indices     = self.transformation(stagcn_embedding)
+        return transform_embedding, max_indices
 
     def forward(self,**kwargs):
         video_name           = kwargs['video_name']
@@ -106,13 +106,13 @@ class SimpleT5Model(nn.Module):
                 difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding, self.cfg.TASK.DIFFERENCE_SETTING)
                 assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {difference_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
                 
-                transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
+                transform_embedding, max_indices = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
             elif hasattr(self.cfg.TASK,'DIFFERENCE_TYPE') and self.cfg.TASK.DIFFERENCE_TYPE== 'RGB':
                 difference_embedding = subtraction ## batch size, seq length, 1, 128
                 difference_embedding = subtraction.unsqueeze(2).expand(-1,-1,22,-1) ## batch size, seq length, 22, 128
-                transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
+                transform_embedding, max_indices = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
             else: 
-                transform_embedding = self.get_transformation_feature(stagcn_embedding,None,self.cfg.TASK.PRETRAIN_DIFFERENCE)
+                transform_embedding, max_indices = self.get_transformation_feature(stagcn_embedding,None,self.cfg.TASK.PRETRAIN_DIFFERENCE)
  
         logits = self.t5(inputs_embeds=transform_embedding.contiguous(), attention_mask=input_embedding_mask, decoder_input_ids=decoder_input_ids).logits
         argmax = torch.argmax(logits, dim=-1)
@@ -147,13 +147,13 @@ class SimpleT5Model(nn.Module):
                 difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding, self.cfg.TASK.DIFFERENCE_SETTING)
                 assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {stagcn_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
                 
-                transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
+                transform_embedding, max_indices = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
             elif hasattr(self.cfg.TASK,'DIFFERENCE_TYPE') and self.cfg.TASK.DIFFERENCE_TYPE== 'RGB':
                 difference_embedding = subtraction ## batch size, seq length, 1, 128
                 difference_embedding = subtraction.unsqueeze(2).expand(-1,-1,22,-1) ## batch size, seq length, 22, 128
-                transform_embedding = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
+                transform_embedding, max_indices = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
             else :
-                transform_embedding = self.get_transformation_feature(stagcn_embedding,None,self.cfg.TASK.PRETRAIN_DIFFERENCE)
+                transform_embedding, max_indices = self.get_transformation_feature(stagcn_embedding,None,self.cfg.TASK.PRETRAIN_DIFFERENCE)
         generated_ids = self.t5.generate( inputs_embeds             = transform_embedding, 
                                           attention_mask            = input_embedding_mask,
                                           decoder_input_ids         = decoder_input_ids, 
@@ -196,4 +196,4 @@ class SimpleT5Model(nn.Module):
             with open(kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch']) + "/"+ kwargs['video_name'][0] + "_head_view.html", 'w') as file:
                 file.write(html_object_head.data)
 
-        return generated_ids.sequences, attention_node , attention_matrix
+        return generated_ids.sequences, attention_node , attention_matrix, max_indices

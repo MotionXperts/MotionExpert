@@ -1,4 +1,4 @@
-import os
+import os, json
 import torch
 from natsort import natsorted
 import torch.distributed as dist
@@ -58,10 +58,12 @@ def load_checkpoint(cfg,model,optimizer,name=None):
             model.module.load_state_dict(newckpt["model_state"],strict=False)
             # Use for check the pretrain weight loaded correctly
             # print(newckpt["model_state"].keys())
+            '''
             if continue_training or cfg.TASK.PRETRAIN:
                 if not cfg.args.no_calc_score:
                     print("args.no_calc_score is: ",cfg.args.no_calc_score)
                     optimizer.load_state_dict(checkpoint["optimizer_state"])
+            '''
             # Distributed Training
             if dist.get_rank() == 0:
                 print(f"LOADING CHECKPOINT AT {checkpoint_path}")

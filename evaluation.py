@@ -36,7 +36,8 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
     model = model.cuda()
     loss_list = [] 
     att_node_results = {}
-    att_A_results = {}  
+    att_A_results = {}
+    max_index_results = {}
     prompt = "Motion Description : " if cfg.TASK.PRETRAIN else "Motion Instruction : "
     with torch.no_grad():
         # Distributed Training
@@ -73,7 +74,7 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
             with torch.cuda.amp.autocast():
                 seed_everything(42) 
 
-                generated_ids , att_node , att_A = model.module.generate(**inputs)
+                generated_ids , att_node , att_A, max_index = model.module.generate(**inputs)
                 # print("Genrated text:" , Tokenizer.decode(generated_ids[0], skip_special_tokens=True, clean_up_tokenization_spaces=True))
 
                 if (hasattr(cfg,'BRANCH') and cfg.BRANCH == 1) or (cfg.TRANSFORMATION.REDUCTION_POLICY == 'TIME_POOL'): 
@@ -99,6 +100,8 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
                 att_node_results[name] = att_node.cpu().numpy().tolist()
             for name, att_A in zip(video_name, att_A):
                 att_A_results[name] = att_A.cpu().numpy().tolist()
+            for name, max_index in zip(video_name, max_index):
+                max_index_results[name] = max_index.cpu().numpy().tolist()
             if dist.get_rank() == 0:
                 eval_dataloader.set_postfix({'loss': np.mean(loss_list),})
             if sanity_check and index > 4:
@@ -123,6 +126,8 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
                 json.dump(att_node_results, f)
             with open(cfg.JSONDIR+'/att_A_results_epoch'+eval_name+str(epoch)+'.json', 'w') as f:
                 json.dump(att_A_results, f)
+            with open(cfg.JSONDIR+'/max_index_epoch'+eval_name+str(epoch)+'.json', 'w') as f:
+                json.dump(max_index_results, f, indent=4)
         
         if cfg.args.eval_multi:
             predictions = readJSON(cfg.JSONDIR+'/results_epoch'+str(epoch-1)+'.json')

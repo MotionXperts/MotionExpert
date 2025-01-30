@@ -1,4 +1,4 @@
-import pickle,os,sys
+import pickle,os,sys, json
 import torch
 import numpy as np
 from torch.utils.data import Dataset
@@ -48,7 +48,7 @@ class DatasetLoader(Dataset):
                 self.data_list = self.data_list[1:] ## RGB subtract the standard already, no need to append standard 
 
         print('Data List Length:', len(self.data_list))
-
+        index_dict = {}
         for item in self.data_list:
             features =  generate_data(item['features'])
             ## Figure Skating
@@ -135,6 +135,16 @@ class DatasetLoader(Dataset):
                 else:
                     features        = features[:,int(start_frame):int(end_frame)] 
                     std_features    = std_features[:,int(item['std_start_frame']):int(item['std_end_frame'])]
+                    index_dict[item['video_name']] = {
+                        # "original_seq_len"  : int(item['original_seq_len']),
+                        "trimmed_start" : int(item['trimmed_start']),
+                        "trimmed_end" : int(item['trimmed_end']),
+                        "seq_len" : int(item['seq_len']),
+                        "feature_start_frame" : int(start_frame),
+                        "feature_end_frame" : int(end_frame),
+                        "std_start_frame" : int(item['std_start_frame']),
+                        "std_error_end_frame" : int(item['std_end_frame']),
+                    }
                 # subtraction = item['subtraction']
                 subtraction = torch.empty(0)
                 if features.shape[1] !=  std_features.shape[1]:
@@ -174,6 +184,8 @@ class DatasetLoader(Dataset):
         print('Sample length:', len(self.samples))
         self.max_len = max_len  
 
+        with open(cfg.JSONDIR+'/index_dict_results.json', 'w') as f:
+            json.dump(index_dict, f, indent=4)
     def __len__(self):
         return len(self.samples)
 
