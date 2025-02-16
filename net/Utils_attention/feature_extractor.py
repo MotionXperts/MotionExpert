@@ -4,7 +4,7 @@ import torch.nn as nn
 from .graph_convolution import Stgc_block
 
 class Feature_extractor(nn.Module):
-    def __init__(self, config, s_kernel_size, t_kernel_size, dropout, residual, A_size, PRETRAIN_SETTING, PRETRAIN):
+    def __init__(self, config, s_kernel_size, t_kernel_size, dropout, residual, A_size, PRETRAIN_SETTING, PRETRAIN, lora_config):
         super().__init__()
 
         self.bn = nn.BatchNorm1d(config[0][0] * A_size[2])
@@ -15,7 +15,8 @@ class Feature_extractor(nn.Module):
                       dropout=dropout,
                       residual=residual,
                       A_size=A_size,
-                      PRETRAIN_SETTING = self.PRETRAIN_SETTING)
+                      PRETRAIN_SETTING = self.PRETRAIN_SETTING,
+                      lora_config = lora_config)
         
         if self.PRETRAIN_SETTING == 'STAGCN' :
 
@@ -29,7 +30,8 @@ class Feature_extractor(nn.Module):
                                             residual=False,
                                             A_size=A_size,
                                             PRETRAIN_SETTING = self.PRETRAIN_SETTING,
-                                            PRETAIN = self.PRETRAIN)
+                                            PRETAIN = self.PRETRAIN,
+                                            lora_config = lora_config)
 
             self.stgc_block1_1 = Stgc_block(config[1][0], config[1][1], config[1][2], **kwargs)
             self.stgc_block1_2 = Stgc_block(config[2][0], config[2][1], config[2][2], **kwargs)

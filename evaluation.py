@@ -1,7 +1,4 @@
 import os,json,sys
-sys.path.append('/home/weihsin/projects/MotionExpert')
-## add videoalignment to sys path
-## sys.path.append(os.path.join(os.getcwd(),'VideoAlignment'))
 import torch
 import torch.distributed as dist
 from pytorch_lightning import seed_everything
@@ -20,6 +17,7 @@ from datetime import timedelta
 import logging
 import pickle
 from bert_score import score
+from utils.retrieve_most_similar_label import compute_similar_score
 from nlgmetricverse import NLGMetricverse,load_metric
 import dotenv
 
@@ -66,7 +64,7 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
                         "decoder_input_ids"     : decoder_input_ids.to(model.device),
                         "subtraction"           : subtraction.to(model.device),
                         "tokenizer"             : Tokenizer,
-                        "labels"                 : tgt_label.to(model.device),    
+                        "labels"                : tgt_label.to(model.device),    
                         # For visualizing attention
                         "result_dir"            : cfg.LOGDIR,
                         "epoch"                 : epoch 
@@ -88,12 +86,14 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
             reduced_loss = loss / dist.get_world_size()
             loss_list.append(reduced_loss.detach().cpu())
             for name, gen_id,label in zip(video_name, generated_ids,label_batch):
+
+                if isinstance(gen_id, torch.Tensor):  
+                    gen_id = gen_id.tolist() 
                 decoded_text = Tokenizer.decode(gen_id, skip_special_tokens=True, clean_up_tokenization_spaces=True).split(prompt)
                 if len(decoded_text) > 1:
                     decoded_text = decoded_text[1].strip()
                 else:
                     decoded_text = ""
-
                 # Distributed Training
                 store.set(name,decoded_text)
             for name, att_node in zip(video_name, att_node):
@@ -114,7 +114,10 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
         results = {}
         for name in name_list:
             # Distributed Training
-            results[name] = store.get(name).decode('utf-8')
+            try:
+                results[name] = store.get(name).decode('utf-8')
+            except:
+                continue
         
         if not cfg.args.eval_multi:
             print("Saving results")
@@ -138,9 +141,8 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
         
         # GPT chooses the most similar label from the choices
         if cfg.args.gpt_sim:
-            from utils.retrieve_most_similar_label import compute_similar_score
-            key = os.getenv("API_KEY")
-            print("API_KEY: ",key)
+            key = os.getenv("OPENAI_KEY")
+            print("OPENAI_KEY: ",key)
             annotations,abandoned = compute_similar_score(cfg,predictions,key,eval_name,epoch)
             for ab in abandoned:
                 print(f"Abandoned: {ab}")
@@ -148,7 +150,7 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
         if cfg.args.no_calc_score:
             print("\033[91m {} \033[00m".format("Result saved in ",result_json,". Skipping score calculation."))
         print("length of annotations: ",len(annotations))
-        gts = getGTCaptions(annotations)
+        gts = getGTCaptions(cfg, annotations)
         print("length of gts: ",len(gts))
         new_gts = {}
         print("length of results: ",len(results))
@@ -186,7 +188,10 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
 
         predictions = list(predictions.values())
         gts = list(gts.values())
-        scores = Evaluator(predictions=predictions,references=gts, reduce_fn="max")
+        # Skating
+        scores = Evaluator(predictions=predictions,references=gts, reduce_fn="mean")
+        # Boxing
+        # scores = Evaluator(predictions=predictions,references=gts, reduce_fn="max")
         results = {}
         results["bleu_1"]   = scores["bleu_1"]['score']
         results["bleu_4"]   = scores["bleu_4"]['score']
@@ -194,8 +199,10 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
         results["cider"]    = scores["cider"]['score']
 
         P,R,F1 = score(predictions,gts,lang="en",verbose=False,idf=True,rescale_with_baseline=True)
+        # Skating
         # results["bertscore"] = F1.mean().item()
-        results["bertscore"] = F1.max().item()
+        # Boxing
+        results["bertscore"] = F1.mean().item()
         logger.info(f"Epoch {epoch}: Loss {np.mean(loss_list)}")
         for key in results:
             logger.info(f"Epoch {epoch}: {key}: {results[key]}")
@@ -203,7 +210,7 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
 def main():
     args = parse_args()
     cfg = load_config(args)
-    cfg.args = args
+    # cfg.args = args
 
     # Dummy check to avoid overwriting
     cfg_path = os.path.join(cfg.LOGDIR,'config.yaml').replace('./',f'{os.getcwd()}/')
@@ -291,6 +298,7 @@ def main():
         checkpoints = [args.ckpt]
     for ckpt in checkpoints:
         epoch = load_checkpoint(cfg,model,optimizer,ckpt)
+
         eval(cfg,val_dataloader, model,epoch,summary_writer,store=store,name_list=name_list,logger=logger,eval_name=eval_name,pkl_file=pickle_file)
     dist.destroy_process_group()
 

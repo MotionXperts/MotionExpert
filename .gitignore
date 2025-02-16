@@ -18,9 +18,19 @@ __pycache__/
 *.json
 utils/loopgroundtruth.json
 utils/humalMLgroundtruth.json
+utils/DetectionMetric
+utils/check_checkpoint.py
+utils/check_repulicate.py
+utils/evaluation_score*
+
+.env
 
 output
 output_finetune
 output_Attention
 output_STAGCN
 output_pretrainSTAGCN_difference
+
+BaseLine
+results
+generate_boxing_gt.py

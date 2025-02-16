@@ -1,9 +1,4 @@
 import torch
-if __name__ == "__main__":
-    import sys,os
-    sys.path.append('/home/c1l1mo/projects/MotionExpert')
-    ## path for VideoAlignment submodule
-    sys.path.append(os.path.join(os.getcwd(),os.pardir,"VideoAlignment"))
 from dataloaders.Dataset import DatasetLoader
 from torch.utils.data import DataLoader
 from torch.nn.utils.rnn import pad_sequence
@@ -52,20 +47,6 @@ def construct_dataloader(split,cfg,pkl_file):
     elif split == "test":
         # Distributed Training
         sampler = torch.utils.data.distributed.DistributedSampler(dataset,shuffle=False)
-        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, drop_last=False,sampler=sampler,collate_fn=collate_fn)
+        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, drop_last=True,sampler=sampler,collate_fn=collate_fn, num_workers=0)
 
     return dataloader
-
-if __name__ == "__main__":
-    from easydict import EasyDict as edict
-    import torch.distributed as dist
-    import yaml
-
-    dist.init_process_group(backend='nccl', init_method='env://')
-    rank = dist.get_rank()
-
-    CONFIG = edict()
-    with open("/home/c1l1mo/projects/VideoAlignment/result/scl_skating_long_50_512/config.yaml") as f:
-        cfg = yaml.safe_load(f)
-    CONFIG.update(cfg)
-    data_loader = construct_dataloader('train','/home/weihsin/datasets/train_Axel_520_with_standard.pkl',False,8,alignment_cfg = CONFIG)

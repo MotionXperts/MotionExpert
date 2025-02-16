@@ -3,6 +3,7 @@ import os,sys
 from easydict import EasyDict
 import yaml
 import torch
+from types import SimpleNamespace
 def to_dict(config):
     if isinstance(config, list):
         return [to_dict(c) for c in config]
@@ -47,6 +48,7 @@ def load_config(args):
         with open(args.cfg_file, 'r') as config_file:
             config_dict = yaml.safe_load(config_file)
         cfg.update(config_dict)
+
     elif args.cfg_file is not None:
         print(f"{args.cfg_file} not found")
         sys.exit(1)

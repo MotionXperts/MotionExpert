@@ -2,7 +2,7 @@ import torch.nn.functional as F
 import torch.nn as nn
 import loralib as lora
 class Transformation(nn.Module):
-    def __init__(self,cfg,in_channel,t5_channel):
+    def __init__(self, cfg, in_channel, t5_channel, lora_config = None):
         super().__init__()
         self.fc_layer = []
         drop_rate = .1
@@ -15,7 +15,11 @@ class Transformation(nn.Module):
             if cfg.TASK.PRETRAIN:
                 self.change_layer.append(nn.Linear(in_channel,512))
             else:
-                self.change_layer.append(lora.Linear(in_channel,512, r = 32, lora_alpha = 64, lora_dropout = 0.1))
+                self.change_layer.append(lora.Linear(in_channel,
+                                                     512, 
+                                                     r = lora_config["r"],
+                                                     lora_alpha = lora_config["lora_alpha"],
+                                                     lora_dropout = lora_config["lora_dropout"]))
 
             self.change_layer.append(nn.BatchNorm1d(512))
             self.change_layer.append(nn.ReLU(True))
@@ -28,7 +32,11 @@ class Transformation(nn.Module):
             if cfg.TASK.PRETRAIN:
                 self.fc_layer.append(nn.Linear(in_channel,512))
             else:
-                self.fc_layer.append(lora.Linear(in_channel,512, r = 32, lora_alpha = 64, lora_dropout = 0.1))
+                self.fc_layer.append(lora.Linear(in_channel,
+                                                 512,
+                                                 r = lora_config["r"],
+                                                 lora_alpha = lora_config["lora_alpha"],
+                                                 lora_dropout = lora_config["lora_dropout"]))
 
             self.fc_layer.append(nn.BatchNorm1d(512))
             self.fc_layer.append(nn.ReLU(True))
@@ -40,7 +48,11 @@ class Transformation(nn.Module):
         if cfg.TASK.PRETRAIN:
             self.video_emb= nn.Linear(512,self.t5_channel)
         else:
-            self.video_emb= lora.Linear(512,self.t5_channel, r = 32, lora_alpha = 64, lora_dropout = 0.1)
+            self.video_emb= lora.Linear(512,
+                                        self.t5_channel,
+                                        r = lora_config["r"],
+                                        lora_alpha = lora_config["lora_alpha"],
+                                        lora_dropout = lora_config["lora_dropout"])
 
     def forward(self,x):
         B,T,V,C = x.size()

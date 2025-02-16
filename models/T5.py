@@ -10,7 +10,14 @@ class SimpleT5Model(nn.Module):
     def __init__(self,cfg):
         super(SimpleT5Model, self).__init__()
         config = AutoConfig.from_pretrained('t5-base')
-
+        stagcn_lora_config = { "bias" : "none",
+                               "r" : 32, 
+                               "lora_alpha" : 64, 
+                               "lora_dropout" : 0.1}
+        transformation_lora_config = {"bias" : "none",
+                                      "r" : 32,
+                                      "lora_alpha" : 64, 
+                                      "lora_dropout" : 0.1}
         self.cfg    = cfg
         self.stagcn = STA_GCN(num_class=1024,
                               in_channels=6,
@@ -22,16 +29,27 @@ class SimpleT5Model(nn.Module):
                               hop_size=3,
                               num_att_A=4,
                               PRETRAIN_SETTING = self.cfg.TASK.PRETRAIN_SETTING,
-                              PRETRAIN = cfg.TASK.PRETRAIN)
+                              PRETRAIN = cfg.TASK.PRETRAIN,
+                              lora_config = stagcn_lora_config)
         
         if self.cfg.TASK.PRETRAIN_DIFFERENCE or hasattr(self.cfg.TASK,'DIFFERENCE_TYPE') and self.cfg.TASK.DIFFERENCE_TYPE== 'RGB':
             in_channel = 1024
         else : 
             in_channel = self.stagcn.output_channel
 
-        self.transformation = Transformation(cfg,in_channel ,t5_channel=768)
-        self.t5 = T5ForConditionalGeneration.from_pretrained('t5-base', config=config) 
+        self.transformation = Transformation(cfg,in_channel ,t5_channel=768, lora_config =transformation_lora_config)
 
+        self.t5 = T5ForConditionalGeneration.from_pretrained('t5-base', config=config)
+        '''
+        lora_config = LoraConfig(   r=32,
+                                    lora_alpha=32,
+                                    target_modules=["q", "v"],
+                                    lora_dropout=0.1,
+                                    bias="none",
+                                    task_type=TaskType.SEQ_2_SEQ_LM)
+        self.t5 = T5ForConditionalGeneration.from_pretrained('t5-base', config=config)
+        self.t5 = get_peft_model(self.t5, lora_config)
+        '''
         self.RGB_lifting = nn.Linear(128, 512)
         # Distributed Training
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -69,11 +87,13 @@ class SimpleT5Model(nn.Module):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if PRETRAIN_DIFFERENCE:
             concatenate_embedding   = torch.cat([stagcn_embedding,difference_embedding.to(device)],dim=-1)
+            # concatenate_embedding   = torch.nn.functional.normalize(concatenate_embedding)
             transform_embedding, max_indices     = self.transformation(concatenate_embedding)
         elif self.cfg.TASK.DIFFERENCE_TYPE == 'RGB':
             difference_embedding    = self.RGB_lifting(difference_embedding)
             difference_embedding    = difference_embedding[:,:(stagcn_embedding).shape[1],:,:]
             concatenate_embedding   = torch.cat([stagcn_embedding,difference_embedding.to(device)],dim=-1)
+            # concatenate_embedding   = torch.nn.functional.normalize(concatenate_embedding)
             transform_embedding, max_indices     = self.transformation(concatenate_embedding)
         else :
             transform_embedding, max_indices     = self.transformation(stagcn_embedding)
@@ -146,7 +166,6 @@ class SimpleT5Model(nn.Module):
 
                 difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding, self.cfg.TASK.DIFFERENCE_SETTING)
                 assert difference_embedding.shape[:-1] == stagcn_embedding.shape[:-1], f"Difference embedding shape {difference_embedding.shape[:-1]} should be equal to embeddings shape {stagcn_embedding.shape[:-1]} except for the last dimension, check if you correctly did padding "
-                
                 transform_embedding, max_indices = self.get_transformation_feature(stagcn_embedding,difference_embedding,self.cfg.TASK.PRETRAIN_DIFFERENCE)
             elif hasattr(self.cfg.TASK,'DIFFERENCE_TYPE') and self.cfg.TASK.DIFFERENCE_TYPE== 'RGB':
                 difference_embedding = subtraction ## batch size, seq length, 1, 128

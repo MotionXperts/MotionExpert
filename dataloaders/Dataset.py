@@ -27,10 +27,7 @@ class DatasetLoader(Dataset):
         with open(pkl_file, 'rb') as f:
             self.data_list = pickle.load(f)
         if not pretrain:
-            if cfg.TASK.SPORT == 'Skating' :
-                standard_path = '/home/andrewchen/Error_Localize/standard_features.pkl'
-            if cfg.TASK.SPORT == 'Boxing' :
-                standard_path = '/home/andrewchen/Error_Localize/standard_features_boxing.pkl'
+            standard_path = cfg.STANDARD_PATH
 
             with open(standard_path, 'rb') as f:
                 standard_features_file = pickle.load(f)
@@ -52,21 +49,24 @@ class DatasetLoader(Dataset):
         for item in self.data_list:
             features =  generate_data(item['features'])
             ## Figure Skating
-            if cfg.TASK.SPORT == 'Skating' :
-                if   'Axel'     in item['original_video_file']:
+            if len(self.standard_features_list) == 1:
                     std_features = self.standard_features_list[0]
-                elif 'Axel_com' in item['original_video_file']:
-                    std_features = self.standard_features_list[1]
-                elif 'Loop'     in item['original_video_file']:
-                    std_features = self.standard_features_list[2]
-                else:
-                    std_features = self.standard_features_list[3]
+            else:
+                if cfg.TASK.SPORT == 'Skating' :
+                    if   'Axel'     in item['original_video_file']:
+                        std_features = self.standard_features_list[0]
+                    elif 'Axel_com' in item['original_video_file']:
+                        std_features = self.standard_features_list[1]
+                    elif 'Loop'     in item['original_video_file']:
+                        std_features = self.standard_features_list[2]
+                    else:
+                        std_features = self.standard_features_list[3]
 
-            if cfg.TASK.SPORT == 'Boxing' :
-                if 'back'         in item['video_name']:
-                    std_features = self.standard_features_list[0]
-                elif 'front'    in item['video_name']:
-                    std_features = self.standard_features_list[1]
+                if cfg.TASK.SPORT == 'Boxing' :
+                    if 'back'         in item['video_name']:
+                        std_features = self.standard_features_list[0]
+                    elif 'front'    in item['video_name']:
+                        std_features = self.standard_features_list[1]
 
             video_name = item['video_name']
             trimmed_start = item['trimmed_start'] if 'trimmed_start' in item else 0
@@ -94,9 +94,17 @@ class DatasetLoader(Dataset):
             else:
                 # Skating Setting
                 if cfg.TASK.SPORT == 'Skating' :
-                    labels = [item['revised_label']]
-                if cfg.TASK.SPORT == 'Boxing' :
+                    if cfg.args.eval_name == 'segment' or cfg.args.eval_name == 'untrimmed':
+                        labels = ['']
+                    else:
+                        labels = [item['revised_label']]
+
+                elif cfg.TASK.SPORT == 'Boxing' :
                     labels = item['labels']
+                elif cfg.TASK.SPORT == 'Manipulate' :
+                    labels = item['labels']
+                else:
+                    raise Exception(f"Sport {cfg.TASK.SPORT} not supported or should be specified.")
             if hasattr(self.cfg.TASK,'DIFFERENCE_TYPE') and self.cfg.TASK.DIFFERENCE_TYPE== 'RGB':
                 subtraction = item['subtraction']
                 features = features[:,start_frame:end_frame] 
@@ -137,9 +145,9 @@ class DatasetLoader(Dataset):
                     std_features    = std_features[:,int(item['std_start_frame']):int(item['std_end_frame'])]
                     index_dict[item['video_name']] = {
                         # "original_seq_len"  : int(item['original_seq_len']),
-                        "trimmed_start" : int(item['trimmed_start']),
-                        "trimmed_end" : int(item['trimmed_end']),
-                        "seq_len" : int(item['seq_len']),
+                        "start_frame" : start_frame,
+                        "end_frame" : end_frame,
+                        "seq_len" : int(end_frame-start_frame),
                         "feature_start_frame" : int(start_frame),
                         "feature_end_frame" : int(end_frame),
                         "std_start_frame" : int(item['std_start_frame']),
@@ -170,10 +178,11 @@ class DatasetLoader(Dataset):
                     label = "Motion Description : " + label
                 else : 
                     label = "Motion Instruction : " + label
-                if features.shape[1] == 0:
+                if features.shape[1] == 0 or features.shape[1] == 1:
                     print(f"Skipping {video_name} as no frames found")
                     continue
                 self.samples.append((features, label, video_name,subtraction, std_features)) 
+
         # generate a tensor that is zero, shape is (64,128)
         # self.samples.append((self.standard_features_list[0], '', 'back',      torch.zeros(self.standard_features_list[0].shape[1],128), self.standard_features_list[0])) 
         # self.samples.append((self.standard_features_list[1], '', 'front',     torch.zeros(self.standard_features_list[1].shape[1],128), self.standard_features_list[1])) 
@@ -183,9 +192,9 @@ class DatasetLoader(Dataset):
         # self.samples.append((self.standard_features_list[3], '', 'Lutz',      torch.zeros(self.standard_features_list[3].shape[1],128), self.standard_features_list[3])) 
         print('Sample length:', len(self.samples))
         self.max_len = max_len  
-
-        with open(cfg.JSONDIR+'/index_dict_results.json', 'w') as f:
-            json.dump(index_dict, f, indent=4)
+        if (cfg.args.eval_name != 'untrimmed' and cfg.TASK.SPORT != 'Boxing' and cfg.TASK.DIFFERENCE_SETTING != 'No'):
+            with open(cfg.JSONDIR+'/index_dict_results.json', 'w') as f:
+                json.dump(index_dict, f, indent=4)
     def __len__(self):
         return len(self.samples)
 

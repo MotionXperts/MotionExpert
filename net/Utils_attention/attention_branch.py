@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from net.Utils_attention.graph_convolution import Stgc_block
 
 class Attention_branch(nn.Module):
-    def __init__(self, config, num_class, num_att_A, s_kernel_size, t_kernel_size, dropout, residual, A_size, PRETRAIN_SETTING, PRETRAIN):
+    def __init__(self, config, num_class, num_att_A, s_kernel_size, t_kernel_size, dropout, residual, A_size, PRETRAIN_SETTING, PRETRAIN, lora_config):
         super().__init__()
 
         # STGC Block
@@ -17,7 +17,8 @@ class Attention_branch(nn.Module):
                       residual=residual,
                       A_size=A_size,
                       PRETRAIN_SETTING = self.PRETRAIN_SETTING,
-                      PRETRAIN = self.PRETRAIN)
+                      PRETRAIN = self.PRETRAIN,
+                      lora_config = lora_config)
         
         if self.PRETRAIN_SETTING == 'STAGCN' :
             self.stgc_block0 = Stgc_block(config[0][0], config[0][1], config[0][2], **kwargs)

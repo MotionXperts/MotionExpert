@@ -12,8 +12,6 @@ from tqdm import tqdm
 import numpy as np
 from pytorch_lightning import seed_everything
 import pickle , sys , logging
-# Add videoalignment to sys path
-sys.path.append(os.path.join('/home/weihsin/projects/MotionExpert','VideoAlignment'))
 from evaluation import eval
 
 
@@ -81,7 +79,6 @@ def train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer
         summary_writer.add_scalar('train/loss', np.mean(loss_list), epoch)
         logger.info(f"Epoch {epoch} : Loss {np.mean(loss_list)}")
 
-
 def main():
     args = parse_args()
     cfg = load_config(args)
@@ -140,9 +137,11 @@ def main():
     start_epoch = load_checkpoint(cfg,model,optimizer)
     try:
         # Sanity check
-        eval(cfg, test_dataloader, model, start_epoch, summary_writer, True, store, name_list, logger)
+        # eval(cfg, test_dataloader, model, start_epoch, summary_writer, True, store, name_list, logger)
+        print("start_epoch",start_epoch)
+        print("max_epoch",max_epoch)
         for epoch in range(start_epoch, max_epoch):
-
+            
             # Distributed Training
             if dist.get_rank() == 0:
                 logger.info(f"Training epoch {epoch}")
@@ -154,16 +153,14 @@ def main():
                 # Distributed Training
                 if dist.get_rank() == 0:
                     os.makedirs(cfg.CKPTDIR,exist_ok=True)
+                    model.eval()
                     save_checkpoint(cfg,model,optimizer,epoch+1)
-                dist.barrier()
 
                 try:
                     eval(cfg,test_dataloader, model,epoch+1,summary_writer,False, store=store,name_list=name_list,logger=logger)
                 except Exception as e:
                     print(traceback.format_exc())
-                    print(f"Error {e} \n in evaluation at epoch {epoch}, continuing training.")
-
-            dist.barrier()
+                    print(f"Error {e} \n in evaluation at epoch {epoch}, continuing training.")           
 
     except Exception as e:
         print(traceback.format_exc())
