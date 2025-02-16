@@ -170,9 +170,6 @@ $ git submodule update
 $ git pull
 ```
 
-## All you need to know in SportTech
-[開發紀錄](https://hackmd.io/@weihsinyeh/MotionXperts)
-
 ## Reference
 * [HybrIK: Hybrid Analytical-Neural Inverse Kinematics for Body Mesh Recovery](https://github.com/Jeff-sjtu/HybrIK)
 * [Spatial Temporal Graph Convolutional Networks for Skeleton-Based Action Recognition (STGCN)](https://github.com/yysijie/st-gcn)

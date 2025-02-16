@@ -238,12 +238,12 @@ def normal_draw(joints,file_name):
 
 if __name__ == '__main__':
 
-    #attention_node_path   = '/home/weihsin/projects/MotionExpertST-GCN/STAGCN_att_node_results_epoch0.json'
-    #attention_matrix_path = '/home/weihsin/projects/MotionExpertST-GCN/STAGCN_att_A_results_epoch0.json'
-    #node_coordinate_path  = '/home/weihsin/datasets/FigureSkate/HumanML3D_g/global_human_test.pkl'
-    attention_node_path   = '/home/weihsin/projects/MotionExpert/STAGCN_output_finetune/att_node_results_epoch9.json'
-    attention_matrix_path = '/home/weihsin/projects/MotionExpert/STAGCN_output_finetune/att_A_results_epoch9.json'
-    node_coordinate_path  = '/home/weihsin/datasets/VQA/test_local.pkl'
+    #attention_node_path   = './projects/MotionExpertST-GCN/STAGCN_att_node_results_epoch0.json'
+    #attention_matrix_path = './projects/MotionExpertST-GCN/STAGCN_att_A_results_epoch0.json'
+    #node_coordinate_path  = './datasets/FigureSkate/HumanML3D_g/global_human_test.pkl'
+    attention_node_path   = './projects/MotionExpert/STAGCN_output_finetune/att_node_results_epoch9.json'
+    attention_matrix_path = './projects/MotionExpert/STAGCN_output_finetune/att_A_results_epoch9.json'
+    node_coordinate_path  = './datasets/VQA/test_local.pkl'
 
     with open(attention_node_path) as f:         attention_node   = json.load(f)
     with open(attention_matrix_path) as f:       attention_matrix = json.load(f)

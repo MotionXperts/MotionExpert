@@ -80,10 +80,10 @@ def add_subtitle_to_gif(input_path, output_path, subtitle_text, result_text, max
 
 
 # 示例用法
-folder_path = "/home/weihsin/projects/MotionExpert/STAGCN_output_finetune/finetuenattention"
+folder_path = "./projects/MotionExpert/STAGCN_output_finetune/finetuenattention"
 file_list = [f for f in os.listdir(folder_path) if f.endswith('.gif')]
 
-output_gif_path = "/home/weihsin/projects/MotionExpert/STAGCN_output_finetune/annotation/"
+output_gif_path = "./projects/MotionExpert/STAGCN_output_finetune/annotation/"
 
 subtitles = []
 json_files = ["results_epoch3.json"]
@@ -95,12 +95,12 @@ for f in file_list:
     
     
     for i in range(1):
-        json_file_path = '/home/weihsin/projects/MotionExpert/STAGCN_output_finetune/' + json_files[i]
+        json_file_path = './projects/MotionExpert/STAGCN_output_finetune/' + json_files[i]
         with open(json_file_path, 'r') as file:
             json_data = json.load(file)
         subtitles.append(messages[i] + json_data[f.split("_")[0]+"_"+f.split("_")[1]])
 
-    json_file_path = '/home/weihsin/projects/MotionExpert/STAGCN_output_finetune/ground_truth.json'
+    json_file_path = './projects/MotionExpert/STAGCN_output_finetune/ground_truth.json'
     with open(json_file_path, 'r') as file:
         json_data = json.load(file)
     subtitle_result = "Ground truth : " + json_data[f.split("_")[0]+"_"+f.split("_")[1]]

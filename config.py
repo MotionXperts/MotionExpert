@@ -42,18 +42,18 @@ CONFIG.BATCH_SIZE = 128
 CONFIG.Pretrained = False
 CONFIG.Finetune = True
 
-CONFIG.weight_path = '/home/weihsin/projects/MotionExpert/models_local_new/Local_epoch50.pt'
+CONFIG.weight_path = '../MotionExpert/models_local_new/Local_epoch50.pt'
 
 if CONFIG.Finetune == False:
-    CONFIG.data        = '/home/weihsin/datasets/FigureSkate/HumanML3D_l/local_human_train.pkl'
+    CONFIG.data        = '../datasets/FigureSkate/HumanML3D_l/local_human_train.pkl'
     CONFIG.out_dir     = './models_local_new'
     CONFIG.prefix      = 'Local'
-    CONFIG.test_data   = '/home/weihsin/datasets/FigureSkate/HumanML3D_l/local_human_test.pkl'
+    CONFIG.test_data   = '../datasets/FigureSkate/HumanML3D_l/local_human_test.pkl'
     CONFIG.result_dir  = 'STAGCN_output_local_new'
 
 else:
-    CONFIG.data        = '/home/weihsin/datasets/VQA/train_local_with_standard.pkl'
+    CONFIG.data        = '../datasets/VQA/train_local_with_standard.pkl'
     CONFIG.out_dir     = './models_finetune_new2'
     CONFIG.prefix      = 'Finetune'
-    CONFIG.test_data   = '/home/weihsin/datasets/VQA/test_local.pkl'
+    CONFIG.test_data   = '../datasets/VQA/test_local.pkl'
     CONFIG.result_dir  = 'STAGCN_output_finetune_new2'

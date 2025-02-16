@@ -36,8 +36,8 @@ def calculate_scores(predictions,gts):
         # score_results["bertscore"] = F1.mean().item()
         return score_results
 def gts():
-    # pkl_file = "/home/c1l1mo/datasets/boxing_safetrim/boxing_GT_test/aggregate.pkl"
-    pkl_file = '/home/andrewchen/Error_Localize/aggregate_vibe.pkl'
+    # pkl_file = "./datasets/boxing_safetrim/boxing_GT_test/aggregate.pkl"
+    pkl_file = './Error_Localize/aggregate_vibe.pkl'
     groud_truth = {}
     with open(pkl_file, 'rb') as f:
         data_list = pickle.load(f)
@@ -51,10 +51,10 @@ def gts():
 
 def main():
     groud_truth = gts()
-    path_name = "/home/andrewchen/MotionExpert_v2/MotionExpert/results/finetune_skeleton/Metrics_ground_truth_mean.json"
-    # path_name = '/home/andrewchen/MotionExpert_v2/boxing_eval/Metrics_ground_truth_bertMean_otherMax.json'
+    path_name = "./MotionExpert_v2/MotionExpert/results/finetune_skeleton/Metrics_ground_truth_mean.json"
+    # path_name = './MotionExpert_v2/boxing_eval/Metrics_ground_truth_bertMean_otherMax.json'
     All_file = {}
-    folder_path = "/home/andrewchen/MotionExpert_v2/MotionExpert/vibe_eval"
+    folder_path = "./MotionExpert_v2/MotionExpert/vibe_eval"
     for file_name in os.listdir(folder_path):
         if file_name.endswith('.json') and file_name.startswith('results_epoch'):
             file_path = os.path.join(folder_path, file_name)
@@ -69,7 +69,7 @@ def main():
                 All_file[file_name] = calculate_scores(predictions,groud_truth)
     '''
     All_file = {}
-    TM2T_path_name = "/home/weihsin/projects/MotionExpert/_TM2T.json"
+    TM2T_path_name = "./projects/MotionExpert/_TM2T.json"
     predictions = {}
     with open(TM2T_path_name, 'r') as f:
         json_data = json.load(f)

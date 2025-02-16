@@ -5,7 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import os
 import json
-folder_path = '/home/weihsin/datasets/Axel/HybrIK'
+folder_path = './datasets/Axel/HybrIK'
 import matplotlib
 matplotlib.use('Agg')
 def draw(joints,num_frame,root):

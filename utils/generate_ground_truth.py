@@ -2,10 +2,10 @@ import pickle as pkl
 import numpy as np
 import os
 import json
-path = '/home/weihsin/datasets/FigureSkate/HumanML3D_g/global_human_test.pkl'
-path = '/home/weihsin/datasets/Loop/test_Loop.pkl'
-path1 = '/home/weihsin/datasets/VQA/test_local.pkl'
-path2 = '/home/weihsin/datasets/VQA/train_local.pkl'
+path = './datasets/FigureSkate/HumanML3D_g/global_human_test.pkl'
+path = './datasets/Loop/test_Loop.pkl'
+path1 = './datasets/VQA/test_local.pkl'
+path2 = './datasets/VQA/train_local.pkl'
 with open(path1, 'rb') as f:
     data1 = pkl.load(f)
 with open(path1, 'rb') as f:
