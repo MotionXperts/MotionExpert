@@ -26,6 +26,7 @@ class DatasetLoader(Dataset):
         self.cfg = cfg
         with open(pkl_file, 'rb') as f:
             self.data_list = pickle.load(f)
+            print("pkl_file",pkl_file)
         if not pretrain:
             standard_path = cfg.STANDARD_PATH
 
@@ -37,12 +38,7 @@ class DatasetLoader(Dataset):
         max_len = 0  
         
         if pretrain:
-            self.standard = generate_data(self.data_list[0]['features'])
-        if not pretrain:
-            self.standard = generate_data(self.data_list[0]['features'])
-            if 'train' in pkl_file and 'standard' in self.data_list[0]['name']:
-                print(f'Standard motion {self.data_list[0]["name"]} found, skipping')
-                self.data_list = self.data_list[1:] ## RGB subtract the standard already, no need to append standard 
+            self.standard_features_list = [generate_data(self.data_list[0]['features'])]
 
         print('Data List Length:', len(self.data_list))
         index_dict = {}
@@ -175,15 +171,12 @@ class DatasetLoader(Dataset):
                 """
             else:
                 subtraction = torch.empty(0)
-            for label in labels:
-                if pretrain : 
-                    label = "Motion Description : " + label
-                else : 
-                    label = "Motion Instruction : " + label
+            newlabels = ["Motion Description : " + label if pretrain else "Motion Instruction : " + label for label in labels]
+            for label in newlabels:
                 if features.shape[1] == 0 or features.shape[1] == 1:
                     print(f"Skipping {video_name} as no frames found")
                     continue
-                self.samples.append((features, label, video_name,subtraction, std_features, labels))
+                self.samples.append((features, label, video_name,subtraction, std_features, newlabels))
 
         # generate a tensor that is zero, shape is (64,128)
         # self.samples.append((self.standard_features_list[0], '', 'back',      torch.zeros(self.standard_features_list[0].shape[1],128), self.standard_features_list[0])) 
@@ -204,7 +197,7 @@ class DatasetLoader(Dataset):
         if torch.is_tensor(idx):
             idx = idx.tolist()
 
-        ## features: 6 x frame x 22
+        # features: 6 x frame x 22
         features, label, video_name, subtraction, std_features, labels = self.samples[idx]
         keypoints_mask  = torch.ones(22)       
         current_len     = torch.tensor(len(features[0]))

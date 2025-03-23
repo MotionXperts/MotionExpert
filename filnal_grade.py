@@ -29,13 +29,7 @@ if __name__ == '__main__':
     api_key = os.getenv("ANTHROPIC_KEY")
 
     all_files = os.listdir(args.output)
-
-    filtered_files = [
-        f for f in all_files 
-        if f.endswith('.json') and f.startswith('geval_epoch')
-    ]
-
-    
+    filtered_files = [ f for f in all_files if f.endswith('.json') and f.startswith('geval_epoch')]
 
     all_epoch = {}
     all_filename = 'allgeval.json'

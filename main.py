@@ -40,46 +40,46 @@ def train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer
         tgt_batch = Tokenizer(label_batch, return_tensors="pt", padding="max_length", truncation=True, max_length=160)['input_ids'].to(src_batch.device)
         tgt_input = tgt_batch[:, :-1]
         tgt_label = tgt_batch[:, 1:]
-        with torch.cuda.amp.autocast():
-            inputs = {  "video_name": video_name,
-                        "input_embedding": src_batch.to(model.device),
-                        "input_embedding_mask": keypoints_mask_batch.to(model.device),
-                        "standard": standard.to(model.device),
-                        "seq_len": seq_len.to(model.device),
-                        "decoder_input_ids": tgt_input.to(model.device),
-                        "labels": tgt_label.to(model.device),
-                        "subtraction": subtraction.to(model.device),
-                        "tokenizer": Tokenizer
-                        }
-            outputs = model(**inputs)
-            # From multiple ground truths, select the one that is most similar to the prediction,
-            # and compute the cross-entropy loss. The goal is to converge towards the most similar 
-            # ground truth.
-            logits = outputs.logits
-            batch_size, seq_len, vocab_size = logits.shape
-            best_losses, best_gts = [],  []
-            loss_fn = torch.nn.CrossEntropyLoss(ignore_index=-100)
 
-            for i in range(batch_size):
-                min_loss = float('inf')
-                num_gt = len(labels_batch[i])
-                for j in range(num_gt):
-                    gt_label = labels_batch[i][j]
-                    gt_label = Tokenizer([gt_label], return_tensors="pt", padding="max_length", truncation=True, max_length=160)['input_ids'].to(src_batch.device)
-                    gt_label = gt_label[:, 1:].to(logits.device)
-                    avg_loss = loss_fn(logits[i].view(-1, vocab_size), gt_label.view(-1))
-                    if avg_loss < min_loss:
-                        min_loss = avg_loss
-                        # best_gt = gt_label
-                best_losses.append(min_loss)
-                # best_gts.append(best_gt)
+        inputs = {  "video_name": video_name,
+                    "input_embedding": src_batch.to(model.device),
+                    "input_embedding_mask": keypoints_mask_batch.to(model.device),
+                    "standard": standard.to(model.device),
+                    "seq_len": seq_len.to(model.device),
+                    "decoder_input_ids": tgt_input.to(model.device),
+                    "labels": tgt_label.to(model.device),
+                    "subtraction": subtraction.to(model.device),
+                    "tokenizer": Tokenizer }
+        outputs = model(**inputs)
+        # From multiple ground truths, select the one that is most similar to the prediction,
+        # and compute the cross-entropy loss. The goal is to converge towards the most similar
+        # ground truth.
+        logits = outputs.logits
+        batch_size, seq_len, vocab_size = logits.shape
+        best_losses, best_gts = [], []
+        loss_fn = torch.nn.CrossEntropyLoss(ignore_index=-100)
 
-            # final_labels = torch.stack(best_gts)
-            loss = torch.stack(best_losses).mean()
+        for i in range(batch_size):
+            min_loss = float('inf')
+            num_gt = len(labels_batch[i])
+            for j in range(num_gt):
+                gt_label = labels_batch[i][j]
+                print("gt_label", gt_label)
+                gt_label = Tokenizer([gt_label], return_tensors="pt", padding="max_length", truncation=True, max_length=160)['input_ids'].to(src_batch.device)
+                gt_label = gt_label[:, 1:].to(logits.device)
+                print("gt_label", gt_label)
+                avg_loss = loss_fn(logits[i].view(-1, vocab_size), gt_label.view(-1))
+                if avg_loss < min_loss:
+                    min_loss = avg_loss
+                    best_gt = gt_label
+            best_losses.append(min_loss)
+            best_gts.append(best_gt)
 
-        scaler.scale(loss).backward()
-        scaler.step(optimizer)
-        scaler.update()
+        final_labels = torch.stack(best_gts)
+        loss = loss_fn(logits.view(-1, vocab_size), final_labels.view(-1))
+
+        loss.backward()
+        optimizer.step()
         scheduler.step()
 
         # Distributed Training
@@ -99,7 +99,6 @@ def train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer
 def main():
     args = parse_args()
     cfg = load_config(args)
-
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(filename)s %(lineno)d: %(message)s', datefmt='%Y-%m-%d %H:%M:%S',
                             filename=os.path.join(cfg.LOGDIR,'stdout.log'))
 
@@ -112,7 +111,7 @@ def main():
 
     model = SimpleT5Model(cfg)
 
-    ## maintain a name list in main process
+    # Maintain a name list in main process.
     with open(cfg.DATA.TEST, 'rb') as f:
         data = pickle.load(f)
 
@@ -122,7 +121,7 @@ def main():
         if d['video_name'] == 'standard':
             print(d['video_name'])
 
-    # Distributed Training
+    # Distributed Training.
     dist.init_process_group(backend='nccl', init_method='env://')
     if dist.get_rank() == 0:
         store = dist.TCPStore("127.0.0.1", 8082, dist.get_world_size(), True,timedelta(seconds=30))
