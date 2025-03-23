@@ -42,7 +42,7 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
         if dist.get_rank() == 0:
             eval_dataloader = tqdm(eval_dataloader, total=len(eval_dataloader), desc='Evaluating')
         for index,batch in enumerate(eval_dataloader):
-            (video_name,src_batch,keypoints_mask_batch,standard,seq_len,label_batch,subtraction) = batch
+            (video_name,src_batch,keypoints_mask_batch,standard,seq_len,label_batch,subtraction, labels_batch) = batch
             # If evaluating multiple checkpoints, dont do inference but directly load the result jsons
             if cfg.args.eval_multi: 
                 break
@@ -106,7 +106,6 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
                 eval_dataloader.set_postfix({'loss': np.mean(loss_list),})
             if sanity_check and index > 4:
                 return
-            
     # Distributed Training
     if dist.get_rank() == 0:
         summary_writer.add_scalar('eval/loss', np.mean(loss_list), epoch)
@@ -142,7 +141,6 @@ def eval(cfg,eval_dataloader, model,epoch,summary_writer,sanity_check=False,stor
         # GPT chooses the most similar label from the choices
         if cfg.args.gpt_sim:
             key = os.getenv("OPENAI_KEY")
-            print("OPENAI_KEY: ",key)
             annotations,abandoned = compute_similar_score(cfg,predictions,key,eval_name,epoch)
             for ab in abandoned:
                 print(f"Abandoned: {ab}")

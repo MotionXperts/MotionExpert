@@ -107,6 +107,13 @@ if __name__ == '__main__':
     # argparser.add_argument('--predict', type=str, default='./results/finetune_skating_no_ref/jsons/results_epoch80.json')
     # argparser.add_argument('--output', type=str, default='./results/finetune_skating_no_ref/geval/.')
 
+    # argparser.add_argument('--ground_truth', type=str, default='./No_ref_boxing_gt.json')
+    # argparser.add_argument('--predict', type=str, default='./results/finetune_boxing_no_ref/jsons/results_epoch75.json')
+    # argparser.add_argument('--output', type=str, default='./results/finetune_boxing_no_ref/geval/.')
+
+    argparser.add_argument('--ground_truth', type=str, default='./results/boxing_0304/No_ref_boxing_gt.json')
+    argparser.add_argument('--predict', type=str, default='./results/boxing_0304/jsons/results_epoch70.json')
+    argparser.add_argument('--output', type=str, default='./results/boxing_0304/geval/.')
     args = argparser.parse_args()
     api_key = os.getenv("ANTHROPIC_KEY")
     prompt = read_template(args.prompt_fp)

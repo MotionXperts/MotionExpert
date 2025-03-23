@@ -69,6 +69,11 @@ class DatasetLoader(Dataset):
                         std_features = self.standard_features_list[1]
 
             video_name = item['video_name']
+            # check_video_name = item['video_name'].rsplit('_', 1)[0]
+            # if check_video_name not in video_list:
+            #     video_list.append(check_video_name)
+            # else:
+            #     continue
             trimmed_start = item['trimmed_start'] if 'trimmed_start' in item else 0
             if not item['standard_longer']:
                 start_frame = item['start_frame']   + trimmed_start
@@ -99,9 +104,7 @@ class DatasetLoader(Dataset):
                     else:
                         labels = [item['revised_label']]
 
-                elif cfg.TASK.SPORT == 'Boxing' :
-                    labels = item['labels']
-                elif cfg.TASK.SPORT == 'Manipulate' :
+                elif cfg.TASK.SPORT == 'Boxing' or cfg.TASK.SPORT == 'Manipulate':
                     labels = item['labels']
                 else:
                     raise Exception(f"Sport {cfg.TASK.SPORT} not supported or should be specified.")
@@ -124,13 +127,12 @@ class DatasetLoader(Dataset):
                 if self.cfg.args.eval_name == 'segment': ## if segmenting, need to further adjust the video and the standard
                     print(f"Error segmenting {item['video_name']}")
                     if item['error_end_frame'] == 0:
-                        ## Dummy shapes
                         feature_start_frame, feature_end_frame  = 0, 1
                         std_start_frame, std_error_end_frame    = 0, 1
                     else:
                         if not item['standard_longer']:
                             feature_start_frame = start_frame + int(item['error_start_frame'])
-                            feature_end_frame   = start_frame + (int(item['error_end_frame'])-1)
+                            feature_end_frame   = start_frame + int(item['error_end_frame'])-1
                             std_start_frame     = int(item['error_start_frame'])
                             std_error_end_frame = int(item['error_end_frame']) -1
                         else:
@@ -181,7 +183,7 @@ class DatasetLoader(Dataset):
                 if features.shape[1] == 0 or features.shape[1] == 1:
                     print(f"Skipping {video_name} as no frames found")
                     continue
-                self.samples.append((features, label, video_name,subtraction, std_features)) 
+                self.samples.append((features, label, video_name,subtraction, std_features, labels))
 
         # generate a tensor that is zero, shape is (64,128)
         # self.samples.append((self.standard_features_list[0], '', 'back',      torch.zeros(self.standard_features_list[0].shape[1],128), self.standard_features_list[0])) 
@@ -203,9 +205,9 @@ class DatasetLoader(Dataset):
             idx = idx.tolist()
 
         ## features: 6 x frame x 22
-        features, label, video_name, subtraction, std_features = self.samples[idx]
+        features, label, video_name, subtraction, std_features, labels = self.samples[idx]
         keypoints_mask  = torch.ones(22)       
         current_len     = torch.tensor(len(features[0]))
 
         # change self.standard to std_features
-        return  video_name, torch.FloatTensor(features), torch.FloatTensor(keypoints_mask),  torch.FloatTensor(std_features), current_len, label, subtraction
+        return  video_name, torch.FloatTensor(features), torch.FloatTensor(keypoints_mask),  torch.FloatTensor(std_features), current_len, label, subtraction, labels

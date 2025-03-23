@@ -5,7 +5,7 @@ from torch.nn.utils.rnn import pad_sequence
 import numpy as np
 
 def collate_fn(batch):
-    video_name, keypoints, keypoints_mask, standard, seq_len, label, subtraction = zip(*batch)
+    video_name, keypoints, keypoints_mask, standard, seq_len, label, subtraction, labels = zip(*batch)
     def collect_video_from_batch(batch, idx=1):
         seq = []
         # convert to [number of frame , coordinates(6), joints(22)]
@@ -28,7 +28,7 @@ def collate_fn(batch):
     seq_len = torch.stack(seq_len,dim=0)
     subtraction =pad_sequence(subtraction,batch_first=True,padding_value=0) 
     # change standard to padded_standard
-    return (video_name), padded_keypoints, keypoints_mask, (padded_standard), (seq_len), (label), subtraction
+    return (video_name), padded_keypoints, keypoints_mask, (padded_standard), (seq_len), (label), subtraction, labels
 
 def construct_dataloader(split,cfg,pkl_file):
     if split == 'train' : 
