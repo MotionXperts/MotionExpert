@@ -1,75 +1,77 @@
-import os,sys
+import os, torch, numpy as np, pickle, logging, warnings, traceback, warnings
 import torch.cuda
 os.environ['NUMEXPR_MAX_THREADS'] = '2'
 os.environ['TOKENIZERS_PARALLELISM'] = "false"
-import warnings
-warnings.filterwarnings("ignore",category=UserWarning)
-warnings.filterwarnings("ignore",category=FutureWarning)
-import torch
+warnings.filterwarnings("ignore", category = UserWarning)
+warnings.filterwarnings("ignore", category = FutureWarning)
 from transformers import AutoTokenizer, AdamW, get_linear_schedule_with_warmup
-from utils.parser import parse_args,load_config
+from utils.parser import parse_args, load_config
 from tqdm import tqdm
-import numpy as np
 from pytorch_lightning import seed_everything
-import pickle , sys , logging
 from evaluation import eval
-
 
 from torch.utils.tensorboard import SummaryWriter
 # Distributed Training
 import torch.distributed as dist
 from dataloaders import construct_dataloader
 from models.T5 import SimpleT5Model
-from models import save_checkpoint,load_checkpoint
-import traceback
+from models import save_checkpoint, load_checkpoint
 from datetime import timedelta
 
 logger = logging.getLogger(__name__)
 
-def train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer,epoch,logger):
+def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_writer, epoch, logger) :
     model.train()
-    optimizer.zero_grad()
     loss_list = []
-    Tokenizer = AutoTokenizer.from_pretrained('t5-base', use_fast=True)
-    if dist.get_rank() == 0:
-        train_dataloader = tqdm(train_dataloader,total=len(train_dataloader), desc='Training')
-    for index,batch in enumerate(train_dataloader):
-        (video_name, src_batch, keypoints_mask_batch, standard, seq_len, label_batch, subtraction, labels_batch) = batch
+    Tokenizer = AutoTokenizer.from_pretrained('t5-base', use_fast = True)
+    if dist.get_rank() == 0 :
+        train_dataloader = tqdm(train_dataloader, total = len(train_dataloader), desc = 'Training')
+    for index, batch in enumerate(train_dataloader) :
+        (video_name, src_batch, keypoints_mask_batch, standard, seq_len, label_batch, subtraction, 
+         labels_batch) = batch
+
+        # Clears all gradients stored in the model’s parameters.
         model.zero_grad()
+        # Clears gradients for all parameters that the optimizer is tracking.
         optimizer.zero_grad()
-        tgt_batch = Tokenizer(label_batch, return_tensors="pt", padding="max_length", truncation=True, max_length=160)['input_ids'].to(src_batch.device)
+
+        # Convert the ground truth (descriptions or instructions) into token IDs.
+        tgt_batch = Tokenizer(label_batch, return_tensors = "pt", padding = "max_length", truncation = True,
+                              max_length = 160)['input_ids'].to(src_batch.device)
         tgt_input = tgt_batch[:, :-1]
         tgt_label = tgt_batch[:, 1:]
 
-        inputs = {  "video_name": video_name,
-                    "input_embedding": src_batch.to(model.device),
-                    "input_embedding_mask": keypoints_mask_batch.to(model.device),
-                    "standard": standard.to(model.device),
-                    "seq_len": seq_len.to(model.device),
-                    "decoder_input_ids": tgt_input.to(model.device),
-                    "labels": tgt_label.to(model.device),
-                    "subtraction": subtraction.to(model.device),
-                    "tokenizer": Tokenizer }
+        inputs = { "video_name" : video_name,
+                   "input_embedding" : src_batch.to(model.device),
+                   "input_embedding_mask" : keypoints_mask_batch.to(model.device),
+                   "standard" : standard.to(model.device),
+                   "seq_len" : seq_len.to(model.device),
+                   "decoder_input_ids" : tgt_input.to(model.device),
+                   "labels" : tgt_label.to(model.device),
+                   "subtraction" : subtraction.to(model.device),
+                   "tokenizer" : Tokenizer }
+
+        # Forwards the data through the model.
         outputs = model(**inputs)
+
         # From multiple ground truths, select the one that is most similar to the prediction,
         # and compute the cross-entropy loss. The goal is to converge towards the most similar
         # ground truth.
         logits = outputs.logits
         batch_size, seq_len, vocab_size = logits.shape
         best_losses, best_gts = [], []
-        loss_fn = torch.nn.CrossEntropyLoss(ignore_index=-100)
+        loss_fn = torch.nn.CrossEntropyLoss(ignore_index = -100)
 
-        for i in range(batch_size):
+        for i in range(batch_size) :
             min_loss = float('inf')
             num_gt = len(labels_batch[i])
-            for j in range(num_gt):
+            for j in range(num_gt) :
                 gt_label = labels_batch[i][j]
-                print("gt_label", gt_label)
-                gt_label = Tokenizer([gt_label], return_tensors="pt", padding="max_length", truncation=True, max_length=160)['input_ids'].to(src_batch.device)
+                gt_label = Tokenizer([gt_label], return_tensors = "pt", padding = "max_length", 
+                                     truncation = True, max_length = 160)['input_ids'].to(src_batch.device)
                 gt_label = gt_label[:, 1:].to(logits.device)
-                print("gt_label", gt_label)
                 avg_loss = loss_fn(logits[i].view(-1, vocab_size), gt_label.view(-1))
-                if avg_loss < min_loss:
+                if avg_loss < min_loss :
                     min_loss = avg_loss
                     best_gt = gt_label
             best_losses.append(min_loss)
@@ -78,112 +80,104 @@ def train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer
         final_labels = torch.stack(best_gts)
         loss = loss_fn(logits.view(-1, vocab_size), final_labels.view(-1))
 
+        # Computes gradients using backpropagation.
         loss.backward()
+        # Updates the model's parameters .
         optimizer.step()
+        # Adjusts the learning rate.
         scheduler.step()
 
         # Distributed Training
         loss[torch.isnan(loss)] = 0
-        dist.all_reduce(loss, async_op=False)
+        dist.all_reduce(loss, async_op = False)
         reduced_loss = loss / dist.get_world_size()
         loss_list.append(reduced_loss.detach().cpu())
-        if dist.get_rank() == 0:
-            train_dataloader.set_postfix({
-                'loss': np.mean(loss_list),
-                'lr': scheduler.optimizer.param_groups[0]['lr'],
-            })
-    if dist.get_rank() == 0:
+        if dist.get_rank() == 0 :
+            train_dataloader.set_postfix({'loss' : np.mean(loss_list), 'lr' : scheduler.optimizer.param_groups[0]['lr']})
+    if dist.get_rank() == 0 :
         summary_writer.add_scalar('train/loss', np.mean(loss_list), epoch)
         logger.info(f"Epoch {epoch} : Loss {np.mean(loss_list)}")
 
 def main():
     args = parse_args()
     cfg = load_config(args)
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(filename)s %(lineno)d: %(message)s', datefmt='%Y-%m-%d %H:%M:%S',
-                            filename=os.path.join(cfg.LOGDIR,'stdout.log'))
-
-    cfg.alignment_cfg = None
-
-    if not cfg.TASK.PRETRAIN:
-        assert hasattr(cfg,'BRANCH'), "BRANCH should be defined in config for finetuning."
-        if cfg.BRANCH ==2:
-            cfg.alignment_cfg = load_config(cfg.ALIGNMENT)
+    logging.basicConfig(level = logging.INFO, format = '%(asctime)s %(filename)s %(lineno)d: %(message)s',
+                        datefmt = '%Y-%m-%d %H:%M:%S', filename = os.path.join(cfg.LOGDIR, 'stdout.log'))
 
     model = SimpleT5Model(cfg)
 
     # Maintain a name list in main process.
-    with open(cfg.DATA.TEST, 'rb') as f:
+    with open(cfg.DATA.TEST, 'rb') as f :
         data = pickle.load(f)
 
     name_list = []
-    for d in data:
+    for d in data :
         name_list.append(d['video_name'])
-        if d['video_name'] == 'standard':
-            print(d['video_name'])
 
     # Distributed Training.
-    dist.init_process_group(backend='nccl', init_method='env://')
-    if dist.get_rank() == 0:
-        store = dist.TCPStore("127.0.0.1", 8082, dist.get_world_size(), True,timedelta(seconds=30))
-    else:
-        store = dist.TCPStore("127.0.0.1", 8082, dist.get_world_size(), False,timedelta(seconds=30))
+    dist.init_process_group(backend = 'nccl', init_method = 'env://')
+    if dist.get_rank() == 0 :
+        store = dist.TCPStore("127.0.0.1", 8082, dist.get_world_size(), True, timedelta(seconds = 30))
+    else :
+        store = dist.TCPStore("127.0.0.1", 8082, dist.get_world_size(), False, timedelta(seconds = 30))
         
     seed_everything(42)
     
-    # Distributed Training
+    # Distributed Training.
     id = dist.get_rank()
     device = id % torch.cuda.device_count()
     model = model.to(device)
     torch.cuda.set_device(id)
-    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[device], output_device=device, find_unused_parameters=True)
+    model = torch.nn.parallel.DistributedDataParallel(model, device_ids = [device], output_device = device,
+                                                      find_unused_parameters = True)
 
     scaler = torch.cuda.amp.GradScaler()
-    optimizer = AdamW(model.parameters(), lr=float(cfg.OPTIMIZER.LR))
+    optimizer = AdamW(model.parameters(), lr = float(cfg.OPTIMIZER.LR))
     summary_writer = SummaryWriter(os.path.join(cfg.LOGDIR, 'train_logs'))
 
-    train_dataloader =  construct_dataloader('train',cfg,cfg.DATA.TRAIN)
-    test_dataloader  =  construct_dataloader('test' ,cfg,cfg.DATA.TEST)
+    train_dataloader = construct_dataloader('train', cfg, cfg.DATA.TRAIN)
+    test_dataloader = construct_dataloader('test' , cfg, cfg.DATA.TEST)
 
     max_epoch = cfg.OPTIMIZER.MAX_EPOCH
     scheduler = get_linear_schedule_with_warmup(
-        optimizer, num_warmup_steps=cfg.OPTIMIZER.WARMUP_STEPS, num_training_steps=max_epoch * len(train_dataloader)
+        optimizer, num_warmup_steps = cfg.OPTIMIZER.WARMUP_STEPS, num_training_steps = max_epoch * len(train_dataloader)
     )
 
-    start_epoch = load_checkpoint(cfg,model,optimizer)
-    try:
+    start_epoch = load_checkpoint(cfg, model, optimizer)
+    try :
         # Sanity check
         # eval(cfg, test_dataloader, model, start_epoch, summary_writer, True, store, name_list, logger)
-        print("start_epoch",start_epoch)
-        print("max_epoch",max_epoch)
+        print("start_epoch", start_epoch)
+        print("max_epoch", max_epoch)
         for epoch in range(start_epoch, max_epoch):
-            
             # Distributed Training
             if dist.get_rank() == 0:
                 logger.info(f"Training epoch {epoch}")
-            
+
             train_dataloader.sampler.set_epoch(epoch)
-            train(cfg,train_dataloader, model, optimizer,scheduler,scaler,summary_writer, epoch,logger)
-            if (epoch+ 1) % 5 == 0:
+            train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_writer, epoch, logger)
+            if (epoch + 1) % 5 == 0 :
 
                 # Distributed Training
-                if dist.get_rank() == 0:
-                    os.makedirs(cfg.CKPTDIR,exist_ok=True)
+                if dist.get_rank() == 0 :
+                    os.makedirs(cfg.CKPTDIR, exist_ok = True)
                     model.eval()
-                    save_checkpoint(cfg,model,optimizer,epoch+1)
+                    save_checkpoint(cfg, model, optimizer, epoch + 1)
 
-                try:
-                    eval(cfg,test_dataloader, model,epoch+1,summary_writer,False, store=store,name_list=name_list,logger=logger)
-                except Exception as e:
+                try :
+                    eval(cfg, test_dataloader, model, epoch + 1, summary_writer, False, store = store,
+                         name_list = name_list, logger = logger)
+                except Exception as e :
                     print(traceback.format_exc())
                     print(f"Error {e} \n in evaluation at epoch {epoch}, continuing training.")           
 
-    except Exception as e:
+    except Exception as e :
         print(traceback.format_exc())
         print(f"{e} occured, saving model before quitting.")
-    finally:
+    finally :
         if dist.get_rank() == 0 and epoch != start_epoch:
-            save_checkpoint(cfg,model,optimizer,epoch+1)
+            save_checkpoint(cfg, model, optimizer, epoch + 1)
         dist.destroy_process_group()
-    
-if __name__ == '__main__':
+
+if __name__ == '__main__' :
     main()
