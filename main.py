@@ -27,7 +27,7 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
     if dist.get_rank() == 0 :
         train_dataloader = tqdm(train_dataloader, total = len(train_dataloader), desc = 'Training')
     for index, batch in enumerate(train_dataloader) :
-        (video_name, src_batch, keypoints_mask_batch, standard, seq_len, label_batch, subtraction, 
+        (video_name, src_batch, keypoints_mask_batch, standard, seq_len, label_batch, subtraction,
          labels_batch) = batch
 
         # Clears all gradients stored in the model’s parameters.
@@ -36,8 +36,8 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
         optimizer.zero_grad()
 
         # Convert the ground truth (descriptions or instructions) into token IDs.
-        tgt_batch = Tokenizer(label_batch, return_tensors = "pt", padding = "max_length", truncation = True,
-                              max_length = 160)['input_ids'].to(src_batch.device)
+        tgt_batch = Tokenizer(label_batch, return_tensors = "pt", padding = "max_length",
+                              truncation = True, max_length = 160)['input_ids'].to(src_batch.device)
         tgt_input = tgt_batch[:, :-1]
         tgt_label = tgt_batch[:, 1:]
 
@@ -67,7 +67,7 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
             num_gt = len(labels_batch[i])
             for j in range(num_gt) :
                 gt_label = labels_batch[i][j]
-                gt_label = Tokenizer([gt_label], return_tensors = "pt", padding = "max_length", 
+                gt_label = Tokenizer([gt_label], return_tensors = "pt", padding = "max_length",
                                      truncation = True, max_length = 160)['input_ids'].to(src_batch.device)
                 gt_label = gt_label[:, 1:].to(logits.device)
                 avg_loss = loss_fn(logits[i].view(-1, vocab_size), gt_label.view(-1))
@@ -82,18 +82,19 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
 
         # Computes gradients using backpropagation.
         loss.backward()
-        # Updates the model's parameters .
+        # Updates the model's parameters.
         optimizer.step()
         # Adjusts the learning rate.
         scheduler.step()
 
-        # Distributed Training
+        # Distributed Training.
         loss[torch.isnan(loss)] = 0
         dist.all_reduce(loss, async_op = False)
         reduced_loss = loss / dist.get_world_size()
         loss_list.append(reduced_loss.detach().cpu())
         if dist.get_rank() == 0 :
-            train_dataloader.set_postfix({'loss' : np.mean(loss_list), 'lr' : scheduler.optimizer.param_groups[0]['lr']})
+            train_dataloader.set_postfix({'loss' : np.mean(loss_list),
+                                          'lr' : scheduler.optimizer.param_groups[0]['lr']})
     if dist.get_rank() == 0 :
         summary_writer.add_scalar('train/loss', np.mean(loss_list), epoch)
         logger.info(f"Epoch {epoch} : Loss {np.mean(loss_list)}")
@@ -120,9 +121,9 @@ def main():
         store = dist.TCPStore("127.0.0.1", 8082, dist.get_world_size(), True, timedelta(seconds = 30))
     else :
         store = dist.TCPStore("127.0.0.1", 8082, dist.get_world_size(), False, timedelta(seconds = 30))
-        
+
     seed_everything(42)
-    
+
     # Distributed Training.
     id = dist.get_rank()
     device = id % torch.cuda.device_count()
@@ -136,12 +137,12 @@ def main():
     summary_writer = SummaryWriter(os.path.join(cfg.LOGDIR, 'train_logs'))
 
     train_dataloader = construct_dataloader('train', cfg, cfg.DATA.TRAIN)
-    test_dataloader = construct_dataloader('test' , cfg, cfg.DATA.TEST)
+    test_dataloader = construct_dataloader('test', cfg, cfg.DATA.TEST)
 
     max_epoch = cfg.OPTIMIZER.MAX_EPOCH
-    scheduler = get_linear_schedule_with_warmup(
-        optimizer, num_warmup_steps = cfg.OPTIMIZER.WARMUP_STEPS, num_training_steps = max_epoch * len(train_dataloader)
-    )
+    scheduler = get_linear_schedule_with_warmup(optimizer,
+                                                num_warmup_steps = cfg.OPTIMIZER.WARMUP_STEPS,
+                                                num_training_steps = max_epoch * len(train_dataloader))
 
     start_epoch = load_checkpoint(cfg, model, optimizer)
     try :
@@ -169,7 +170,7 @@ def main():
                          name_list = name_list, logger = logger)
                 except Exception as e :
                     print(traceback.format_exc())
-                    print(f"Error {e} \n in evaluation at epoch {epoch}, continuing training.")           
+                    print(f"Error {e} \n in evaluation at epoch {epoch}, continuing training.")
 
     except Exception as e :
         print(traceback.format_exc())
