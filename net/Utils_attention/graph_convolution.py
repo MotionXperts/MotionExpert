@@ -20,6 +20,7 @@ class Stgc_block(nn.Module):
         super().__init__()
         self.PRETRAIN_SETTING = PRETRAIN_SETTING
         self.PRETRAIN = PRETRAIN
+        self.use_att_A = use_att_A
         # Spatial Graph Convolution
         if not use_att_A:
             self.sgc = S_GC(in_channels=in_channels,
@@ -70,17 +71,14 @@ class Stgc_block(nn.Module):
             # Lora Adapter
             self.tgc = nn.Sequential(nn.BatchNorm2d(out_channels),
                                     nn.ReLU(),
-                                    lora.Conv2d(in_channels = out_channels,
-                                                out_channels = out_channels,
-                                                # (temporal kernel size dimension, spatial kernel size dimension)
-                                                kernel_size = t_kernel_size,
-                                                # (temporal stride dimension, spatial stride dimension)
-                                                stride = stride,
-                                                # (temporal padding kernel size, spatial padding kernel size)
-                                                padding = (t_kernel_size - 1) // 2,
-                                                r = lora_config["r"], 
-                                                lora_alpha =  lora_config["lora_alpha"],
-                                                lora_dropout = lora_config["lora_dropout"]),
+                                    nn.Conv2d(out_channels, out_channels,
+                                              # (temporal kernel size dimension, spatial kernel size dimension)
+                                              (t_kernel_size, 1),
+                                              # (temporal stride dimension, spatial stride dimension)
+                                              (stride, 1),
+                                              # (temporal padding kernel size, spatial padding kernel size)
+                                              ((t_kernel_size - 1) // 2, 0),
+                                              bias=bias),
                                     nn.BatchNorm2d(out_channels),
                                     nn.Dropout(dropout),
                                     nn.ReLU())
@@ -134,7 +132,7 @@ class Stgc_block(nn.Module):
         @x : [batch_size, in_channels, num_frames, num_nodes]
         @A : [multihead_STGCN, num_nodes, num_nodes]
         '''
-        sgc_out = self.sgc(x, A * self.M, att_A) # x, A, att_A 
+        sgc_out = self.sgc(x, A * self.M, att_A) # x, A, att_A
         x0 = self.tgc(sgc_out)
         x = x0 + self.residual(x)
         return x
