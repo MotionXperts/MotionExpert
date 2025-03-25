@@ -206,10 +206,11 @@ class SimpleT5Model(nn.Module) :
             if not os.path.exists(kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch'])):
                 os.makedirs(kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch']))
 
-            ''' @name : kwargs['name'][0] since its batch size is one in inference dataset '''
-            with open(kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch']) + "/"+ kwargs['video_name'][0] + "_model_view.html", 'w') as file :
+            # Take kwargs['name'][0] as name because its batch size is one in inference dataset
+            file_path = kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch']) + "/"+ kwargs['video_name'][0]
+            with open(file_path + "_model_view.html", 'w') as file :
                 file.write(html_object.data)
-            with open(kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch']) + "/"+ kwargs['video_name'][0] + "_head_view.html", 'w') as file :
+            with open(file_path + "_head_view.html", 'w') as file :
                 file.write(html_object_head.data)
 
         return generated_ids.sequences, attention_node, attention_matrix, max_indices
