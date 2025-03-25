@@ -7,7 +7,7 @@ class Attention_branch(nn.Module) :
                  PRETRAIN_SETTING, PRETRAIN, lora_config) :
         super().__init__()
 
-        # STGC Block
+        # STGC Block.
         self.PRETRAIN_SETTING = PRETRAIN_SETTING
         self.PRETRAIN = PRETRAIN
         kwargs = dict(s_kernel_size = s_kernel_size,
