@@ -10,14 +10,24 @@ class SimpleT5Model(nn.Module) :
     def __init__(self, cfg) :
         super(SimpleT5Model, self).__init__()
         config = AutoConfig.from_pretrained('t5-base')
-        stagcn_lora_config = {"bias" : "none",
-                              "r" : 64,
-                              "lora_alpha" : 128,
-                              "lora_dropout" : 0.5}
-        transformation_lora_config = {"bias" : "none",
-                                      "r" : 64,
-                                      "lora_alpha" : 128,
-                                      "lora_dropout" : 0.5}
+        if cfg.TASK.SPORT == "Skating" :
+            stagcn_lora_config = {"bias" : "none",
+                                  "r" : 32,
+                                  "lora_alpha" : 64,
+                                  "lora_dropout" : 0.1}
+            transformation_lora_config = {"bias" : "none",
+                                          "r" : 32,
+                                          "lora_alpha" : 64,
+                                          "lora_dropout" : 0.1}
+        elif cfg.TASK.SPORT == "Boxing" :
+            stagcn_lora_config = {"bias" : "none",
+                                  "r" : 64,
+                                  "lora_alpha" : 128,
+                                  "lora_dropout" : 0.5}
+            transformation_lora_config = {"bias" : "none",
+                                          "r" : 64,
+                                          "lora_alpha" : 128,
+                                          "lora_dropout" : 0.5}
         self.cfg = cfg
         self.stagcn = STA_GCN(num_class = 1024, in_channels = 6, residual = True, dropout = 0.5, t_kernel_size = 9, layout = 'SMPL',
                               strategy = 'spatial', hop_size = 3, num_att_A = 4, PRETRAIN_SETTING = self.cfg.TASK.PRETRAIN_SETTING,
