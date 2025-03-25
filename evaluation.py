@@ -110,7 +110,7 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
             except : continue
 
         print("Saving results")
-        filename = eval_name + str(epoch) + '.json'
+        filename = str(epoch) + '.json'
         result_json = cfg.JSONDIR + '/results_epoch' + filename
         with open(result_json, 'w') as f :
             json.dump(results, f, indent = 1)

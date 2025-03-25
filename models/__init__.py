@@ -55,7 +55,8 @@ def load_checkpoint(cfg, model, optimizer, name = None) :
             print("Continue training - CHECKPOINT PATH : ", checkpoint_path)
 
             checkpoint = torch.load(os.path.join(checkpoint_dir, checkpoint_path))
-            checkpoint_num = int(re.search(r'\d+', checkpoint_path).group())
+            base_name = os.path.basename(checkpoint_path)
+            checkpoint_num = int(re.search(r'\d+', base_name).group())
             # Load weights that were previously fine-tuned.
             model.module.load_state_dict(checkpoint["model_state"], strict = True)
 
@@ -64,6 +65,8 @@ def load_checkpoint(cfg, model, optimizer, name = None) :
             dist.barrier()
             print("checkpoint_path", checkpoint_path)
             checkpoint = torch.load(checkpoint_path)
+            base_name = os.path.basename(checkpoint_path)
+            checkpoint_num = int(re.search(r'\d+', base_name).group())
             model.module.load_state_dict(checkpoint["model_state"], strict = False)
 
             # Load LoRA state
