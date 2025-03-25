@@ -88,15 +88,16 @@ class DatasetLoader(Dataset) :
                 trimmed_start = 0
 
             # Specify the number of frame.
-            length = item['end_frame'] - item['start_frame'] - 1
+            start_frame, end_frame = int(item['start_frame']), int(item['end_frame'])
+            length = end_frame - start_frame - 1
 
             if self.cfg.TASK.DIFFERENCE_TYPE == 'RGB' :
                 subtraction = item['subtraction']
                 if item['standard_longer'] :
-                    std_start = item['start_frame']
+                    std_start = start_frame
                     usr_start = trimmed_start
                 else :
-                    usr_start = item['start_frame'] + trimmed_start
+                    usr_start = start_frame + trimmed_start
                     std_start = 0
                 # RGB setting will use subtraction instead of std_features.
                 std_features = torch.empty(0)
@@ -105,23 +106,23 @@ class DatasetLoader(Dataset) :
             elif self.cfg.TASK.DIFFERENCE_TYPE == 'Skeleton' :
                 # Deal with error segment selection.
                 if self.cfg.args.eval_name == 'segment' :
-                    error_start, error_end = item['error_start_frame'], item['error_end_frame'] - 1
+                    error_start, error_end = int(item['error_start_frame']), int(item['error_end_frame']) - 1
                     length = error_end - error_start
                     if item['error_end_frame'] == 0 :
                         usr_start, std_start, length = 0, 0, 1
                     else :
                         if item['standard_longer'] :
-                            std_start = item['start_frame'] + error_start
+                            std_start = start_frame + error_start
                             usr_start = trimmed_start + error_start
                         else :
                             std_start = error_start
-                            usr_start = item['start_frame'] + error_start
+                            usr_start = start_frame + error_start
                 else :
                     if item['standard_longer'] :
-                        std_start = item['start_frame']
+                        std_start = start_frame
                         usr_start = trimmed_start
                     else :
-                        usr_start = item['start_frame'] + trimmed_start
+                        usr_start = start_frame + trimmed_start
                         std_start = 0
 
                 # Skeleton setting will use std_features instead of subtraction.
@@ -148,7 +149,7 @@ class DatasetLoader(Dataset) :
         print('Number of sample : ', len(self.samples))
 
         if (cfg.args.eval_name != 'untrimmed' and cfg.TASK.SPORT != 'Boxing' and cfg.TASK.DIFFERENCE_SETTING != 'No') :
-            with open(cfg.JSONDIR + '/index_dict_results.json', 'w') as f :
+            with open(cfg.LOGDIR + '/index_dict_results.json', 'w') as f :
                 json.dump(index_dict, f, indent = 4)
 
     def __len__(self) :
