@@ -190,6 +190,12 @@ class SimpleT5Model(nn.Module) :
                           output_attentions = True,
                           return_dict = True)
 
+            # In order to use the model_view function during inference of the T5 model, it is necessary
+            # to first assign out.encoder_attentions, out.cross_attentions and out.decoder_attentions
+            # to encoder_attentions, cross_attentions and decoder_attentions, respectivly. There are
+            # some references to these tricky operations.
+            # Reference : https://discuss.huggingface.co/t/error-when-trying-to-visualize-attention-in-t5-model/35350/2
+            # Reference : https://huggingface.co/docs/transformers/main_classes/text_generation
             encoder_attentions = out.encoder_attentions
             cross_attentions = out.cross_attentions
             decoder_attentions = out.decoder_attentions
@@ -207,7 +213,7 @@ class SimpleT5Model(nn.Module) :
                 os.makedirs(kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch']))
 
             # Take kwargs['name'][0] as name because its batch size is one in inference dataset
-            file_path = kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch']) + "/"+ kwargs['video_name'][0]
+            file_path = kwargs['result_dir'] + "/HTML/epoch" + str(kwargs['epoch']) + "/" + kwargs['video_name'][0]
             with open(file_path + "_model_view.html", 'w') as file :
                 file.write(html_object.data)
             with open(file_path + "_head_view.html", 'w') as file :
