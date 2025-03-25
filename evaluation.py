@@ -28,6 +28,7 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
     Tokenizer = AutoTokenizer.from_pretrained('t5-base', use_fast = True)
     model.eval()
     model = model.cuda()
+    seed_everything(42)
     loss_list = [] 
     att_node_results, att_A_results, max_index_results = {}, {}, {}
     prompt = "Motion Description : " if cfg.TASK.PRETRAIN else "Motion Instruction : "
@@ -64,13 +65,11 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
                       # For visualizing attention.
                       "result_dir" : cfg.LOGDIR,
                       "epoch" : epoch}
-            with torch.cuda.amp.autocast() :
-                seed_everything(42)
 
-                generated_ids, att_node, att_A, max_index = model.module.generate(**inputs)
-                # print("Genrated text : ", Tokenizer.decode(generated_ids[0], skip_special_tokens = True, clean_up_tokenization_spaces = True))
-                inputs['decoder_input_ids'] = tgt_input.to(model.device)
-                loss = model(**inputs).loss
+            generated_ids, att_node, att_A, max_index = model.module.generate(**inputs)
+            # print("Genrated text : ", Tokenizer.decode(generated_ids[0], skip_special_tokens = True, clean_up_tokenization_spaces = True))
+            inputs['decoder_input_ids'] = tgt_input.to(model.device)
+            loss = model(**inputs).loss
 
             loss[torch.isnan(loss)] = 0
             # Distributed Training.
@@ -188,6 +187,8 @@ def main() :
                         filename = os.path.join(cfg.LOGDIR, 'stdout.log'))
 
     model = SimpleT5Model(cfg)
+
+    seed_everything(42)
 
     pickle_file = cfg.DATA.TEST
     if cfg.args.eval_name == 'test' :
