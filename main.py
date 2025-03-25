@@ -176,7 +176,7 @@ def main():
         print(traceback.format_exc())
         print(f"{e} occured, saving model before quitting.")
     finally :
-        if dist.get_rank() == 0 and epoch != start_epoch:
+        if dist.get_rank() == 0 and epoch != start_epoch :
             save_checkpoint(cfg, model, optimizer, epoch + 1)
         dist.destroy_process_group()
 
