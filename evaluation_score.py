@@ -63,14 +63,20 @@ def gts(cfg) :
     # pkl_file = "../datasets/scripts/skating_pipeline/Skating_GT_test/aggregate.pkl"
     # pkl_file = "../datasets/FigureSkate/HumanML3D_l/local_human_test.pkl"
     if cfg.TASK.SPORT == "Skating" :
-        pkl_file = "../../../datasets/scripts/skating_pipeline/Skating_GT_test/aggregate.pkl"
+        if cfg.TASK.Setting == "GT" :
+            pkl_file = "/home/weihsin/datasets/SkatingDatasetPkl/skating_gt_test.pkl"
+        elif cfg.TASK.Setting == "UNTRIMMED" :
+            pkl_file = "/home/weihsin/datasets/SkatingDatasetPkl/skating_untrimmed.pkl"
+        elif cfg.TASK.Setting == "SEGMENT" :
+            pkl_file = "/home/weihsin/datasets/SkatingDatasetPkl/skating_segment.pkl"
     elif cfg.TASK.SPORT == "Boxing" :
-        pkl_file = "../../../datasets/BoxingDatasetPkl/boxing_GT_test_aggregate.pkl"
-        pkl_file = "../../../datasets/BoxingDatasetPkl/boxing_GT_test.pkl"
+        if cfg.TASK.Setting == "GT" :
+            pkl_file = "/home/weihsin/datasets/BoxingDatasetPkl/boxing_GT_test.pkl"
+        elif cfg.TASK.Setting == "SEGMENT" :
+            pkl_file = "/home/andrewchen/Error_Localize/boxing_aggregate_error_segment.pkl"
+
     annotations = readPickle(pkl_file)
     gts = getGTCaptions(cfg,annotations)
-    # segment_gt_path = "./results/finetune_error_seg/jsons/segment_gt.json"
-    # gts = read_data(segment_gt_path)
     return gts
 
 def main() :
@@ -78,7 +84,7 @@ def main() :
     cfg = argparse.Namespace()
     cfg.TASK = argparse.Namespace()
     cfg.TASK.SPORT = "Skating"
-    cfg.TASK.SPORT = "Boxing"
+    cfg.TASK.Setting = "GT"
     ground_truth = gts(cfg)
 
     All_file = {}
@@ -95,6 +101,9 @@ def main() :
     # folder_path = "./results/finetune_boxing/jsons"
     # folder_path = "./results/finetune_boxing_0303/jsons"
     # folder_path = "./results/boxing_0304/jsons"
+    target_path = './results/skating_gt/'
+
+    folder_path = target_path + 'jsons'
     epoch_pattern = re.compile(r"^results_epoch(\d+)\.json$")
     for file_name in os.listdir(folder_path) :
         match = epoch_pattern.match(file_name)
@@ -130,7 +139,9 @@ def main() :
     # path_name = './results/finetune_boxing/max_value.json'
     # path_name = './results/finetune_boxing_0303/max_value.json'
     # path_name = './results/boxing_0304/max_value.json'
-    path_name = './results/boxing_0304/boxing_no_ref_test_bertscore.json'
+    # path_name = './results/boxing_0304/boxing_no_ref_test_bertscore.json'
+
+    path_name = target_path + 'bertscore.json'
     with open(path_name, 'w') as f:
         json.dump(All_file, f, indent=4)
 

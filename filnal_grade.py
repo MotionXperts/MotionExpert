@@ -1,6 +1,4 @@
-import openai
-import json, argparse, tqdm, time, os, re
-import anthropic
+import json, argparse, tqdm, time, os, re, anthropic
 from dotenv import load_dotenv
 
 def read_data(file_path):
