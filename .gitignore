@@ -4,7 +4,6 @@ attention
 __pycache__
 experiments
 STAGCN_output*
-results/**
 **/.ipynb_checkpoints
 notebooks
 models_*
@@ -32,5 +31,8 @@ output_STAGCN
 output_pretrainSTAGCN_difference
 
 BaseLine
-results
+results/boxing*
+results/finetune*
+results/pretrain_checkpoints
+results/skating_gt_tmp*
 generate_boxing_gt.py
