@@ -111,9 +111,19 @@ Step 2 : create the `pretrain_checkpoints` directory.
 
 Step 3 : Put the pretrained checkpoint file (for example : checkpoint_epoch_00008.pth) in `pretrain_checkpoints` directory.
 
-Step 4 : Put the `config.yaml` (for example : The template config file for finetune) `finetune` directory.
+Run the following command from the MotionExpert directory.
+```bash
+wget -O ./results/skating_gt/pretrain_checkpoints/best_pretrained_weight.pth 'https://www.dropbox.com/scl/fi/gnkhtz0h6mnhftxpo4cgb/checkpoint_epoch_00009.pth?rlkey=jheub4udl83ppobv53ibufnkq&st=n3amwn1r&dl=1'
+```
 
-Step 5 : After finetuning, the `checkpoints` directory will be created automatically like the following :
+Step 4 : Place the `config.yaml` file in the `finetune` directory. For example, the config file `./results/skating_gt/skating_gt.yaml` should be placed in the `./results/skating_gt/` directory.
+
+Step 5 : Run the following command from the MotionExpert directory.
+```bash
+torchrun --nproc_per_node=1 --master_port=29051 main.py --cfg_file ./results/skating_gt/skating_gt.yaml > output/skating_gt
+```
+
+Step 6 : After finetuning, the `checkpoints` directory will be created automatically like the following :
 
 ```
 Motion Expert
@@ -122,7 +132,7 @@ Motion Expert
             | - checkpoints
                 | ...
             | - pretrain_checkpoints
-                | - checkpoint_epoch_00008.pth
+                | - best_pretrained_weight.pth
             | - config.yaml 
 ```
 
