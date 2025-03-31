@@ -126,7 +126,7 @@ def main() :
                                        "most_common_count" : most_common_count}
 
     # All_file calculate bertscore sort and then calculate bleu1, bleu4, rouge, cider
-    # All_file = dict(sorted(All_file.items(), key=lambda item: item[1]['scores']['bertscore'], reverse=True))
+    # All_file = dict(sorted(All_file.items(), key = lambda item: item[1]['scores']['bertscore'], reverse=True))
     All_file = dict(sorted(All_file.items(), key = lambda item: item[1]['most_common_count'], reverse = True))
 
     # path_name = 'lora_skating_t5_6_bertscore.json'
@@ -142,8 +142,8 @@ def main() :
     # path_name = './results/boxing_0304/boxing_no_ref_test_bertscore.json'
 
     path_name = target_path + 'bertscore.json'
-    with open(path_name, 'w') as f:
-        json.dump(All_file, f, indent=4)
+    with open(path_name, 'w') as f :
+        json.dump(All_file, f, indent = 4)
 
 if __name__ == "__main__" :
     main()
