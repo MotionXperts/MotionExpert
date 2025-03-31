@@ -31,7 +31,6 @@ output_STAGCN
 output_pretrainSTAGCN_difference
 
 BaseLine
-results/boxing*
 results/finetune*
 results/pretrain_checkpoints
 results/skating_gt_tmp*

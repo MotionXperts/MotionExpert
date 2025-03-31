@@ -1,0 +1,32 @@
+# torchrun --nproc_per_node=1 --master_port=29050 main.py --cfg_file ./results/boxing_gt/boxing_gt.yaml > ./output/boxing_gt
+HIDDEN_CHANNEL : 32
+OUT_CHANNEL : 128
+TRANSFORMATION :
+    REDUCTION_POLICY : "TIME_POOL"
+TASK :
+    SPORT : "Boxing"
+    PRETRAIN : false
+    PRETRAIN_SETTING : "Attention"
+    PRETRAIN_DIFFERENCE : true 
+    DIFFERENCE_SETTING : "Subtraction"
+    DIFFERENCE_TYPE : "Skeleton"
+
+STANDARD_PATH : "/home/andrewchen/Error_Localize/standard_features_boxing.pkl"
+WEIGHT_PATH : "./results/boxing_gt/pretrain_checkpoints/best_pretrained_weight.pth"
+DATA : 
+    TRAIN : "/home/weihsin/datasets/BoxingDatasetPkl/boxing_train.pkl"
+    TEST : "/home/weihsin/datasets/BoxingDatasetPkl/boxing_test.pkl"
+    SEGMENT : "/home/andrewchen/Error_Localize/boxing_aggregate_error_segment.pkl"
+    BATCH_SIZE : 4
+OPTIMIZER :
+    LR : 1e-4
+    MAX_EPOCH : 200
+    WARMUP_STEPS : 5000
+BRANCH : 1
+LOGDIR : "./results/boxing_gt"
+args :
+    eval_name : "train"
+    gpt_sim : false
+    no_calc_score : false
+    ckpt : "./results/boxing_gt/pretrain_checkpoints/best_pretrained_weight.pth"
+
