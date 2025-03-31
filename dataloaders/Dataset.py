@@ -118,12 +118,9 @@ class DatasetLoader(Dataset) :
                             std_start = error_start
                             usr_start = start_frame + error_start
                 else :
-                    if item['standard_longer'] :
-                        std_start = start_frame
-                        usr_start = trimmed_start
-                    else :
-                        usr_start = start_frame + trimmed_start
-                        std_start = 0
+                    std_start = item["std_start_frame"]
+                    usr_start = item["start_frame"]
+                    length = item["aligned_seq_len"]
 
                 # Skeleton setting will use std_features instead of subtraction.
                 std_features = std_features[:, std_start : std_start + length]
