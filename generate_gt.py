@@ -2,7 +2,7 @@ from bert_score import score
 from nlgmetricverse import NLGMetricverse,load_metric
 from cider import readJSON, readPickle, getGTCaptions, BLEUScore, CIDERScore
 from collections import Counter
-import json, argparse, warnings, openai
+import json, argparse, warnings, openai, os
 from tqdm import tqdm
 from utils.retrieve_most_similar_label import compute_similar_score
 
