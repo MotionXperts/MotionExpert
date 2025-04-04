@@ -32,6 +32,4 @@ output_pretrainSTAGCN_difference
 
 BaseLine
 results/finetune*
-results/pretrain_checkpoints
-results/skating_gt_tmp*
 generate_boxing_gt.py
