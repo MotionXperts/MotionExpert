@@ -102,6 +102,8 @@ def main() :
     # folder_path = "./results/finetune_boxing_0303/jsons"
     # folder_path = "./results/boxing_0304/jsons"
     target_path = './results/skating_gt/'
+    target_path = './results/skating_evaluation/'
+    target_path = './results/boxing_evaluation/'
 
     folder_path = target_path + 'jsons'
     epoch_pattern = re.compile(r"^results_epoch(\d+)\.json$")
