@@ -62,14 +62,20 @@ def main():
     warnings.filterwarnings("ignore")
     cfg = argparse.Namespace()
     cfg.TASK = argparse.Namespace()
-    cfg.TASK.SPORT = "Skating"
+    # cfg.TASK.SPORT = "Skating"
+    cfg.TASK.SPORT = "Boxing"
     cfg.TASK.Setting = "GT"
     ground_truth = gts(cfg)
 
     All_file = {}
 
-    file_name = "./results/finetune_boxing_no_ref/jsons/results_epoch75.json"
-    file_name = "./results/boxing_0304/jsons/results_epoch70.json"
+    target_dir = "./results/finetune_boxing_no_ref"
+    epoch_number = "75"
+    target_dir = "./results/boxing_0304"
+    epoch_number = "70"
+    target_dir = "./results/boxing_evaluation"
+    epoch_number = "175"
+    file_name = os.path.join(target_dir, f"jsons/results_epoch{epoch_number}.json")
     predictions = {}
     with open(file_name, 'r') as f:
                 json_data = json.load(f)
@@ -90,11 +96,8 @@ def main():
     # All_file calculate bertscore sort and then calculate bleu1, bleu4, rouge, cider
     All_file = dict(sorted(All_file.items(), key = lambda item: item[1]['scores']['bertscore'], reverse = True))
 
-    path_name = './results/finetune_boxing/boxing_gt.json'
-    path_name = './RGB_boxing_gt.json'
-    path_name = './No_ref_boxing_gt.json'
-    path_name = './results/boxing_0304/No_ref_boxing_gt.json'
-    with open(path_name, 'w') as f :
+    output_gt_path = os.path.join(target_dir, f"jsons/gt.json")
+    with open(output_gt_path, 'w') as f :
         json.dump(ground_truth, f, indent = 4)
 
 if __name__ == "__main__" :
