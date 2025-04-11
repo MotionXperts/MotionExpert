@@ -53,32 +53,35 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
 
         # Forwards the data through the model.
         outputs = model(**inputs)
+        if cfg.LOSS == "ClosestSimGT" :
+            # From multiple ground truths, select the one that is most similar to the prediction,
+            # and compute the cross-entropy loss. The goal is to converge towards the most similar
+            # ground truth.
+            logits = outputs.logits
+            batch_size, seq_len, vocab_size = logits.shape
+            best_losses, best_gts = [], []
+            loss_fn = torch.nn.CrossEntropyLoss(ignore_index = -100)
 
-        # From multiple ground truths, select the one that is most similar to the prediction,
-        # and compute the cross-entropy loss. The goal is to converge towards the most similar
-        # ground truth.
-        logits = outputs.logits
-        batch_size, seq_len, vocab_size = logits.shape
-        best_losses, best_gts = [], []
-        loss_fn = torch.nn.CrossEntropyLoss(ignore_index = -100)
+            for i in range(batch_size) :
+                min_loss = float('inf')
+                num_gt = len(labels_batch[i])
+                for j in range(num_gt) :
+                    gt_label = labels_batch[i][j]
+                    gt_label = Tokenizer([gt_label], return_tensors = "pt", padding = "max_length",
+                                        truncation = True, max_length = 160)['input_ids'].to(src_batch.device)
+                    gt_label = gt_label[:, 1:].to(logits.device)
+                    avg_loss = loss_fn(logits[i].view(-1, vocab_size), gt_label.view(-1))
+                    if avg_loss < min_loss :
+                        min_loss = avg_loss
+                        best_gt = gt_label
+                best_losses.append(min_loss)
+                best_gts.append(best_gt)
 
-        for i in range(batch_size) :
-            min_loss = float('inf')
-            num_gt = len(labels_batch[i])
-            for j in range(num_gt) :
-                gt_label = labels_batch[i][j]
-                gt_label = Tokenizer([gt_label], return_tensors = "pt", padding = "max_length",
-                                     truncation = True, max_length = 160)['input_ids'].to(src_batch.device)
-                gt_label = gt_label[:, 1:].to(logits.device)
-                avg_loss = loss_fn(logits[i].view(-1, vocab_size), gt_label.view(-1))
-                if avg_loss < min_loss :
-                    min_loss = avg_loss
-                    best_gt = gt_label
-            best_losses.append(min_loss)
-            best_gts.append(best_gt)
-
-        final_labels = torch.stack(best_gts)
-        loss = loss_fn(logits.view(-1, vocab_size), final_labels.view(-1))
+            final_labels = torch.stack(best_gts)
+            loss = loss_fn(logits.view(-1, vocab_size), final_labels.view(-1))
+        else :
+            # Calculate loss for every ground truth
+            loss = outputs.loss
 
         # Computes gradients using backpropagation.
         loss.backward()
