@@ -104,34 +104,33 @@ class SimpleT5Model(nn.Module) :
         subtraction = kwargs['subtraction']
         self.stagcn.train()
         stagcn_embedding, _, _ = self.stagcn(input_embedding)
-        if hasattr(self.cfg, "BRANCH") and self.cfg.BRANCH != 0 :
-            if self.cfg.TASK.PRETRAIN_DIFFERENCE :
-                with torch.no_grad() :
-                    self.stagcn.eval()
-                    if self.cfg.TASK.PRETRAIN :
-                        standard_input_embedding = self.get_standard_feature(input_embedding, seq_len, self.cfg.TASK.PRETRAIN, None)
-                        standard_embedding, _ , _ = self.stagcn(standard_input_embedding)
-                    else :
-                        standard = standard.permute(0, 2, 1, 3)
-                        standard_embedding, _ , _ = self.stagcn(standard)
+        if self.cfg.TASK.PRETRAIN_DIFFERENCE :
+            with torch.no_grad() :
+                self.stagcn.eval()
+                if self.cfg.TASK.PRETRAIN :
+                    standard_input_embedding = self.get_standard_feature(input_embedding, seq_len, self.cfg.TASK.PRETRAIN, None)
+                    standard_embedding, _ , _ = self.stagcn(standard_input_embedding)
+                else :
+                    standard = standard.permute(0, 2, 1, 3)
+                    standard_embedding, _ , _ = self.stagcn(standard)
 
-                difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding, self.cfg.TASK.DIFFERENCE_SETTING)
-                transform_embedding, max_indices = self.get_transformation_feature(stagcn_embedding,
-                                                                                   difference_embedding,
-                                                                                   self.cfg.TASK.PRETRAIN_DIFFERENCE)
+            difference_embedding = self.get_difference_feature(stagcn_embedding, standard_embedding, self.cfg.TASK.DIFFERENCE_SETTING)
+            transform_embedding, max_indices = self.get_transformation_feature(stagcn_embedding,
+                                                                               difference_embedding,
+                                                                               self.cfg.TASK.PRETRAIN_DIFFERENCE)
 
-            elif self.cfg.TASK.DIFFERENCE_TYPE == 'RGB' :
-                # The dimension of difference_embedding is [batch size, seq length, 1, 128]
-                difference_embedding = subtraction
-                # The dimension of difference_embedding becomes [batch size, seq length, 22, 128]
-                difference_embedding = subtraction.unsqueeze(2).expand(-1, -1, 22, -1)
-                transform_embedding, max_indices = self.get_transformation_feature(stagcn_embedding,
-                                                                                   difference_embedding,
-                                                                                   self.cfg.TASK.PRETRAIN_DIFFERENCE)
-            else : 
-                transform_embedding, max_indices = self.get_transformation_feature(stagcn_embedding,
-                                                                                   None,
-                                                                                   self.cfg.TASK.PRETRAIN_DIFFERENCE)
+        elif self.cfg.TASK.DIFFERENCE_TYPE == 'RGB' :
+            # The dimension of difference_embedding is [batch size, seq length, 1, 128]
+            difference_embedding = subtraction
+            # The dimension of difference_embedding becomes [batch size, seq length, 22, 128]
+            difference_embedding = subtraction.unsqueeze(2).expand(-1, -1, 22, -1)
+            transform_embedding, max_indices = self.get_transformation_feature(stagcn_embedding,
+                                                                               difference_embedding,
+                                                                               self.cfg.TASK.PRETRAIN_DIFFERENCE)
+        else :
+            transform_embedding, max_indices = self.get_transformation_feature(stagcn_embedding,
+                                                                               None,
+                                                                               self.cfg.TASK.PRETRAIN_DIFFERENCE)
 
         logits = self.t5(inputs_embeds = transform_embedding.contiguous(),
                          attention_mask = input_embedding_mask,
