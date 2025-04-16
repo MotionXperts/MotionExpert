@@ -104,13 +104,16 @@ def main() :
     target_path = './results/skating_gt/'
     target_path = './results/skating_evaluation/'
     target_path = './results/boxing_evaluation/'
-
+    target_path = './results/skating_gt_PerGT/'
+    target_epoch = 90
     folder_path = target_path + 'jsons'
     epoch_pattern = re.compile(r"^results_epoch(\d+)\.json$")
     for file_name in os.listdir(folder_path) :
         match = epoch_pattern.match(file_name)
         if match :
             epoch_num = int(match.group(1))
+            if target_epoch != None and epoch_num != target_epoch:
+                continue
         if file_name.endswith('.json') and file_name.startswith('results_epoch'):
             file_path = os.path.join(folder_path, file_name)
             predictions = {}
