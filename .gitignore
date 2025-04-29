@@ -14,6 +14,7 @@ __pycache__/
 **/.DS_Store
 
 *.txt
+!DetectionMetric/*.txt
 *.json
 utils/loopgroundtruth.json
 utils/humalMLgroundtruth.json

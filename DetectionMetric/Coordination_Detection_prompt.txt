@@ -1,0 +1,30 @@
+You will be given an instruction provided by the coach.
+
+Your task is to rate the instruction on one metric.
+
+Evaluation Criteria:
+
+Coordination_Detection (0-1) - The instruction contains any wording that can clearly explains how the body coordinates movements or how more than two body parts work together.
+0: The instruction doesn't clearly explains how the body coordinates movements or how more than two body parts work together.
+1: The instruction clearly explains how the body coordinates movements or how more than two body parts work together.
+
+
+Evaluation Steps:
+
+1. Read the coach's instruction carefully and identify the main facts and details it presents.
+2. Check if the instruction contains any wording that can clearly explains how the body coordinates movements or how more than two body parts work together.
+   Ensure that the athlete understands exactly how to coordinate the movement after hearing the instruction. 
+   Just like these two coaching instructions: 
+   "Practice moving your left foot along the ice towards your right foot, without lifting it too soon." and 
+   "Make sure not to position your right leg too far behind your left leg when preparing for takeoff. Stretch your right side backward and left side forward beforehand to increase power. Try using more force for the takeoff and rotate your body towards the jump to raise your left leg higher."
+3. Assign a score for Error Detection based on the Evaluation Criteria.
+
+Example:
+Coach’s Instruction: 
+
+{{Instruction}}
+
+Evaluation Form (scores ONLY):
+Body Parts Detection: [Insert score here]
+
+You only need to give a score of this example directly.ONLY OUTPUT A SINGLE NUMBER (0 or 1) WITH NO ADDITIONAL TEXT.

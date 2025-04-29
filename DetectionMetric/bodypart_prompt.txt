@@ -1,0 +1,30 @@
+You will be given an instruction provided by the coach.
+
+Your task is to rate the instruction on one metric.
+
+Evaluation Criteria:
+
+Body Parts Detection (0-1) - The instruction contains any wording that includes body parts clearly.
+0: The instruction doesn't clearly point out the body parts.
+1: The instruction clearly points out the body parts.
+
+
+Evaluation Steps:
+
+1. Read the coach's instruction carefully and identify the main facts and details it presents.
+2. Check if the instruction contains any wording that can point out the body parts clearly. 
+   Ensure that the athlete understands exactly which body parts to focus on after hearing the instruction.
+   Just like these two coaching instructions: 
+   "Practice moving your left foot along the ice towards your right foot, without lifting it too soon." and 
+   "Keep your right leg from going over your left leg during takeoff for a smoother jump. Ensure your right toe lock stays firm. Manage your hands, don’t lift them too high while spinning, and make a circle with them."
+3. Assign a score for Error Detection based on the Evaluation Criteria.
+
+Example:
+Coach’s Instruction: 
+
+{{Instruction}}
+
+Evaluation Form (scores ONLY):
+Body Parts Detection: [Insert score here]
+
+You only need to give a score of this example directly.ONLY OUTPUT A SINGLE NUMBER (0 or 1) WITH NO ADDITIONAL TEXT.

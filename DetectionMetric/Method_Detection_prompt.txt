@@ -1,0 +1,30 @@
+You will be given an instruction provided by the coach.
+
+Your task is to rate the instruction on one metric.
+
+Evaluation Criteria:
+
+Method_Detection (0-1) - The instruction contains any wording that can clearly explains how to improve the motion.
+0: The instruction doesn't clearly explains how to improve the motion.
+1: The instruction clearly explains how to improve the motion.
+
+
+Evaluation Steps:
+
+1. Read the coach's instruction carefully and identify the main facts and details it presents.
+2. Check if the instruction contains any wording that can clearly explains how to improve the motion.
+   Ensure that the athlete understands exactly what the logic of the motion is after hearing the instruction. 
+   Just like these two coaching instructions: 
+   "Practice moving your left foot along the ice towards your right foot, without lifting it too soon." and 
+   "You need to have more speed before the jump."
+3. Assign a score for Error Detection based on the Evaluation Criteria.
+
+Example:
+Coach’s Instruction: 
+
+{{Instruction}}
+
+Evaluation Form (scores ONLY):
+Body Parts Detection: [Insert score here]
+
+You only need to give a score of this example directly.ONLY OUTPUT A SINGLE NUMBER (0 or 1) WITH NO ADDITIONAL TEXT.
