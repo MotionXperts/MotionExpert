@@ -14,11 +14,10 @@ __pycache__/
 **/.DS_Store
 
 *.txt
-!DetectionMetric/*.txt
+!SportIndicator/*.txt
 *.json
 utils/loopgroundtruth.json
 utils/humalMLgroundtruth.json
-utils/DetectionMetric
 utils/check_checkpoint.py
 utils/check_repulicate.py
 utils/evaluation_score*

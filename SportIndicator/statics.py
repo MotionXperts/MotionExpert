@@ -138,7 +138,3 @@ if __name__ == '__main__':
     output_filepath = "analyze_boxing.json"
     with open(output_filepath, 'w') as f:
         json.dump(data, f, indent=4)
-
-    
-
-                
