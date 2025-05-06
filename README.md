@@ -188,11 +188,9 @@ Concept Difference : https://hackmd.io/@uan/HJvPoxNw6
 ## Reference
 * [HybrIK: Hybrid Analytical-Neural Inverse Kinematics for Body Mesh Recovery](https://github.com/Jeff-sjtu/HybrIK)
 * [Spatial Temporal Graph Convolutional Networks for Skeleton-Based Action Recognition (STGCN)](https://github.com/yysijie/st-gcn)
-* [Spatio-Temporal adaptive graph convolutional network model (STAGCN)](https://github.com/machine-perception-robotics-group/SpatialTemporalAttentionGCN)
+* [Spatial Temporal Attention Graph Convolutional Networks with Mechanics-Stream for Skeleton-based Action Recognition (STA-GCN)](https://github.com/machine-perception-robotics-group/SpatialTemporalAttentionGCN)
 * [T5 model document](https://huggingface.co/docs/transformers/model_doc/t5)
 * [BertViz - Visualize Attention in NLP Models](https://github.com/jessevig/bertviz)
 * [Dynamic time warping](https://github.com/minghchen/CARL_code/blob/master/utils/dtw.py)
 * [CARL](https://arxiv.org/abs/2203.14957)
 * [Temporal Cycle-Consistency Learning](https://arxiv.org/abs/1904.07846)
-
-
