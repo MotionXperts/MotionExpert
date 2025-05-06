@@ -23,6 +23,24 @@ In case of installation of language_evaluation, you need to install from github 
 ## Prepare
 
 ### Dataset
+The dataset is saved as a pickle file and is of type `<class 'list'>`.
+Each entry in the dataset contains the following information :
+- `features` : `<class 'torch.Tensor'>` shape : `torch.Size([number of frames, 66])`
+```
+Each 66-dimensional feature vector in the dataset represents the 3D coordinates of 22 skeletal joints captured within a single frame. The vector is constructed by sequentially concatenating the x, y, and z coordinates of each joint. Specifically, the first three elements correspond to the x, y, and z coordinates of joint 0, the next three elements to joint 1, and this pattern continues up to joint 21.
+```
+- `labels` : `<class 'list'>`
+e.g.
+```
+['The back foot is not lifted. The rear hand is not protecting the chin. Not using the strength of the body, only the hands. Not clenching the fist when punching.', 'Feet should be shoulder-width apart.', "The lower body is not participating at all in the punching, but the puncher's power generation is pretty good. More body rotation should be added for power generation. The head should not move forward with it.", 'The back hand has no defense. The punches are not solid.']
+```
+- `video_name` : `<class 'str'>` e.g. `7_front_4_cam1`
+- `start_frame` : `<class 'int'>` e.g. `0`
+- `end_frame` `<class 'int'>` e.g. `51`
+- `std_start_frame` `<class 'int'>` e.g. `39`
+- `std_end_frame` `<class 'int'>` e.g. `90`
+- `original_seq_len` `<class 'int'>` e.g. `51`
+- `aligned_seq_len` `<class 'int'>` e.g. `51`
 
 ### Config File
 The template config file for pretrain :
