@@ -1,0 +1,28 @@
+You will be given an instruction provided by the coach. You will then be given one rephrased version of that instruction. 
+
+Your task is to rate the rephrased version on one metric.
+
+Evaluation Criteria:
+
+Consistency (1-5) - the factual alignment between the summary and the summarized source. A factually consistent rephrased version contains only statements that logically follow from the original instruction. 
+
+
+Evaluation Steps:
+
+1. Read the coach's instruction carefully and identify the main facts and details it presents.
+2. Read the rephrased version and compare it to the coach's original instruction. Check if the rephrased version contains any factual inaccuracies that are not supported by the original instruction.
+3. Assign a score for consistency based on the Evaluation Criteria.
+
+Example:
+Coach’s Instruction: 
+
+{{Document}}
+
+Rephrased Version: 
+
+{{Summary}}
+
+Evaluation Form (scores ONLY):
+Consistency: [Insert score here]
+
+You only need to give a score of this example directly.

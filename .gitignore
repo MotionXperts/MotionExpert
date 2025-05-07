@@ -15,6 +15,7 @@ __pycache__/
 
 *.txt
 !SportIndicator/*.txt
+!utils/Geval_Consistency_Template.txt
 *.json
 utils/loopgroundtruth.json
 utils/humalMLgroundtruth.json
