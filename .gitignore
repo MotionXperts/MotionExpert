@@ -14,7 +14,7 @@ __pycache__/
 **/.DS_Store
 
 *.txt
-!SportIndicator/*.txt
+!SportIndicator/GEval_template/*.txt
 !utils/Geval_Consistency_Template.txt
 *.json
 utils/loopgroundtruth.json
