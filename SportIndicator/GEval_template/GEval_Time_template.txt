@@ -2,30 +2,26 @@ You will be given an instruction provided by the coach.
 
 Your task is to rate the instruction on one metric.
 
+
 Evaluation Criteria:
 
 Time Detection (0-1) - The instruction contains wording that clearly includes time-related information.for example like: when take off, during the landing... 
 0: The instruction doesn't mention time-related information.
 1: The instruction clearly mentions time-related information.
 
-
 Evaluation Steps:
 
 1. Read the coach's instruction carefully and identify the main facts and details it presents.
-2. Check if the instruction contains any wording that clearly includes time-related information.
-   Ensure that the athlete can understand when and how to act after hearing the instruction.
-   Just like these three coaching instructions: 
-   "Remember to keep your posture straight and vertical during the initial stages of the jump, it will help in achieving the correct form.",
-   "Bend your hands a bit at takeoff to aid your spin." and
-   "Stretch your right side backward and left side forward beforehand to increase power."
+2. Check if the instruction contains any wording that clearly includes time-related information. Ensure that the athlete can understand when and how to act after hearing the instruction. Just like these three coaching instructions: "Remember to keep your posture straight and vertical during the initial stages of the jump, it will help in achieving the correct form.", "Bend your hands a bit at takeoff to aid your spin." and "Stretch your right side backward and left side forward beforehand to increase power."
 3. Assign a score for Time Detection based on the Evaluation Criteria.
 
 Example:
-Coach’s Instruction: 
+Coach's Instruction:
 
 {{Instruction}}
 
 Evaluation Form (scores ONLY):
 Time Detection: [Insert score here]
 
-You only need to give a score of this example directly.ONLY OUTPUT A SINGLE NUMBER (0 or 1) WITH NO ADDITIONAL TEXT.
+You only need to give a score of this example directly.
+Only output a single number (0 or 1) with no additional text.

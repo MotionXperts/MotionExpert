@@ -2,29 +2,26 @@ You will be given an instruction provided by the coach.
 
 Your task is to rate the instruction on one metric.
 
+
 Evaluation Criteria:
 
 Error Detection (0-1) - The instruction contains any wording that can point out the error clearly.
 0: The instruction doesn't clearly point out the error.
 1: The instruction clearly points out the error.
 
-
 Evaluation Steps:
 
 1. Read the coach's instruction carefully and identify the main facts and details it presents.
-2. Check if the instruction contains any wording that can point out the error clearly. 
-   Ensure that the athlete understands exactly what the problem is after hearing the instruction. 
-   Just like these two coaching instructions: 
-   "Make sure not to position your right leg too far behind your left leg when preparing for takeoff." and 
-   "Your first jump is good. For the second jump, avoid overturning your left side before takeoff and bend your right knee more for better height."
+2. Check if the instruction contains any wording that can point out the error clearly. Ensure that the athlete understands exactly what the problem is after hearing the instruction. Just like these two coaching instructions: "Make sure not to position your right leg too far behind your left leg when preparing for takeoff." and "Your first jump is good. For the second jump, avoid overturning your left side before takeoff and bend your right knee more for better height."
 3. Assign a score for Error Detection based on the Evaluation Criteria.
 
 Example:
-Coach’s Instruction: 
+Coach's Instruction:
 
 {{Instruction}}
 
 Evaluation Form (scores ONLY):
 Error Detection: [Insert score here]
 
-You only need to give a score of this example directly.ONLY OUTPUT A SINGLE NUMBER (0 or 1) WITH NO ADDITIONAL TEXT.
+You only need to give a score of this example directly.
+Only output a single number (0 or 1) with no additional text.
