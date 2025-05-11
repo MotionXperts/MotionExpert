@@ -10,6 +10,9 @@ log_path = f"/home/weihsin/projects/MotionExpert_tmp/MotionExpert/results/{targe
 target_path = "skating_gt_PerGT"
 log_path = f"/home/weihsin/projects/MotionExpert_tmp/MotionExpert/results/{target_path}/stdout.log"
 
+target_path = "boxing_gt_PerGT"
+log_path = f"/home/weihsin/projects/MotionExpert_tmp/MotionExpert/results/{target_path}/stdout.log"
+
 with open(log_path, "r", encoding = "utf-8") as f:
     lines = f.readlines()
 
