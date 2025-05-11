@@ -151,18 +151,20 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
             train_dataloader.set_postfix({'loss' : np.mean(loss_list),
                                           'lr' : scheduler.optimizer.param_groups[0]['lr']})
 
-        save_dir = cfg.JSONDIR + 'best_gt_indices'
-        save_ori_dir = cfg.JSONDIR + 'ori_gt_indices'
-        os.makedirs(save_dir, exist_ok = True)
-        os.makedirs(save_ori_dir, exist_ok = True)
-        sorted_indices = dict(sorted(video_best_gt_indices.items(), key=lambda item: item[0]))
-        sorted_ori_indices = dict(sorted(video_original_gt_indices.items(), key=lambda item: item[0]))
-        # Save the best ground truth indices for each video.
-        with open(os.path.join(save_dir, f'best_gt_indices_{epoch}.json'), 'w') as f :
-            json.dump(sorted_indices, f, indent=4)
-        if cfg.LOSS == "PerGT" :
-            with open(os.path.join(save_ori_dir, f'ori_gt_indices_{epoch}.json'), 'w') as f :
-                json.dump(sorted_ori_indices, f, indent=4)
+        # Visualize the gt indices
+        if cfg.DEBUG == True :
+            save_dir = cfg.JSONDIR + 'best_gt_indices'
+            save_ori_dir = cfg.JSONDIR + 'ori_gt_indices'
+            os.makedirs(save_dir, exist_ok = True)
+            os.makedirs(save_ori_dir, exist_ok = True)
+            sorted_indices = dict(sorted(video_best_gt_indices.items(), key=lambda item: item[0]))
+            sorted_ori_indices = dict(sorted(video_original_gt_indices.items(), key=lambda item: item[0]))
+            # Save the best ground truth indices for each video.
+            with open(os.path.join(save_dir, f'best_gt_indices_{epoch}.json'), 'w') as f :
+                json.dump(sorted_indices, f, indent=4)
+            if cfg.LOSS == "PerGT" :
+                with open(os.path.join(save_ori_dir, f'ori_gt_indices_{epoch}.json'), 'w') as f :
+                    json.dump(sorted_ori_indices, f, indent=4)
 
     if dist.get_rank() == 0 :
         summary_writer.add_scalar('train/loss', np.mean(loss_list), epoch)
