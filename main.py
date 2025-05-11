@@ -62,48 +62,45 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
         # Forwards the data through the model.
         outputs = model(**inputs)
 
-        if cfg.DEBUG == False :
-            loss = outputs.loss
         # Visualize the gt indices
+        logits = outputs.logits
+        batch_size, seq_len, vocab_size = logits.shape
+        best_losses, best_gts = [], []
+        best_gt_indices = []
+        loss_fn = torch.nn.CrossEntropyLoss(ignore_index = -100)
+        if cfg.LOSS == "ClosestSimGT" :
+            # ClosestSimGT :
+            # From multiple ground truths, select the one that is most similar to the prediction,
+            # and compute the cross-entropy loss. The goal is to converge towards the most similar
+            # ground truth.
+
+            for i in range(batch_size) :
+                min_loss = float('inf')
+                best_gt = None
+                best_idx = -1
+                num_gt = len(labels_batch[i])
+                for j in range(num_gt) :
+                    gt_label = labels_batch[i][j]
+                    gt_label = Tokenizer([gt_label], return_tensors = "pt", padding = "max_length",
+                                         truncation = True, max_length = 160)['input_ids'].to(src_batch.device)
+                    gt_label = gt_label[:, 1:].to(logits.device)
+                    avg_loss = loss_fn(logits[i].view(-1, vocab_size), gt_label.view(-1))
+                    if avg_loss < min_loss :
+                        min_loss = avg_loss
+                        best_gt = gt_label
+                        best_idx = j
+                best_losses.append(min_loss)
+                best_gts.append(best_gt)
+                best_gt_indices.append(best_idx)
+                vid = video_name[i]
+                video_best_gt_indices[vid] = best_idx
+
+            final_labels = torch.stack(best_gts)
+            loss = loss_fn(logits.view(-1, vocab_size), final_labels.view(-1))
         else :
-            logits = outputs.logits
-            batch_size, seq_len, vocab_size = logits.shape
-            best_losses, best_gts = [], []
-            best_gt_indices = []
-            loss_fn = torch.nn.CrossEntropyLoss(ignore_index = -100)
-            if cfg.LOSS == "ClosestSimGT" :
-                # ClosestSimGT :
-                # From multiple ground truths, select the one that is most similar to the prediction,
-                # and compute the cross-entropy loss. The goal is to converge towards the most similar
-                # ground truth.
-
-                for i in range(batch_size) :
-                    min_loss = float('inf')
-                    best_gt = None
-                    best_idx = -1
-                    num_gt = len(labels_batch[i])
-                    for j in range(num_gt) :
-                        gt_label = labels_batch[i][j]
-                        gt_label = Tokenizer([gt_label], return_tensors = "pt", padding = "max_length",
-                                            truncation = True, max_length = 160)['input_ids'].to(src_batch.device)
-                        gt_label = gt_label[:, 1:].to(logits.device)
-                        avg_loss = loss_fn(logits[i].view(-1, vocab_size), gt_label.view(-1))
-                        if avg_loss < min_loss :
-                            min_loss = avg_loss
-                            best_gt = gt_label
-                            best_idx = j
-                    best_losses.append(min_loss)
-                    best_gts.append(best_gt)
-                    best_gt_indices.append(best_idx)
-                    vid = video_name[i]
-                    video_best_gt_indices[vid] = best_idx
-
-                final_labels = torch.stack(best_gts)
-                loss = loss_fn(logits.view(-1, vocab_size), final_labels.view(-1))
-            else :
-                # PerGT :
-                # For each ground truth, compute the cross-entropy loss.
-
+            # PerGT :
+            # For each ground truth, compute the cross-entropy loss.
+            if cfg.DEBUG == True :
                 tgt_label = tgt_label.to(logits.device)
                 for i in range(batch_size) :
                     min_loss = float('inf')
@@ -135,8 +132,8 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
 
                     video_best_gt_indices[vid].append(best_idx)
                     video_original_gt_indices[vid].append(orignal_idx)
-                # Calculate loss for every ground truth
-                loss = outputs.loss
+            # Calculate loss for every ground truth
+            loss = outputs.loss
 
         # Computes gradients using backpropagation.
         loss.backward()
