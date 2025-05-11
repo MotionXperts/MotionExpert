@@ -25,6 +25,7 @@ OPTIMIZER :
     WARMUP_STEPS : 5000
 BRANCH : 1
 LOGDIR : "./results/skating_gt"
+LOSS : "PerGT"
 args :
     eval_name : "train"
     gpt_sim : false
