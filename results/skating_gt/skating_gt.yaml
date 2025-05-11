@@ -26,6 +26,7 @@ OPTIMIZER :
 BRANCH : 1
 LOGDIR : "./results/skating_gt"
 LOSS : "PerGT"
+DEBUG : false
 args :
     eval_name : "train"
     gpt_sim : false

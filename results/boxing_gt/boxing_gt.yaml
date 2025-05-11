@@ -22,8 +22,8 @@ OPTIMIZER :
     LR : 1e-4
     MAX_EPOCH : 200
     WARMUP_STEPS : 5000
-BRANCH : 1
 LOGDIR : "./results/boxing_gt"
+LOSS : "PerGT"
 args :
     eval_name : "train"
     gpt_sim : false
