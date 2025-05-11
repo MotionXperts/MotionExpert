@@ -1,4 +1,4 @@
-import os, torch, numpy as np, pickle, logging, warnings, traceback, warnings
+import os, torch, numpy as np, pickle, logging, warnings, traceback, warnings, json
 import torch.cuda
 os.environ['NUMEXPR_MAX_THREADS'] = '2'
 os.environ['TOKENIZERS_PARALLELISM'] = "false"
@@ -26,6 +26,8 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
     Tokenizer = AutoTokenizer.from_pretrained('t5-base', use_fast = True)
     if dist.get_rank() == 0 :
         train_dataloader = tqdm(train_dataloader, total = len(train_dataloader), desc = 'Training')
+    video_best_gt_indices = {}
+    video_original_gt_indices = {}
     for index, batch in enumerate(train_dataloader) :
         (video_name, src_batch, keypoints_mask_batch, standard, seq_len, label_batch, subtraction,
          labels_batch) = batch
@@ -53,33 +55,75 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
 
         # Forwards the data through the model.
         outputs = model(**inputs)
+        logits = outputs.logits
+        batch_size, seq_len, vocab_size = logits.shape
+        best_losses, best_gts = [], []
+        best_gt_indices = []
+        loss_fn = torch.nn.CrossEntropyLoss(ignore_index = -100)
         if cfg.LOSS == "ClosestSimGT" :
+            # ClosestSimGT :
             # From multiple ground truths, select the one that is most similar to the prediction,
             # and compute the cross-entropy loss. The goal is to converge towards the most similar
             # ground truth.
-            logits = outputs.logits
-            batch_size, seq_len, vocab_size = logits.shape
-            best_losses, best_gts = [], []
-            loss_fn = torch.nn.CrossEntropyLoss(ignore_index = -100)
 
             for i in range(batch_size) :
                 min_loss = float('inf')
+                best_gt = None
+                best_idx = -1
                 num_gt = len(labels_batch[i])
                 for j in range(num_gt) :
                     gt_label = labels_batch[i][j]
                     gt_label = Tokenizer([gt_label], return_tensors = "pt", padding = "max_length",
-                                        truncation = True, max_length = 160)['input_ids'].to(src_batch.device)
+                                         truncation = True, max_length = 160)['input_ids'].to(src_batch.device)
                     gt_label = gt_label[:, 1:].to(logits.device)
                     avg_loss = loss_fn(logits[i].view(-1, vocab_size), gt_label.view(-1))
                     if avg_loss < min_loss :
                         min_loss = avg_loss
                         best_gt = gt_label
+                        best_idx = j
                 best_losses.append(min_loss)
                 best_gts.append(best_gt)
+                best_gt_indices.append(best_idx)
+                vid = video_name[i]
+                video_best_gt_indices[vid] = best_idx
 
             final_labels = torch.stack(best_gts)
             loss = loss_fn(logits.view(-1, vocab_size), final_labels.view(-1))
         else :
+            # PerGT :
+            # For each ground truth, compute the cross-entropy loss.
+
+            tgt_label = tgt_label.to(logits.device)
+            for i in range(batch_size) :
+                min_loss = float('inf')
+                best_gt = None
+                best_idx = -1
+                orignal_idx = -1
+                num_gt = len(labels_batch[i])
+                for j in range(num_gt) :
+                    gt_label = labels_batch[i][j]
+                    gt_label = Tokenizer([gt_label], return_tensors = "pt", padding = "max_length",
+                                         truncation = True, max_length = 160)['input_ids'].to(src_batch.device)
+                    gt_label = gt_label[:, 1:].to(logits.device)
+                    avg_loss = loss_fn(logits[i].view(-1, vocab_size), gt_label.view(-1))
+                    if avg_loss < min_loss :
+                        min_loss = avg_loss
+                        best_gt = gt_label
+                        best_idx = j
+
+                    if torch.equal(gt_label[0], tgt_label[i]):
+                        orignal_idx = j
+                best_losses.append(min_loss)
+                best_gts.append(best_gt)
+                best_gt_indices.append(best_idx)
+                vid = video_name[i]
+                if vid not in video_best_gt_indices:
+                    video_best_gt_indices[vid] = []
+                if vid not in video_original_gt_indices:
+                    video_original_gt_indices[vid] = []
+
+                video_best_gt_indices[vid].append(best_idx)
+                video_original_gt_indices[vid].append(orignal_idx)
             # Calculate loss for every ground truth
             loss = outputs.loss
 
@@ -98,6 +142,20 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
         if dist.get_rank() == 0 :
             train_dataloader.set_postfix({'loss' : np.mean(loss_list),
                                           'lr' : scheduler.optimizer.param_groups[0]['lr']})
+
+        save_dir = cfg.JSONDIR + 'best_gt_indices'
+        save_ori_dir = cfg.JSONDIR + 'ori_gt_indices'
+        os.makedirs(save_dir, exist_ok = True)
+        os.makedirs(save_ori_dir, exist_ok = True)
+        sorted_indices = dict(sorted(video_best_gt_indices.items(), key=lambda item: item[0]))
+        sorted_ori_indices = dict(sorted(video_original_gt_indices.items(), key=lambda item: item[0]))
+        # Save the best ground truth indices for each video.
+        with open(os.path.join(save_dir, f'best_gt_indices_{epoch}.json'), 'w') as f :
+            json.dump(sorted_indices, f, indent=4)
+        if cfg.LOSS == "PerGT" :
+            with open(os.path.join(save_ori_dir, f'ori_gt_indices_{epoch}.json'), 'w') as f :
+                json.dump(sorted_ori_indices, f, indent=4)
+
     if dist.get_rank() == 0 :
         summary_writer.add_scalar('train/loss', np.mean(loss_list), epoch)
         logger.info(f"Epoch {epoch} : Loss {np.mean(loss_list)}")
