@@ -21,10 +21,11 @@ $ pip install -r requirements.txt
 In case of installation of language_evaluation, you need to install from github source code
 
 ## Prepare
-
 ### Dataset
 The dataset is saved as a pickle file and is of type `<class 'list'>`.
 Each entry in the dataset contains the following information :
+- `video_name` : `<class 'str'>` e.g. `7_front_4_cam1`
+- `motion_type` : `<class 'str'>` e.g. `front`
 - `features` : `<class 'torch.Tensor'>` shape : `torch.Size([number of frames, 66])`
 ```
 Each 66-dimensional feature vector in the dataset represents the 3D coordinates of 22 skeletal
@@ -41,7 +42,7 @@ e.g.
  "The lower body is not participating at all in the punching, but the puncher's power generation is pretty good. More body rotation should be added for power generation. The head should not move forward with it.",
  'The back hand has no defense. The punches are not solid.']
 ```
-- `video_name` : `<class 'str'>` e.g. `7_front_4_cam1`
+**Setting : aligned**
 - `start_frame` : `<class 'int'>` e.g. `0`
 - `end_frame` `<class 'int'>` e.g. `51`
 - `std_start_frame` `<class 'int'>` e.g. `39`
@@ -49,62 +50,37 @@ e.g.
 - `original_seq_len` `<class 'int'>` e.g. `51`
 - `aligned_seq_len` `<class 'int'>` e.g. `51`
 
+**Setting : error**
+- `error_start_frame` : `<class 'int'>`
+- `error_end_frame` `<class 'int'>`
+- `error_std_start_frame` `<class 'int'>`
+- `error_std_end_frame` `<class 'int'>`
+- `error_seq_len` `<class 'int'>`
+
+**Setting : GT**
+- `gt_start_frame` : `<class 'int'>`
+- `gt_end_frame` `<class 'int'>`
+- `gt_std_start_frame` `<class 'int'>`
+- `gt_std_end_frame` `<class 'int'>`
+- `gt_seq_len` `<class 'int'>`
 ### Config File
-The template config file for pretrain :
 
-`TASK.PRETRAIN_SETTING` can choose to use `STAGCN` or `Attention`.
-The first one is the implementation of [Spatial Temporal Attention Graph Convolutional Networks with Mechanics-Stream for Skeleton-based](https://openaccess.thecvf.com/content/ACCV2020/papers/Shiraki_Spatial_Temporal_Attention_Graph_Convolutional_Networks_with_Mechanics-Stream_for_Skeleton-based_ACCV_2020_paper.pdf) and the second one is Ours implementation.
+|Task | Ref | config file |
+| - | - | - |
+Pretrain | X | `./results/pretrain/pretrain.yaml` |
+Pretrain | V | `./results/pretrain_ref/pretrain_ref.yaml` |
+Pretrain | Pad0 | `./results/pretrain_pad/pretrain_pad.yaml` |
 
-`TASK.PRETRAIN_DIFFERENCE` can choose to be `true` or `false`. 
-If the `TASK.PRETRAIN_DIFFERENCE` is `true`, the model will use the difference information.
+|Task | Ref | Segment | config file |
+| - | - | - | - |
+Skating | X | - | `./results/skating/skating.yaml` |
+Skating | V | GT | `./results/skating_gt/skating_gt.yaml` |
+Skating | V | error | `./results/skating_error/skating_error.yaml` |
+Skating | V | aligned | `./results/skating_aligned/skating_aligned.yaml` |
+Boxing | X | - | `./results/boxing/boxing.yaml` |
+Boxing | V | error | `./results/boxing_error/boxing_error.yaml` |
+Boxing | V | aligned | `./results/boxing_aligned/boxing_aligned.yaml` |
 
-```shell
-HIDDEN_CHANNEL: 32
-OUT_CHANNEL: 128
-TRANSFORMATION:
-  REDUCTION_POLICY: 'TIME_POOL'
-TASK:
-  PRETRAIN: true
-  PRETRAIN_SETTING: 'Attention'
-  PRETRAIN_DIFFERENCE : true
-DATA: 
-  TRAIN: '{The PATH of the pretrain training dataset}'
-  TEST: '{The PATH of the pretrain testing dataset}'
-  BATCH_SIZE: 16
-OPTIMIZER:
-  LR: 1e-4
-  MAX_EPOCH: 50
-  WARMUP_STEPS: 5000
-BRANCH: 1
-LOGDIR: ./results/pretrain
-args:
-  eval_multi: false
-```
-The template config file for finetune :
-```shell
-HIDDEN_CHANNEL: 32
-OUT_CHANNEL: 128
-TRANSFORMATION:
-  REDUCTION_POLICY: 'TIME_POOL'
-TASK:
-  PRETRAIN: false
-  PRETRAIN_SETTING: 'Attention'
-  PRETRAIN_DIFFERENCE : true
-WEIGHT_PATH: '{The PATH of MotionExpert}/MotionExpert/results/pretrain/pretrain_checkpoints/checkpoint_epoch_00008.pth'
-DATA: 
-  TRAIN: '{The PATH of the finetune training dataset}'
-  TEST: '{The PATH of the finetune testing dataset}'
-  BATCH_SIZE: 16
-OPTIMIZER:
-  LR: 1e-4
-  MAX_EPOCH: 50
-  WARMUP_STEPS: 5000
-BRANCH: 1
-LOGDIR: ./results/finetune
-args:
-  eval_multi: false
-```
-Create the directory `results` in the directory `{The PATH of MotionExpert}/MotionExpert`.
 
 ### Pretrain
 Step 1 : create the `pretrain` directory.
@@ -128,6 +104,10 @@ After suspending the training, it will continue training from the last epoch nex
 For the developers : 
 
 If you want to **restart** the whole training process, you need to delete whole `pretrain_checkpoints` directory, otherwise it training from the last epoch next time.
+
+```bash
+$ torchrun --nproc_per_node=1 --master_port=29050 main.py --cfg_file ./results/pretrain_ref/pretrain_ref.yaml
+```
 
 ### Finetuning
 Step 1 : create the `finetune` directory.
