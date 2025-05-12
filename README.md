@@ -100,31 +100,24 @@ Boxing | V | aligned | `./results/boxing_aligned/boxing_aligned.yaml` |
 
 
 ### Pretrain
-Step 1 : create the `pretrain` directory.
-
-Step 2 : Put the `config.yaml` (for example : The template config file for pretrain) `pretrain` directory.
-
-Step 3 : After pretrain, the `pretrain_checkpoints` directory will be created automatically like the following :
-
+Take `pretrain_ref` setting as an example:
+- Step 1 : Create the `pretrain_ref` directory under the `./results` directory.
+- Step 2 : Place the `pretrain_ref.yaml`  file inside the `./results/pretrain_ref` directory.
+- Step 3 : Run the following command:
+```bash
+$ python -m torch.distributed.run --nproc_per_node=1 --master_port=29050 main.py --cfg_file ./results/pretrain_ref/pretrain_ref.yaml > output/pretrain_ref
 ```
+- Step 4 : After pretraining, the `./results/pretrain_ref` directory will be created automatically  as follows:
+```bash
 Motion Expert
     | - results
-        | - pretrain
+        | - pretrain_ref
             | -  pretrain_checkpoints
                 | - ...
-            | -  config.yaml 
+            | -  pretrain_ref.yaml
 ```
-For the users : 
-
-After suspending the training, it will continue training from the last epoch next time.
-
-For the developers : 
-
-If you want to **restart** the whole training process, you need to delete whole `pretrain_checkpoints` directory, otherwise it training from the last epoch next time.
-
-```bash
-$ torchrun --nproc_per_node=1 --master_port=29050 main.py --cfg_file ./results/pretrain_ref/pretrain_ref.yaml
-```
+- For users: If training is interrupted, it will resume from the last saved epoch the next time you run the command.
+- For developers: If you want to restart the entire training process from scratch, you must delete the entire `pretrain_checkpoints` directory. Otherwise, training will resume from the last saved epoch.
 
 ### Finetuning
 Step 1 : create the `finetune` directory.
