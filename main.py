@@ -217,10 +217,7 @@ def main():
 
     start_epoch = load_checkpoint(cfg, model, optimizer)
     try :
-        # Sanity check
-        # eval(cfg, test_dataloader, model, start_epoch, summary_writer, True, store, name_list, logger)
-        print("start_epoch", start_epoch)
-        print("max_epoch", max_epoch)
+        print(f"start_epoch : {start_epoch}, max_epoch : {max_epoch}")
         for epoch in range(start_epoch, max_epoch):
             # Distributed Training
             if dist.get_rank() == 0:
