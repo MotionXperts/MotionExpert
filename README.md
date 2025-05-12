@@ -14,9 +14,26 @@
 ## Install 
 create and activate a virtual env
 ```shell
-$ conda create -n motion2text python=3.7
-$ conda activate motion2text
-$ pip install -r requirements.txt
+$ conda create -n coachme python=3.10
+$ conda activate coachme
+$ pip install torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 --index-url https://download.pytorch.org/whl/cu121
+# transformers
+$ pip install transformers
+# easydict
+$ pip install easydict
+# dotenv
+$ pip install python-dotenv
+# language_evaluation
+$ pip install git+https://github.com/bckim92/language-evaluation.git
+# loralib
+$ pip install loralib
+# bert_score
+$ pip install bert-score
+# openai
+$ pip install openai
+# nlgmetricverse
+$ pip install nlg-metricverse
+$ pip install timm==0.9.10
 ```
 In case of installation of language_evaluation, you need to install from github source code
 
