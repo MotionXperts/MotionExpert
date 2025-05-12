@@ -19,23 +19,10 @@ def parse_args():
     if torch.__version__ == '2.2.2':
         localrank = '--local-rank'
 
-    parser.add_argument('--data', default='ntu', help='dataset')
     parser.add_argument(localrank, default=0, type=int, help='rank in local processes')
-    parser.add_argument('--local',type=bool,default = True)
-    parser.add_argument('--prefix', default='HumanML', help='prefix for saved filenames')
-    parser.add_argument('--gpu', type=int, default=1)
-    parser.add_argument('--ckpt', default=None, help='absolute path to the checkpoint')
     parser.add_argument('--cfg_file' , type=str, help='absolute path to the config.yaml')
-    parser.add_argument('--pretrained_ckpt',type=str,help='absolute path to the pretrained checkpoint, \
-                        specify if you want to load a pretrained model which is not in the same directory as the experiment')
-    parser.add_argument('--eval_multi',action='store_true',help='evaluate multiple checkpoints')
-    parser.add_argument('--no_calc_score',default=False,action='store_true',help='do not calculate score')
-    parser.add_argument('--eval_name', default='test', help='name of the evaluation')
-    parser.add_argument('--multi_label_evals',action='store_true',help='evaluate multiple labels')
-    parser.add_argument('--gpt_sim',default=False,action='store_true',help='use gpt to find similarity between predictions and ground truth')
-    parser.add_argument('--Finetune', type=bool, default=True)
-    args = parser.parse_args()
 
+    args = parser.parse_args()
     config = load_config(args)
     config.args = args
 
