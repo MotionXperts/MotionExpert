@@ -168,10 +168,7 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
         results["cider"] = scores["cider"]['score']
 
         P, R, F1 = score(predictions, gts, lang = "en", verbose = False, idf = True, rescale_with_baseline = True)
-        if cfg.TASK.SPORT == 'Skating' :
-            results["bertscore"] = F1.mean().item()
-        elif cfg.TASK.SPORT == 'Boxing' :
-            results["bertscore"] = F1.mean().item()
+        results["bertscore"] = F1.mean().item()
         logger.info(f"Epoch {epoch} : Loss {np.mean(loss_list)}")
         for key in results :
             logger.info(f"Epoch {epoch} : {key} : {results[key]}")
