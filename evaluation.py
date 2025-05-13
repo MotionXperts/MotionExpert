@@ -5,8 +5,8 @@ from utils.parser import parse_args, load_config
 from utils.data_information import convert
 from cider import readJSON, readPickle, getGTCaptions, BLEUScore, CIDERScore
 from dataloaders import construct_dataloader
-from models.T5 import SimpleT5Model
-from transformers import AutoTokenizer, AdamW
+from models.CoachMe import CoachMe
+from transformers import AutoTokenizer
 from torch.utils.tensorboard import SummaryWriter
 from models import load_checkpoint
 os.environ['TOKENIZERS_PARALLELISM'] = "false"
@@ -225,7 +225,7 @@ def main() :
     # Distributed Training.
     model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
     model = torch.nn.parallel.DistributedDataParallel(model, device_ids = [device], output_device = device)
-    optimizer = AdamW(model.parameters(), lr = float(cfg.OPTIMIZER.LR))
+    optimizer = torch.optim.AdamW(model.parameters(), lr = float(cfg.OPTIMIZER.LR))
     summary_writer = SummaryWriter(os.path.join(cfg.LOGDIR, 'train_logs'))
 
     # Distributed Training.

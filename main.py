@@ -6,7 +6,7 @@ os.environ['NUMEXPR_MAX_THREADS'] = '2'
 os.environ['TOKENIZERS_PARALLELISM'] = "false"
 warnings.filterwarnings("ignore", category = UserWarning)
 warnings.filterwarnings("ignore", category = FutureWarning)
-from transformers import AutoTokenizer, AdamW, get_linear_schedule_with_warmup
+from transformers import AutoTokenizer, get_linear_schedule_with_warmup
 from utils.parser import parse_args, load_config
 from tqdm import tqdm
 from pytorch_lightning import seed_everything
@@ -204,7 +204,7 @@ def main():
                                                       find_unused_parameters = True)
 
     scaler = torch.cuda.amp.GradScaler()
-    optimizer = AdamW(model.parameters(), lr = float(cfg.OPTIMIZER.LR))
+    optimizer = torch.optim.AdamW(model.parameters(), lr = float(cfg.OPTIMIZER.LR))
     summary_writer = SummaryWriter(os.path.join(cfg.LOGDIR, 'train_logs'))
 
     train_dataloader = construct_dataloader('train', cfg, cfg.DATA.TRAIN)
