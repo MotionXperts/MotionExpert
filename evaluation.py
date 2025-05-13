@@ -236,7 +236,7 @@ def main() :
     val_dataloader = construct_dataloader('test', cfg, pickle_file)
     summary_writer = SummaryWriter()
     
-    checkpoints = [args.ckpt]
+    checkpoints = [cfg.EVAL.ckpt]
     for ckpt in checkpoints :
         epoch = load_checkpoint(cfg, model, optimizer, ckpt)
         eval(cfg, val_dataloader, model, epoch, summary_writer, store = store, name_list = name_list, logger = logger,
