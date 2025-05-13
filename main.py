@@ -216,6 +216,10 @@ def main():
                                                 num_training_steps = max_epoch * len(train_dataloader))
 
     start_epoch = load_checkpoint(cfg, model, optimizer)
+    if cfg.PRETRAIN == True :
+        cycle = 1
+    else :
+        cycle = 5
     try :
         print(f"start_epoch : {start_epoch}, max_epoch : {max_epoch}")
         for epoch in range(start_epoch, max_epoch):
@@ -225,7 +229,7 @@ def main():
 
             train_dataloader.sampler.set_epoch(epoch)
             train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_writer, epoch, logger)
-            if (epoch + 1) % 5 == 0 :
+            if (epoch + 1) % cycle == 0 :
 
                 # Distributed Training
                 if dist.get_rank() == 0 :
