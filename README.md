@@ -128,14 +128,14 @@ Step 3 : Put the pretrained checkpoint file (for example : checkpoint_epoch_0000
 
 Run the following command from the MotionExpert directory.
 ```bash
-wget -O ./results/skating_gt/pretrain_checkpoints/best_pretrained_weight.pth 'https://www.dropbox.com/scl/fi/gnkhtz0h6mnhftxpo4cgb/checkpoint_epoch_00009.pth?rlkey=jheub4udl83ppobv53ibufnkq&st=n3amwn1r&dl=1'
+$ wget -O ./results/skating_gt/pretrain_checkpoints/best_pretrained_weight.pth 'https://www.dropbox.com/scl/fi/gnkhtz0h6mnhftxpo4cgb/checkpoint_epoch_00009.pth?rlkey=jheub4udl83ppobv53ibufnkq&st=n3amwn1r&dl=1'
 ```
 
 Step 4 : Place the `config.yaml` file in the `finetune` directory. For example, the config file `./results/skating_gt/skating_gt.yaml` should be placed in the `./results/skating_gt/` directory.
 
 Step 5 : Run the following command from the MotionExpert directory.
 ```bash
-torchrun --nproc_per_node=1 --master_port=29051 main.py --cfg_file ./results/skating_gt/skating_gt.yaml > output/skating_gt
+$ python -m torch.distributed.run --nproc_per_node=1 --master_port=29051 main.py --cfg_file ./results/skating_gt/skating_gt.yaml > output/skating_gt
 ```
 
 Step 6 : After finetuning, the `checkpoints` directory will be created automatically like the following :
@@ -161,20 +161,20 @@ If you want to **restart** the whole training process, you need to delete whole 
 ## Build
 #### template command
 ```shell
-$ torchrun --nproc_per_node <specify_how_many_gpus_to_run> main.py --cfg_file <path_to_cfg_file>
+$ python -m torch.distributed.run --nproc_per_node <specify_how_many_gpus_to_run> main.py --cfg_file <path_to_cfg_file>
 ```
 or, if the above yield Error ```detected multiple processes in same device```
 
 ```shell
-$ python -m torch.distributed.launch --nproc_per_node <specify_how_many_gpus_to_run> main.py --cfg_file <path_to_cfg_file>
+$ python -m torch.distributed.run --nproc_per_node <specify_how_many_gpus_to_run> main.py --cfg_file <path_to_cfg_file>
 ```
 #### Run pretrain setting
 ```shell
-$ python -m torch.distributed.launch --nproc_per_node 1 main.py --cfg_file {The PATH of MotionExpert}/MotionExpert/results/pretrain/config.yaml
+$ python -m torch.distributed.run --nproc_per_node 1 main.py --cfg_file {The PATH of MotionExpert}/MotionExpert/results/pretrain/config.yaml
 ```
 #### Run finetune setting
 ```shell
-$ python -m torch.distributed.launch --nproc_per_node 1 main.py --cfg_file {The PATH of MotionExpert}/MotionExpert/results/finetune/config.yaml 
+$ python -m torch.distributed.run --nproc_per_node 1 main.py --cfg_file {The PATH of MotionExpert}/MotionExpert/results/finetune/config.yaml 
 ```
 
 ### Submodule - VideoAlignment
