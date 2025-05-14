@@ -82,19 +82,19 @@ e.g.
 - `gt_seq_len` `<class 'int'>`
 ### Config File
 
-|Task | Ref | config file |
-| - | - | - |
-Pretrain | X | `./results/pretrain/pretrain.yaml` |
-Pretrain | V | `./results/pretrain_ref/pretrain_ref.yaml` |
-Pretrain | Pad0 | `./results/pretrain_pad/pretrain_pad.yaml` |
+|Task | Ref | Segment | config file |
+| - | - | - | - |
+Pretrain | X | NO_SEGMENT | `./results/pretrain/pretrain.yaml` |
+Pretrain | V | NO_SEGMENT | `./results/pretrain_ref/pretrain_ref.yaml` |
+Pretrain | Pad0 | NO_SEGMENT | `./results/pretrain_pad/pretrain_pad.yaml` |
 
 |Task | Ref | Segment | config file |
 | - | - | - | - |
-Skating | X | - | `./results/skating/skating.yaml` |
+Skating | X | NO_SEGMENT | `./results/skating/skating.yaml` |
 Skating | V | GT | `./results/skating_gt/skating_gt.yaml` |
 Skating | V | error | `./results/skating_error/skating_error.yaml` |
 Skating | V | aligned | `./results/skating_aligned/skating_aligned.yaml` |
-Boxing | X | - | `./results/boxing/boxing.yaml` |
+Boxing | X | NO_SEGMENT | `./results/boxing/boxing.yaml` |
 Boxing | V | error | `./results/boxing_error/boxing_error.yaml` |
 Boxing | V | aligned | `./results/boxing_aligned/boxing_aligned.yaml` |
 
