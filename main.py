@@ -216,7 +216,7 @@ def main():
                                                 num_training_steps = max_epoch * len(train_dataloader))
 
     start_epoch = load_checkpoint(cfg, model, optimizer)
-    if cfg.PRETRAIN == True :
+    if cfg.TASK.PRETRAIN == True :
         cycle = 1
     else :
         cycle = 5
