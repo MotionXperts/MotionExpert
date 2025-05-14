@@ -39,15 +39,15 @@ def construct_dataloader(split,cfg,pkl_file):
             # Batch Size must be set to 1 for visualization BertViz.
             batch_size = 1
 
-    dataset = DatasetLoader(cfg, cfg.TASK.PRETRAIN, pkl_file)
-
     if split == 'train':
         # Distributed Training
+        dataset = DatasetLoader(cfg, cfg.TASK.PRETRAIN, pkl_file, train=True)
         sampler = torch.utils.data.distributed.DistributedSampler(dataset, shuffle=True)
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, drop_last=True, sampler=sampler, collate_fn=collate_fn)
     elif split == "test":
         # Distributed Training
-        sampler = torch.utils.data.distributed.DistributedSampler(dataset,shuffle=False)
+        dataset = DatasetLoader(cfg, cfg.TASK.PRETRAIN, pkl_file, train=False)
+        sampler = torch.utils.data.distributed.DistributedSampler(dataset, shuffle=False)
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, drop_last=True, sampler=sampler, collate_fn=collate_fn, num_workers=0)
 
     return dataloader
