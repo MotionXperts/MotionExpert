@@ -167,11 +167,4 @@ class DatasetLoader(Dataset) :
     def __getitem__(self, idx) :
         if torch.is_tensor(idx) :
             idx = idx.tolist()
-
-        # Features : 6 x frame x 22.
-        features, label, video_name, subtraction, std_features, labels = self.samples[idx]
-        keypoints_mask = torch.ones(22)
-        current_len = torch.tensor(len(features[0]))
-
-        # Change self.standard to std_features.
-        return  video_name, torch.FloatTensor(features), torch.FloatTensor(keypoints_mask), torch.FloatTensor(std_features), current_len, label, subtraction, labels
+        return self.samples[idx]
