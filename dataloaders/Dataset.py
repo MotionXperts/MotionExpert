@@ -141,10 +141,9 @@ class DatasetLoader(Dataset) :
                                       "feature_start_frame" : usr_start,
                                       "std_start_frame" : std_start}
 
-        self.max_len = max_len
         print('Number of sample : ', len(self.samples))
 
-        if (cfg.args.eval_name != 'untrimmed' and cfg.TASK.SPORT != 'Boxing' and cfg.TASK.DIFFERENCE_SETTING != 'No') :
+        if (pretrain == False) :
             with open(cfg.LOGDIR + '/index_dict_results.json', 'w') as f :
                 json.dump(index_dict, f, indent = 4)
 
