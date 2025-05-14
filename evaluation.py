@@ -96,8 +96,6 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
                 max_index_results[name] = max_index.cpu().numpy().tolist()
             if dist.get_rank() == 0 :
                 eval_dataloader.set_postfix({'loss' : np.mean(loss_list)})
-            if sanity_check and index > 4 :
-                return
 
     # Distributed Training.
     if dist.get_rank() == 0 :
