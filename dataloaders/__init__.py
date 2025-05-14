@@ -36,6 +36,7 @@ def construct_dataloader(split,cfg,pkl_file):
     elif split == 'test' :
         batch_size = cfg.DATA.BATCH_SIZE
         if(not cfg.TASK.PRETRAIN):
+            # Batch Size must be set to 1 for visualization BertViz.
             batch_size = 1
 
     dataset = DatasetLoader(cfg, cfg.TASK.PRETRAIN, pkl_file)
