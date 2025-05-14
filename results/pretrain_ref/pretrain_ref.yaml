@@ -1,0 +1,26 @@
+# python -m torch.distributed.run --nproc_per_node=1 --master_port=29050 main.py --cfg_file ./results/pretrain_ref/pretrain_ref.yaml > output/pretrain_ref
+TASK :
+    PRETRAIN : True
+    HPP_WAY : "HPP"
+    REF : True
+    DIFF_WAY : "Subtraction"
+    DIFF_TYPE : "Skeleton"
+    PROJ_STRATEGY : "TIME_POOL"
+
+DATA: 
+    TRAIN : "/home/weihsin/datasets/PretrainDatasetPkl/humanml3D_train.pkl"
+    TEST : "/home/weihsin/datasets/PretrainDatasetPkl/humanml3D_test.pkl"
+    BATCH_SIZE: 16
+
+OPTIMIZER:
+    LR : 1e-4
+    MAX_EPOCH : 50
+    WARMUP_STEPS : 5000
+
+LOGDIR : "./results/pretrain_ref"
+LOSS : "PerGT"
+DEBUG : False
+SETTING : "GT"
+EVAL :
+    score : True
+    ckpt : "None"
