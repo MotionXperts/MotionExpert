@@ -17,129 +17,143 @@ def get_coords(joint_coords) :
     skeleton_coords = np.concatenate((joint, bone), axis=0)
     return skeleton_coords
 
+def get_std_coords(sport, motion_type, std_coords_list) :
+    if sport == 'Skating' :
+        if 'Axel' in motion_type :
+            return std_coords_list[0]
+        elif 'Axel_com' in motion_type :
+            return std_coords_list[1]
+        elif 'Loop' in motion_type :
+            return std_coords_list[2]
+        elif 'Lutz' in motion_type :
+            return std_coords_list[3]
+    elif sport == 'Boxing' :
+        if 'back' in motion_type :
+            return std_coords_list[0]
+        elif 'front' in motion_type :
+            return std_coords_list[1]
+
+def get_label(pretrain, labels, aug_labels) :
+    if not pretrain :
+        labels = labels + aug_labels
+
+    newlabels = ["Motion Description : " + label if pretrain else "Motion Instruction : " + label for label in labels]
+    return newlabels
+
+def get_segment(setting, item) :
+    # Deal with GT segment selection.
+    if setting == 'GT' :
+        std_start = item["gt_std_start_frame"]
+        usr_start = item["gt_start_frame"]
+        length = item["gt_seq_len"]
+    # Deal with error segment selection.
+    elif setting == 'ERROR' :
+        std_start = item["error_std_start_frame"]
+        usr_start = item["error_start_frame"]
+        length = item["error_seq_len"]
+    # Deal with aligned segment selection.
+    elif setting == 'ALIGNED' :
+        std_start = item["std_start_frame"]
+        usr_start = item["start_frame"]
+        length = item["aligned_seq_len"]
+
+    return std_start, usr_start, length
+
 class DatasetLoader(Dataset) :
-    def __init__(self, cfg, pretrain, pkl_file) :
+    def __init__(self, cfg, pretrain, pkl_file, train=True) :
         self.cfg = cfg
 
         with open(pkl_file, 'rb') as f :
             self.data_list = pickle.load(f)
             print("pkl_file", pkl_file)
 
-        if pretrain :
-            self.standard_features_list = [generate_data(self.data_list[0]['features'])]
-        else :
+        self.samples = []
+        index_dict = {}
+
+        if not pretrain :
             standard_path = cfg.STANDARD_PATH
             with open(standard_path, 'rb') as f :
                 standard_features_file = pickle.load(f)
-                self.standard_features_list = [generate_data(item['features']) for item in standard_features_file]
-
-        self.samples = []
-        max_len = 0  
-        index_dict = {}
-        print('Number of data in dataset : ', len(self.data_list))
+            std_coords_list = [get_coords(item['features']) for item in standard_features_file]
 
         for item in self.data_list :
             video_name = item['video_name']
-            features = generate_data(item['features'])
-
-            # Specify the corresponding standard features for the video.
-            # Motion Description.
-            if len(self.standard_features_list) == 1 :
-                std_features = self.standard_features_list[0]
-            # Motion Instruction.
-            elif cfg.TASK.SPORT == 'Skating' :
-                if 'Axel' in item['original_video_file'] :
-                    std_features = self.standard_features_list[0]
-                elif 'Axel_com' in item['original_video_file'] :
-                    std_features = self.standard_features_list[1]
-                elif 'Loop' in item['original_video_file'] :
-                    std_features = self.standard_features_list[2]
-                else :
-                    std_features = self.standard_features_list[3]
-            elif cfg.TASK.SPORT == 'Boxing' :
-                if 'back' in item['video_name'] :
-                    std_features = self.standard_features_list[0]
-                elif 'front' in item['video_name'] :
-                    std_features = self.standard_features_list[1]
-
-            # Specify the label.
-            if cfg.TASK.SPORT == 'Skating' :
-                if 'train' in pkl_file :
-                    labels = item['augmented_labels']
-                    labels.append(item['revised_label'])
-                elif cfg.args.eval_name == 'segment' or cfg.args.eval_name == 'untrimmed' :
-                    labels = ['']
-                else:
-                    labels = [item['revised_label']]
-            elif cfg.TASK.SPORT == 'Boxing' or cfg.TASK.SPORT == 'Manipulate' :
-                if cfg.args.eval_name == 'segment' or cfg.args.eval_name == 'untrimmed' :
-                    labels = ['']
-                else :
-                    labels = item['labels']
-
-            # Specify the task of training.
-            newlabels = ["Motion Description : " + label if pretrain else "Motion Instruction : " + label for label in labels]
-
-            # Specify the trimmed_start.
-            if 'trimmed_start' in item :
-                trimmed_start = item['trimmed_start']
-            else :
-                trimmed_start = 0
-
-            # Specify the number of frame.
-            start_frame, end_frame = int(item['start_frame']), int(item['end_frame'])
-            length = end_frame - start_frame - 1
-
-            if self.cfg.TASK.DIFFERENCE_TYPE == 'RGB' :
-                subtraction = item['subtraction']
-                if item['standard_longer'] :
-                    std_start = start_frame
-                    usr_start = trimmed_start
-                else :
-                    usr_start = start_frame + trimmed_start
-                    std_start = 0
-                # RGB setting will use subtraction instead of std_features.
-                std_features = torch.empty(0)
-                subtraction = subtraction[: features.shape[1]]
-
-            elif self.cfg.TASK.DIFFERENCE_TYPE == 'Skeleton' :
-                # Deal with error segment selection.
-                if self.cfg.args.eval_name == 'segment' :
-                    error_start, error_end = int(item['error_start_frame']), int(item['error_end_frame']) - 1
-                    length = error_end - error_start
-                    if item['error_end_frame'] == 0 :
-                        usr_start, std_start, length = 0, 0, 1
-                    else :
-                        if item['standard_longer'] :
-                            std_start = start_frame + error_start
-                            usr_start = trimmed_start + error_start
-                        else :
-                            std_start = error_start
-                            usr_start = start_frame + error_start
-                else :
-                    std_start = item["std_start_frame"]
-                    usr_start = item["start_frame"]
-                    length = item["aligned_seq_len"]
-
-                # Skeleton setting will use std_features instead of subtraction.
-                std_features = std_features[:, std_start : std_start + length]
-                subtraction = torch.empty(0)
-            # Get the feature with the number of frames matching the number of frames in the standard feature.
-            features = features[:, usr_start : usr_start + length]
-
-            # Every ground truth should be used to learn.
-            for label in newlabels :
-                if features.shape[1] == 0 or features.shape[1] == 1 :
-                    print(f"Skipping {video_name} as no frames found")
+            # Setting is 'ERROR' or 'ALIGNED' or 'NO_REF'
+            if self.cfg.SETTING != 'GT' :
+                if "_" in video_name :
                     continue
-                self.samples.append((features, label, video_name, subtraction, std_features, newlabels))
+            else :
+                if "_" not in video_name :
+                    continue
 
-            max_len = max(max_len, len(features[0]))
+            skeleton_coords = get_coords(item['features'])
 
-            # Save data for visulization attention graph on 2D skeleton.
-            index_dict[video_name] = {"seq_len" : length,
-                                      "feature_start_frame" : usr_start,
-                                      "std_start_frame" : std_start}
+            if pretrain == True or self.cfg.SETTING == "NO_SEGMENT":
+                std_coords = skeleton_coords
+                labels = get_label(pretrain, item['labels'], None)
+                # Use the whole sequence without segmentation.
+                usr_start, length = 0, skeleton_coords.shape[1]
+                subtraction = torch.empty(0)
+            else :
+                motion_type = item['motion_type']
+                std_coords = get_std_coords(cfg.TASK.SPORT, motion_type, std_coords_list)
+                labels = get_label(pretrain, item['labels'], item['aug_labels'])
+
+                # Specify the segment.
+                start_frame, end_frame, length = int(item['start_frame']), int(item['end_frame']), int(item['end_frame']) - int(item['start_frame'])
+                if self.cfg.TASK.DIFF_TYPE == 'RGB' :
+                    subtraction = item['subtraction']
+                    trimmed_start = item['trimmed_start']
+                    if item['standard_longer'] :
+                        std_start = start_frame
+                        usr_start = trimmed_start
+                    else :
+                        usr_start = start_frame + trimmed_start
+                        std_start = 0
+                    # RGB setting will use subtraction instead of std_coords.
+                    std_coords = torch.empty(0)
+                    seq_len = skeleton_coords.shape[1]
+                    subtraction = subtraction[: seq_len]
+
+                elif self.cfg.TASK.DIFF_TYPE == 'Skeleton' :
+                    std_start, usr_start, length = get_segment(self.cfg.SETTING, item)
+                    # Skeleton setting will use std_coords instead of subtraction.
+                    std_coords = std_coords[:, std_start : std_start + length]
+                    subtraction = torch.empty(0)
+
+            # Get the feature with the number of frames matching the number of frames in the standard feature.
+            skeleton_coords = skeleton_coords[:, usr_start : usr_start + length]
+            seq_len = skeleton_coords.shape[1]
+            frame_mask = torch.ones(22)
+            # Every ground truth should be used to learn.
+            if train == True :
+                for label in labels :
+                    if seq_len == 0 or seq_len == 1 :
+                        print(f"Skipping {video_name} as no frames found")
+                        continue
+                    self.samples.append((video_name,
+                                        torch.FloatTensor(skeleton_coords),
+                                        seq_len,
+                                        torch.FloatTensor(frame_mask),
+                                        label,
+                                        labels,
+                                        torch.FloatTensor(std_coords),
+                                        subtraction))
+            # Every sample only need to feed into the model once when testing.
+            else :
+                self.samples.append((video_name,
+                                    torch.FloatTensor(skeleton_coords),
+                                    seq_len,
+                                    torch.FloatTensor(frame_mask),
+                                    labels[0],
+                                    labels,
+                                    torch.FloatTensor(std_coords),
+                                    subtraction))
+            if pretrain == False :
+                # Save data for visulization attention graph on 2D skeleton.
+                index_dict[video_name] = {"seq_len" : seq_len,
+                                          "feature_start_frame" : usr_start,
+                                          "std_start_frame" : std_start}
 
         print('Number of sample : ', len(self.samples))
 
