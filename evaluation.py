@@ -66,8 +66,8 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
                       "result_dir" : cfg.LOGDIR,
                       "epoch" : epoch}
 
-            generated_ids, att_node, att_A, max_index = model.module.generate(**inputs)
-            # print("Genrated text : ", Tokenizer.decode(generated_ids[0], skip_special_tokens = True, clean_up_tokenization_spaces = True))
+            generated_ids, att_node, att_graph, max_index = model.module.generate(**inputs)
+
             inputs['decoder_input_ids'] = tgt_input.to(model.device)
             loss = model(**inputs).loss
 
