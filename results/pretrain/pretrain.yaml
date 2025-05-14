@@ -20,7 +20,7 @@ OPTIMIZER:
 LOGDIR : "./results/pretrain"
 LOSS : "PerGT"
 DEBUG : False
-SETTING : "NO_REF"
+SETTING : "NO_SEGMENT"
 EVAL :
     score : True
     ckpt : "None"
