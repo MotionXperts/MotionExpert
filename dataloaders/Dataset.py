@@ -5,17 +5,17 @@ from torch.utils.data import Dataset
 bonelink = [(0, 1), (0, 2), (0, 3), (1, 4), (2, 5), (3, 6), (4, 7), (5, 8), (6, 9), (7, 10), (8, 11),
             (9, 12), (9, 13), (9, 14), (12, 15), (13, 16), (14, 17), (16, 18), (17, 19), (18, 20), (19, 21)]
 
-def generate_data(current_keypoints) :
+def get_coords(joint_coords) :
     # Initialize the coordinates (x, y, z) for 22 joints and 22 bones.
-    joint = np.zeros((3, len(current_keypoints), 22))
-    bone = np.zeros((3, len(current_keypoints), 22))
-    for i in range(len(current_keypoints)) :
-        for j in range(0, len(current_keypoints[i]), 3) :
-            joint[:, i, j // 3] = current_keypoints[i, j : j + 3]
+    joint = np.zeros((3, len(joint_coords), 22))
+    bone = np.zeros((3, len(joint_coords), 22))
+    for i in range(len(joint_coords)) :
+        for j in range(0, len(joint_coords[i]), 3) :
+            joint[:, i, j // 3] = joint_coords[i, j : j + 3]
     for v1, v2 in bonelink :
         bone[:, :, v2] = joint[:, :, v1] - joint[:, :, v2]
-    coordinates = np.concatenate((joint, bone), axis=0)
-    return coordinates
+    skeleton_coords = np.concatenate((joint, bone), axis=0)
+    return skeleton_coords
 
 class DatasetLoader(Dataset) :
     def __init__(self, cfg, pretrain, pkl_file) :
