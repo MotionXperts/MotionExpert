@@ -27,10 +27,7 @@ def getGTCaptions(cfg, annotations):
     video_name_to_gts = defaultdict(list)
     for item in annotations:
         video_name = item['video_name']
-        if cfg.TASK.SPORT == 'Skating' :
-            output_sentence = item['revised_label']
-        elif cfg.TASK.SPORT == 'Boxing' :
-            output_sentence = item['labels']
+        output_sentence = item['labels']
         video_name_to_gts[video_name] = output_sentence
     return video_name_to_gts
 
