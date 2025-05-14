@@ -16,7 +16,7 @@ from torch.utils.tensorboard import SummaryWriter
 # Distributed Training
 import torch.distributed as dist
 from dataloaders import construct_dataloader
-from models.T5 import SimpleT5Model
+from models.CoachMe import CoachMe
 from models import save_checkpoint, load_checkpoint
 from datetime import timedelta
 
@@ -175,7 +175,7 @@ def main():
     logging.basicConfig(level = logging.INFO, format = '%(asctime)s %(filename)s %(lineno)d: %(message)s',
                         datefmt = '%Y-%m-%d %H:%M:%S', filename = os.path.join(cfg.LOGDIR, 'stdout.log'))
 
-    model = SimpleT5Model(cfg)
+    model = CoachMe(cfg)
 
     # Maintain a name list in main process.
     with open(cfg.DATA.TEST, 'rb') as f :
