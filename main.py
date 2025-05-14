@@ -35,8 +35,7 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
         video_original_gt_indices = {}
 
     for index, batch in enumerate(train_dataloader) :
-        (video_name, src_batch, keypoints_mask_batch, standard, seq_len, label_batch, subtraction,
-         labels_batch) = batch
+        (video_name, skeleton_coords, seq_len, frame_mask, label_batch, labels_batch, std_coords, subtraction) = batch
 
         # Clears all gradients stored in the model’s parameters.
         model.zero_grad()
@@ -45,15 +44,15 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
 
         # Convert the ground truth (descriptions or instructions) into token IDs.
         tgt_batch = Tokenizer(label_batch, return_tensors = "pt", padding = "max_length",
-                              truncation = True, max_length = 160)['input_ids'].to(src_batch.device)
+                              truncation = True, max_length = 160)['input_ids'].to(skeleton_coords.device)
         tgt_input = tgt_batch[:, :-1]
         tgt_label = tgt_batch[:, 1:]
 
         inputs = { "video_name" : video_name,
-                   "input_embedding" : src_batch.to(model.device),
-                   "input_embedding_mask" : keypoints_mask_batch.to(model.device),
-                   "standard" : standard.to(model.device),
-                   "seq_len" : seq_len.to(model.device),
+                   "skeleton_coords" : skeleton_coords.to(model.device),
+                   "frame_mask" : frame_mask.to(model.device),
+                   "seq_len" : seq_len,
+                   "std_coords" : std_coords.to(model.device),
                    "decoder_input_ids" : tgt_input.to(model.device),
                    "labels" : tgt_label.to(model.device),
                    "subtraction" : subtraction.to(model.device),
@@ -82,7 +81,7 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
                 for j in range(num_gt) :
                     gt_label = labels_batch[i][j]
                     gt_label = Tokenizer([gt_label], return_tensors = "pt", padding = "max_length",
-                                         truncation = True, max_length = 160)['input_ids'].to(src_batch.device)
+                                         truncation = True, max_length = 160)['input_ids'].to(skeleton_coords.device)
                     gt_label = gt_label[:, 1:].to(logits.device)
                     avg_loss = loss_fn(logits[i].view(-1, vocab_size), gt_label.view(-1))
                     if avg_loss < min_loss :
@@ -111,7 +110,7 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
                     for j in range(num_gt) :
                         gt_label = labels_batch[i][j]
                         gt_label = Tokenizer([gt_label], return_tensors = "pt", padding = "max_length",
-                                            truncation = True, max_length = 160)['input_ids'].to(src_batch.device)
+                                            truncation = True, max_length = 160)["input_ids"].to(skeleton_coords.device)
                         gt_label = gt_label[:, 1:].to(logits.device)
                         avg_loss = loss_fn(logits[i].view(-1, vocab_size), gt_label.view(-1))
                         if avg_loss < min_loss :

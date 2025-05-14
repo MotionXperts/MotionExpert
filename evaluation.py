@@ -37,7 +37,7 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
         if dist.get_rank() == 0 :
             eval_dataloader = tqdm(eval_dataloader, total = len(eval_dataloader), desc = 'Evaluating')
         for index, batch in enumerate(eval_dataloader) :
-            (video_name, src_batch, keypoints_mask_batch, standard, seq_len, label_batch, subtraction, labels_batch) = batch
+            (video_name, skeleton_coords, seq_len, frame_mask, label_batch, labels_batch, std_coords, subtraction) = batch
 
             decoder_input_ids = Tokenizer([prompt],
                                           return_tensors = "pt",
@@ -45,23 +45,23 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
                                           truncation = True,
                                           max_length = 160,
                                           add_special_tokens = False)['input_ids']
-            decoder_input_ids = decoder_input_ids.repeat(src_batch.shape[0], 1).to(src_batch.device)
+            decoder_input_ids = decoder_input_ids.repeat(skeleton_coords.shape[0], 1).to(skeleton_coords.device)
             tgt_batch = Tokenizer(label_batch,
                                   return_tensors = "pt",
                                   padding = "max_length",
                                   truncation = True,
-                                  max_length = 160)['input_ids'].to(src_batch.device)
+                                  max_length = 160)['input_ids'].to(skeleton_coords.device)
             tgt_input = tgt_batch[ :, : -1 ]
             tgt_label = tgt_batch[ :, 1 : ]
             inputs = {"video_name" : video_name,
-                      "input_embedding" : src_batch.to(model.device),
-                      "input_embedding_mask" : keypoints_mask_batch.to(model.device),
-                      "standard" : standard.to(model.device),
-                      "seq_len" : seq_len.to(model.device),
+                      "skeleton_coords" : skeleton_coords.to(model.device),
+                      "frame_mask" : frame_mask.to(model.device),
+                      "seq_len" : seq_len,
+                      "std_coords" : std_coords.to(model.device),
                       "decoder_input_ids" : decoder_input_ids.to(model.device),
+                      "labels" : tgt_label.to(model.device),
                       "subtraction" : subtraction.to(model.device),
                       "tokenizer" : Tokenizer,
-                      "labels" : tgt_label.to(model.device),
                       # For visualizing attention.
                       "result_dir" : cfg.LOGDIR,
                       "epoch" : epoch}
