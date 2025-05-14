@@ -111,12 +111,12 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
         filename = str(epoch) + '.json'
         result_json = cfg.JSONDIR + '/results_epoch' + filename
         with open(result_json, 'w') as f :
-            json.dump(results, f, indent = 1)
+            json.dump(results, f, indent = 4)
             print(f"Results saved in {result_json}")
         with open(cfg.JSONDIR + '/att_node_results_epoch' + filename, 'w') as f :
-            json.dump(att_node_results, f)
+            json.dump(att_node_results, f, indent = 4)
         with open(cfg.JSONDIR + '/att_graph_results_epoch' + filename, 'w') as f :
-            json.dump(att_graph_results, f)
+            json.dump(att_graph_results, f, indent = 4)
         with open(cfg.JSONDIR + '/max_index_epoch' + filename, 'w') as f :
             json.dump(max_index_results, f, indent = 4)
 
