@@ -2,33 +2,31 @@ import torch, numpy as np
 from dataloaders.Dataset import DatasetLoader
 from torch.utils.data import DataLoader
 from torch.nn.utils.rnn import pad_sequence
+def covert_skeleton(skeleton_coords):
+    # Convert to [number of frame , coordinates(6), joints(22)].
+    return [skeleton.permute(1, 0, 2) for skeleton in skeleton_coords]
 
 def collate_fn(batch):
-    video_name, keypoints, keypoints_mask, standard, seq_len, label, subtraction, labels = zip(*batch)
-    def collect_video_from_batch(batch, idx=1):
-        seq = []
-        # Convert to [number of frame , coordinates(6), joints(22)].
-        for b in batch:
-            seq.append(b[idx].permute(1, 0, 2))
-        return seq
+    video_name, skeleton_coords, seq_len, frame_mask, label, labels, std_coords, subtraction = zip(*batch)
+    skeleton_coords = covert_skeleton(skeleton_coords)
 
-    keypoints = collect_video_from_batch(batch)
-
-    # The dimension of padded_keypoints is [B, F, coordinates, nodes].
-    padded_keypoints = pad_sequence(keypoints, batch_first = True, padding_value = 0)
-    keypoints_mask = pad_sequence(keypoints_mask, batch_first = True, padding_value = 0)
+    # The dimension of padded_skeleton_coords is [B, F, coordinates, nodes].
+    padded_skeleton_coords = pad_sequence(skeleton_coords, batch_first = True, padding_value = 0)
+    frame_mask = pad_sequence(frame_mask, batch_first = True, padding_value = 0)
 
     # Convert to [Batch size, coordinates(6), number of frame, joints(22)].
-    padded_keypoints = padded_keypoints.permute(0, 2, 1, 3)
+    padded_skeleton_coords = padded_skeleton_coords.permute(0, 2, 1, 3)
 
-    standard = collect_video_from_batch(batch, 3)
+    standard = covert_skeleton(std_coords)
     # The dimension of padded_standard is [B, F, coordinates, nodes].
     padded_standard = pad_sequence(standard, batch_first = True, padding_value = 0)
-    
-    seq_len = torch.stack(seq_len,dim=0)
-    subtraction =pad_sequence(subtraction, batch_first = True, padding_value = 0)
+    padded_standard = padded_standard.permute(0, 2, 1, 3)
+
+    subtraction = pad_sequence(subtraction, batch_first = True, padding_value = 0)
+
+    seq_len = [s.item() if isinstance(s, torch.Tensor) else s for s in seq_len]
     # Change standard to padded_standard.
-    return (video_name), padded_keypoints, keypoints_mask, (padded_standard), (seq_len), (label), subtraction, labels
+    return video_name, padded_skeleton_coords, seq_len, frame_mask, label, labels, padded_standard, subtraction
 
 def construct_dataloader(split,cfg,pkl_file):
     if split == 'train' :
