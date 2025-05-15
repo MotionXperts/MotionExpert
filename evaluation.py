@@ -24,7 +24,7 @@ dotenv.load_dotenv()
 logger = logging.getLogger(__name__)
 
 def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = False, store = None, video_name_list = None,
-         logger = None, eval_name = "", pkl_file = None) :
+         logger = None, eval_name = "", test_pkl_file = None) :
     Tokenizer = AutoTokenizer.from_pretrained('t5-base', use_fast = True)
     model.eval()
     model = model.cuda()
@@ -120,28 +120,11 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
         with open(cfg.JSONDIR + '/max_index_epoch' + filename, 'w') as f :
             json.dump(max_index_results, f, indent = 4)
 
-        predictions = readJSON(cfg.JSONDIR + '/results_epoch' + str(epoch) + '.json')
-        annotations = readPickle(cfg.DATA.TEST) if pkl_file is None else readPickle(pkl_file)
-
-        # GPT chooses the most similar label from the ground truth.
-        if cfg.args.gpt_sim :
-            key = os.getenv("OPENAI_KEY")
-            annotations, abandoned = compute_similar_score(cfg, predictions, key, eval_name, epoch)
-            for ab in abandoned :
-                print(f"Abandoned : {ab}")
-                del predictions[ab]
-        if cfg.args.no_calc_score :
-            print("\033[91m {} \033[00m".format("Result saved in ", result_json, ". Skipping score calculation."))
-        print("Length of annotations : ", len(annotations))
-        gts = getGTCaptions(cfg, annotations)
-        print("Length of gts : ", len(gts))
-        new_gts = {}
-        print("Length of results : ", len(results))
-        for name in results :
-            new_gts[name] = gts[name]
-
-        gts = new_gts
-
+        predictions_dict = readJSON(cfg.JSONDIR + '/results_epoch' + str(epoch) + '.json')
+        annotations = readPickle(test_pkl_file)
+        ground_truth_dict = getGTCaptions(cfg, annotations)
+        print("Length of predictions_dict : ", len(predictions_dict))
+        print("Length of ground_truth_dict : ", len(ground_truth_dict))
         # Calculate scores.
         metrics = [load_metric("bleu", resulting_name = "bleu_1", compute_kwargs = {"max_order" : 1}),
                    load_metric("bleu", resulting_name = "bleu_4", compute_kwargs = {"max_order" : 4}),
@@ -185,8 +168,8 @@ def main() :
 
     seed_everything(42)
 
-    pickle_file = cfg.DATA.TEST
-    video_name_list = load_video_name(pickle_file)
+    test_pkl_file = cfg.DATA.TEST
+    video_name_list = load_video_name(test_pkl_file)
 
     dist.init_process_group(backend='nccl', init_method='env://')
     id = dist.get_rank()
@@ -207,14 +190,14 @@ def main() :
         store = dist.TCPStore("127.0.0.1", 5052, dist.get_world_size(), True, timedelta(seconds = 30))
     else :
         store = dist.TCPStore("127.0.0.1", 5052, dist.get_world_size(), False, timedelta(seconds = 30))
-    val_dataloader = construct_dataloader('test', cfg, pickle_file)
+    val_dataloader = construct_dataloader('test', cfg, test_pkl_file)
     summary_writer = SummaryWriter()
     
     checkpoints = [cfg.EVAL.ckpt]
     for ckpt in checkpoints :
         epoch = load_checkpoint(cfg, model, optimizer, ckpt)
         eval(cfg, val_dataloader, model, epoch, summary_writer, store = store, video_name_list = video_name_list, logger = logger,
-             eval_name = cfg.SETTING, pkl_file = pickle_file)
+             eval_name = cfg.SETTING, test_pkl_file = test_pkl_file)
     dist.destroy_process_group()
 
 if __name__ == "__main__" :

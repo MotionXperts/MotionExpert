@@ -178,8 +178,8 @@ def main():
 
     model = CoachMe(cfg)
 
-    pickle_file = cfg.DATA.TEST
-    video_name_list = load_video_name(pickle_file)
+    test_pkl_file = cfg.DATA.TEST
+    video_name_list = load_video_name(test_pkl_file)
 
     # Distributed Training.
     dist.init_process_group(backend = 'nccl', init_method = 'env://')
@@ -234,7 +234,7 @@ def main():
 
                 try :
                     eval(cfg, test_dataloader, model, epoch + 1, summary_writer, False, store = store,
-                         video_name_list = video_name_list, logger = logger)
+                         video_name_list = video_name_list, logger = logger, test_pkl_file = test_pkl_file)
                 except Exception as e :
                     print(traceback.format_exc())
                     print(f"Error {e} \n in evaluation at epoch {epoch}, continuing training.")
