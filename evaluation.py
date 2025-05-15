@@ -182,7 +182,7 @@ def main() :
                         datefmt = '%Y-%m-%d %H:%M:%S',
                         filename = os.path.join(cfg.LOGDIR, 'stdout.log'))
 
-    model = SimpleT5Model(cfg)
+    model = CoachMe(cfg)
 
     seed_everything(42)
 
