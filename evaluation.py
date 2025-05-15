@@ -2,7 +2,7 @@ import os, json, sys, torch, numpy as np, logging, pickle, dotenv
 import torch.distributed as dist
 from pytorch_lightning import seed_everything
 from utils.parser import parse_args, load_config
-from utils.data_information import convert
+from utils.data_information import load_video_name
 from cider import readJSON, readPickle, getGTCaptions, BLEUScore, CIDERScore
 from dataloaders import construct_dataloader
 from models.CoachMe import CoachMe
@@ -23,8 +23,8 @@ dotenv.load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = False, store = None,
-         name_list = None, logger = None, eval_name = "", pkl_file = None) :
+def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = False, store = None, video_name_list = None,
+         logger = None, eval_name = "", pkl_file = None) :
     Tokenizer = AutoTokenizer.from_pretrained('t5-base', use_fast = True)
     model.eval()
     model = model.cuda()
@@ -102,7 +102,7 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
         summary_writer.add_scalar('eval/loss', np.mean(loss_list), epoch)
 
         results = {}
-        for name in name_list :
+        for name in video_name_list :
             # Distributed Training.
             try : results[name] = store.get(name).decode('utf-8')
             except : continue
@@ -175,7 +175,6 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
 def main() :
     args = parse_args()
     cfg = load_config(args)
-    cfg_path = os.path.join(cfg.LOGDIR, 'config.yaml').replace('./', f'{os.getcwd()}/')
 
     logging.basicConfig(level = logging.INFO,
                         format = '%(asctime)s %(filename)s %(lineno)d: %(message)s',
@@ -187,31 +186,7 @@ def main() :
     seed_everything(42)
 
     pickle_file = cfg.DATA.TEST
-    if cfg.args.eval_name == 'test' :
-        pickle_file = cfg.DATA.TEST
-        eval_name = 'test'
-    elif cfg.args.eval_name == 'train' :
-        pickle_file = cfg.DATA.TRAIN
-        eval_name = 'train'
-    elif cfg.args.eval_name == 'untrimmed' :
-        pickle_file = cfg.DATA.UNTRIMMED
-        eval_name = 'untrimmed'
-    elif cfg.args.eval_name == 'segment' :
-        pickle_file = cfg.DATA.SEGMENT
-        eval_name = 'segment'
-    else:
-        raise ValueError("Invalid eval_name. eval_name should be set.")
-    json_path = cfg.LOGDIR + "/" + eval_name + '.json'
-    print("Eval_name : ", eval_name)
-    convert(pickle_file, json_path)
-
-    # Maintain a name list in main process
-    with open(pickle_file, 'rb') as f :
-        data = pickle.load(f)
-
-    name_list = []
-    for d in data :
-        name_list.append(d['video_name'])
+    video_name_list = load_video_name(pickle_file)
 
     dist.init_process_group(backend='nccl', init_method='env://')
     id = dist.get_rank()
@@ -238,8 +213,8 @@ def main() :
     checkpoints = [cfg.EVAL.ckpt]
     for ckpt in checkpoints :
         epoch = load_checkpoint(cfg, model, optimizer, ckpt)
-        eval(cfg, val_dataloader, model, epoch, summary_writer, store = store, name_list = name_list, logger = logger,
-             eval_name = eval_name, pkl_file = pickle_file)
+        eval(cfg, val_dataloader, model, epoch, summary_writer, store = store, video_name_list = video_name_list, logger = logger,
+             eval_name = cfg.SETTING, pkl_file = pickle_file)
     dist.destroy_process_group()
 
 if __name__ == "__main__" :

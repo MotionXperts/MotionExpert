@@ -48,3 +48,13 @@ def convert(pickle_path,json_path):
     print(f"Converting '{pickle_path}' to '{json_path}'...")
     pickle_to_json(pickle_path, json_path)
     print("Conversion complete.")
+
+def load_video_name(pickle_file) :
+    with open(pickle_file, 'rb') as f :
+        dataset = pickle.load(f)
+
+    video_name_list = []
+    for data in dataset :
+        video_name_list.append(data['video_name'])
+    
+    return video_name_list

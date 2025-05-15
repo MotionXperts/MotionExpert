@@ -8,6 +8,7 @@ warnings.filterwarnings("ignore", category = UserWarning)
 warnings.filterwarnings("ignore", category = FutureWarning)
 from transformers import AutoTokenizer, get_linear_schedule_with_warmup
 from utils.parser import parse_args, load_config
+from utils.data_information import load_video_name
 from tqdm import tqdm
 from pytorch_lightning import seed_everything
 from evaluation import eval
@@ -177,13 +178,8 @@ def main():
 
     model = CoachMe(cfg)
 
-    # Maintain a name list in main process.
-    with open(cfg.DATA.TEST, 'rb') as f :
-        data = pickle.load(f)
-
-    name_list = []
-    for d in data :
-        name_list.append(d['video_name'])
+    pickle_file = cfg.DATA.TEST
+    video_name_list = load_video_name(pickle_file)
 
     # Distributed Training.
     dist.init_process_group(backend = 'nccl', init_method = 'env://')
@@ -238,7 +234,7 @@ def main():
 
                 try :
                     eval(cfg, test_dataloader, model, epoch + 1, summary_writer, False, store = store,
-                         name_list = name_list, logger = logger)
+                         video_name_list = video_name_list, logger = logger)
                 except Exception as e :
                     print(traceback.format_exc())
                     print(f"Error {e} \n in evaluation at epoch {epoch}, continuing training.")
