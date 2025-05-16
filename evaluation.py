@@ -133,23 +133,19 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
         Evaluator = NLGMetricverse(metrics)
         # Convert predictions and gts to list to fit with bert_score.
         # Make sure predictions and gts are in the same order.
-        predictions = dict(sorted(predictions.items()))
-
-        gts = dict(sorted(gts.items()))
-
+        predictions = dict(sorted(predictions_dict.items()))
+        ground_truth = dict(sorted(ground_truth_dict.items()))
         predictions = list(predictions.values())
-        gts = list(gts.values())
-        if cfg.TASK.SPORT == 'Skating' :
-            scores = Evaluator(predictions = predictions, references = gts, reduce_fn = "mean")
-        elif cfg.TASK.SPORT == 'Boxing' :
-            scores = Evaluator(predictions = predictions, references = gts, reduce_fn = "max")
+        ground_truth = list(ground_truth.values())
+        scores = Evaluator(predictions = predictions, references = ground_truth, reduce_fn = "mean")
+
         results = {}
         results["bleu_1"] = scores["bleu_1"]['score']
         results["bleu_4"] = scores["bleu_4"]['score']
         results["rouge"] = scores["rouge"]['rougeL']
         results["cider"] = scores["cider"]['score']
 
-        P, R, F1 = score(predictions, gts, lang = "en", verbose = False, idf = True, rescale_with_baseline = True)
+        P, R, F1 = score(predictions, ground_truth, lang = "en", verbose = False, idf = True, rescale_with_baseline = True)
         results["bertscore"] = F1.mean().item()
         logger.info(f"Epoch {epoch} : Loss {np.mean(loss_list)}")
         for key in results :
