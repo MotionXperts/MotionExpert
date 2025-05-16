@@ -102,7 +102,6 @@ class CoachMe(nn.Module) :
             with torch.no_grad() :
                 self.HumanPosePerception.eval()
                 if self.pretrain :
-                    print("Pretrain with reference")
                     standard = self.get_std_feat(skeleton_coords, seq_len)
                 else :
                     standard = std_coords
