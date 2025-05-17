@@ -47,9 +47,9 @@ for video_name, comment in dataset_Coach1.items() :
     print("translate eng: ",coach2_eng_instruction)
     coach3_eng_instruction = BX_translate_to_english(coach3_instruction)
     print("translate eng: ",coach3_eng_instruction)
-    labels = [clean_context(coach1_eng_instruction),
-              clean_context(coach2_eng_instruction),
-              clean_context(coach3_eng_instruction)]
+    labels = [clean_instruction(coach1_eng_instruction),
+              clean_instruction(coach2_eng_instruction),
+              clean_instruction(coach3_eng_instruction)]
 
     if "front" in ori_video_name:
         motion_type = "Jab"
@@ -63,7 +63,7 @@ for video_name, comment in dataset_Coach1.items() :
         while aug_label.strip() == "" and try_times < 5:
             aug_label = BX_augmentation(labels[idx], motion_type, 0)
             print("aug_label: ",aug_label)
-            aug_label = clean_context(aug_label)
+            aug_label = clean_instruction(aug_label)
             if aug_label.strip() == "" :
                 print("Invalid rephrased instruction")
                 try_times += 1
@@ -125,7 +125,7 @@ for name in txt_filenames:
     eng_instruction = BX_translate_to_english(instruction)
     print("translate eng: ",eng_instruction)
     label = []
-    label.append(clean_context(eng_instruction))
+    label.append(clean_instruction(eng_instruction))
     aug_labels = []
 
     for i in range(1, 6):
@@ -134,11 +134,11 @@ for name in txt_filenames:
         while aug_label.strip() == "" and try_times < 5:
             aug_label = BX_augmentation(eng_instruction, motion_type, i)
             print("aug_label: ",aug_label)
-            aug_label = clean_context(aug_label)
+            aug_label = clean_instruction(aug_label)
             if aug_label.strip() == "" :
                 print("Invalid rephrased instruction")
                 try_times += 1
-        aug_labels.append(clean_context(aug_label))
+        aug_labels.append(clean_instruction(aug_label))
 
     item = {
             "video_name": ori_video_name,

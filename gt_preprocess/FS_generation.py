@@ -50,7 +50,7 @@ for data in dataset :
         for clip in clips:
             timestamp = clip["timestamp"]
             matches = re.findall(r"[\d.]+", timestamp)
-            instruction = clean_context(clip["context"])
+            instruction = clean_instruction(clip["context"])
             if len(matches) == 2:
                 start_time = float(matches[0])
                 end_time = float(matches[1])
@@ -72,7 +72,7 @@ for data in dataset :
         for clip in new_clips:
             clip_id = clip["id"]
             timestamp = clip["timestamp"]
-            instruction = clean_context(clip["context"])
+            instruction = clean_instruction(clip["context"])
 
             matches = re.findall(r"[\d.]+", timestamp)
             if len(matches) == 2:
@@ -89,7 +89,7 @@ for data in dataset :
                 try_times = 0
                 while aug_label.strip() == "" and try_times < 5:
                     aug_label = FS_augmentation(instruction, motion_type, i)
-                    aug_label = clean_context(aug_label)
+                    aug_label = clean_instruction(aug_label)
                     if aug_label.strip() == "" :
                         print("Invalid rephrased instruction")
                         try_times += 1
