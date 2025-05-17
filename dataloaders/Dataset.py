@@ -33,9 +33,9 @@ def get_std_coords(sport, motion_type, std_coords_list) :
         elif 'front' in motion_type :
             return std_coords_list[1]
 
-def get_label(pretrain, labels, aug_labels) :
+def get_label(pretrain, labels, augmented_labels) :
     if not pretrain :
-        labels = labels + aug_labels
+        labels = labels + augmented_labels
 
     newlabels = ["Motion Description : " + label if pretrain else "Motion Instruction : " + label for label in labels]
     return newlabels
@@ -152,7 +152,7 @@ class DatasetLoader(Dataset) :
             if pretrain == False :
                 # Save data for visulization attention graph on 2D skeleton.
                 index_dict[video_name] = {"seq_len" : seq_len,
-                                          "feature_start_frame" : usr_start,
+                                          "usr_start_frame" : usr_start,
                                           "std_start_frame" : std_start}
 
         print('Number of sample : ', len(self.samples))
