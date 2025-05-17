@@ -59,12 +59,13 @@ e.g.
  "The lower body is not participating at all in the punching, but the puncher's power generation is pretty good. More body rotation should be added for power generation. The head should not move forward with it.",
  'The back hand has no defense. The punches are not solid.']
 ```
-**Setting : aligned**
-- `start_frame` : `<class 'int'>` e.g. `0`
-- `end_frame` `<class 'int'>` e.g. `51`
-- `std_start_frame` `<class 'int'>` e.g. `39`
-- `std_end_frame` `<class 'int'>` e.g. `90`
+- `augmented_labels` : `<class 'list'>`
 - `original_seq_len` `<class 'int'>` e.g. `51`
+**Setting : aligned**
+- `aligned_start_frame` : `<class 'int'>` e.g. `0`
+- `aligned_end_frame` `<class 'int'>` e.g. `51`
+- `aligned_std_start_frame` `<class 'int'>` e.g. `39`
+- `aligned_std_end_frame` `<class 'int'>` e.g. `90`
 - `aligned_seq_len` `<class 'int'>` e.g. `51`
 
 **Setting : error**

@@ -53,8 +53,8 @@ def get_segment(setting, item) :
         length = item["error_seq_len"]
     # Deal with aligned segment selection.
     elif setting == 'ALIGNED' :
-        std_start = item["std_start_frame"]
-        usr_start = item["start_frame"]
+        std_start = item["aligned_std_start_frame"]
+        usr_start = item["aligned_start_frame"]
         length = item["aligned_seq_len"]
 
     return std_start, usr_start, length
@@ -97,7 +97,7 @@ class DatasetLoader(Dataset) :
             else :
                 motion_type = item['motion_type']
                 std_coords = get_std_coords(cfg.TASK.SPORT, motion_type, std_coords_list)
-                labels = get_label(pretrain, item['labels'], item['aug_labels'])
+                labels = get_label(pretrain, item['labels'], item['augmented_labels'])
 
                 # Specify the segment.
                 start_frame, end_frame, length = int(item['start_frame']), int(item['end_frame']), int(item['end_frame']) - int(item['start_frame'])
