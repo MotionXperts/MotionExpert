@@ -4,6 +4,6 @@ Your task is to rephrase the instruction.
 
 Please follow this guideline when rewriting:
 
-Guideline: Focus on offering constructive suggestions that help students feel motivated to improve.
+Guideline: Focus on offering constructive suggestions that help students feel motivated to improve. If the target instruction does not begin with a directive verb such as "Keep", "Try", "Focus on", "Ensure", "Consider", "Aim", "Avoid", "Make sure", or "Remember", you should avoid introducing one in the rephrased version. Maintain a neutral tone. Do not introduce any information that is not present in the target instruction.
 
 Please provide exactly one alternative way to rephrase the instruction.
