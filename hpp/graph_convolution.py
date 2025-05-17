@@ -3,43 +3,45 @@ import torch, torch.nn as nn, loralib as lora
 # Spatial Temporal Graph Convolution Block.
 class Stgc_block(nn.Module) :
     def __init__(self, in_channels, out_channels, stride, s_kernel_size, t_kernel_size, dropout,
-                 residual, A_size, PRETRAIN_SETTING, bias = True, use_att_A = False, num_att_A = 0,
-                 PRETRAIN = True, lora_config = None) :
+                 residual, A_size, hpp_way, bias = True, use_att_graph = False, num_att_graph = 0,
+                 pretrain = True, lora_config = None) :
         super().__init__()
-        self.PRETRAIN_SETTING = PRETRAIN_SETTING
-        self.PRETRAIN = PRETRAIN
-        self.use_att_A = use_att_A
-        # Spatial Graph Convolution.
-        if not use_att_A :
-            # S_GC Block do convolution on spatial graph.
+        self.hpp_way = hpp_way
+        self.pretrain = pretrain
+        self.use_att_graph = use_att_graph
+
+        # Human Pose Perception and STA-GCN
+        if not use_att_graph :
+            # S_GC (Spatial Graph Convolution)
+            # S_GC do convolution on spatial graph.
             self.sgc = S_GC(in_channels = in_channels,
                             out_channels = out_channels,
                             s_kernel_size = s_kernel_size,
                             bias = bias,
-                            PRETRAIN = self.PRETRAIN,
+                            pretrain = pretrain,
                             lora_config = lora_config)
+        # Pose Attention
         else :
-            # STA-GCN.
-            if self.PRETRAIN_SETTING == 'STAGCN' :
-                # S_GC_att_A do convolution on attention graph that is generated from attention branch
-                # of STA-GCN. This Block will be employed in perception branch of STA-GCN.
-                self.sgc = S_GC_att_A(in_channels = in_channels,
-                                      out_channels = out_channels,
-                                      s_kernel_size = s_kernel_size,
-                                      num_att_A = num_att_A,
-                                      bias = bias,
-                                      PRETRAIN = self.PRETRAIN,
-                                      lora_config = lora_config)
+            # STA-GCN
+            if hpp_way == 'STAGCN' :
+                # SA_GC (Spatial Attention Graph Convolution)
+                # SA_GC do convolution on spatial graph and attention graph.
+                self.sgc = SA_GC(in_channels = in_channels,
+                                 out_channels = out_channels,
+                                 s_kernel_size = s_kernel_size,
+                                 num_att_graph = num_att_graph,
+                                 bias = bias,
+                                 pretrain = pretrain,
+                                 lora_config = lora_config)
             # Human Pose Perception.
             else :
-                # A_GC Block do convolution on attention graph that is generated from Pose Extraction.
-                # This Block will be employed in Pose Attention.
+                # A_GC (Attention Graph Convolution)
+                # A_GC do convolution on attention graph.
                 self.sgc = A_GC(in_channels = in_channels,
                                 out_channels = out_channels,
-                                s_kernel_size = s_kernel_size,
-                                num_att_A = num_att_A,
+                                num_att_graph = num_att_graph,
                                 bias = bias,
-                                PRETRAIN = self.PRETRAIN,
+                                pretrain = pretrain,
                                 lora_config = lora_config)
         # Learnable weight matrix M.
         self.M = nn.Parameter(torch.ones(A_size))
@@ -81,7 +83,7 @@ class Stgc_block(nn.Module) :
         elif(in_channels == out_channels) and (stride == 1) :
             self.residual = lambda x : x
         else :
-            if self.PRETRAIN :
+            if pretrain :
                 self.residual = nn.Sequential(nn.Conv2d(in_channels,
                                                         out_channels,
                                                         kernel_size = 1,
@@ -102,17 +104,20 @@ class Stgc_block(nn.Module) :
     def forward(self, x, A, att_A) :
         # The dimension of x is [batch_size, in_channels, num_frames, num_nodes].
         # The demension of A is [number of graphs, num_nodes, num_nodes].
-        sgc_out = self.sgc(x, A * self.M, att_A)
+        if self.use_att_graph and self.hpp_way == 'HPP' :
+           sgc_out = self.sgc(x, None, att_A)
+        else :
+            sgc_out = self.sgc(x, A * self.M, att_A)
         x0 = self.tgc(sgc_out)
         x = x0 + self.residual(x)
         return x
 
 # Spatial Graph Convolution.
 class S_GC(nn.Module) :
-    def __init__(self, in_channels, out_channels, s_kernel_size, bias, PRETRAIN, lora_config = None) :
+    def __init__(self, in_channels, out_channels, s_kernel_size, bias, pretrain, lora_config = None) :
         super().__init__()
         self.s_kernel_size = s_kernel_size
-        if PRETRAIN :
+        if pretrain :
             self.conv = nn.Conv2d(in_channels = in_channels,
                                   out_channels = out_channels * s_kernel_size,
                                   kernel_size = (1, 1),
@@ -131,22 +136,22 @@ class S_GC(nn.Module) :
                                     r = lora_config["r"],
                                     lora_alpha = lora_config["lora_alpha"],
                                     lora_dropout = lora_config["lora_dropout"])
-    def forward(self, x, A, att_A) :
+    def forward(self, x, spatial_graph, att_graph) :
         x = self.conv(x)  
         n, kc, t, v = x.size()
         x = x.view(n, self.s_kernel_size, kc//self.s_kernel_size, t, v)
-        # The demension of A is [number of spatial graphs (7), number of joints (22), number of joints (22)].
-        x = torch.einsum('nkctv,kvw->nctw', (x, A))
+        # The demension of spatial_graph is [number of spatial graphs (7), number of joints (22), number of joints (22)].
+        x = torch.einsum('nkctv,kvw->nctw', (x, spatial_graph))
         return x.contiguous()
 
 # STA-GCN.
-class S_GC_att_A(nn.Module) :
-    def __init__(self, in_channels, out_channels, s_kernel_size, num_att_A, bias, PRETRAIN, lora_config = None) :
+class SA_GC(nn.Module) :
+    def __init__(self, in_channels, out_channels, s_kernel_size, num_att_graph, bias, pretrain, lora_config = None) :
         super().__init__()
-        self.num_att_A = num_att_A
+        self.num_att_graph = num_att_graph
         # Apply both spatial graph and attention graph on convolution of perception branch of STA-GCN.
-        self.s_kernel_size = s_kernel_size + num_att_A
-        if PRETRAIN :
+        self.s_kernel_size = s_kernel_size + num_att_graph
+        if pretrain :
             self.conv = nn.Conv2d(in_channels = in_channels,
                                   out_channels = out_channels * self.s_kernel_size,
                                   kernel_size = (1, 1),
@@ -164,29 +169,27 @@ class S_GC_att_A(nn.Module) :
                                     r = lora_config["r"],
                                     lora_alpha = lora_config["lora_alpha"],
                                     lora_dropout = lora_config["lora_dropout"])
-    def forward(self, x, A, att_A) :
+    def forward(self, x, spatial_graph, att_graph) :
         x = self.conv(x)
         n, kc, t, v = x.size()
         x = x.view(n, self.s_kernel_size, kc // self.s_kernel_size, t, v)
         # The dimension of x1 is [batchsize, number of spatial graph(7), channel, sequence length, vertex].
-        x1 = x[:, : self.s_kernel_size - self.num_att_A, :, :, :]
+        x1 = x[:, : self.s_kernel_size - self.num_att_graph, :, :, :]
         # The dimension of x2 is [batchsize, number of attention graph(4), channel, sequence length, vertex].
-        x2 = x[:, -self.num_att_A :, :, :, :]
-        x1 = torch.einsum('nkctv,kvw->nctw', (x1, A))
-        x2 = torch.einsum('nkctv,nkvw->nctw', (x2, att_A))
+        x2 = x[:, -self.num_att_graph :, :, :, :]
+        x1 = torch.einsum('nkctv,kvw->nctw', (x1, spatial_graph))
+        x2 = torch.einsum('nkctv,nkvw->nctw', (x2, att_graph))
         x_sum = x1 + x2
         return x_sum.contiguous()
 
 # Human Pose Perception.
 class A_GC(nn.Module) :
-    def __init__(self, in_channels, out_channels, s_kernel_size, num_att_A, bias, PRETRAIN, lora_config = None) :
+    def __init__(self, in_channels, out_channels, num_att_graph, bias, pretrain, lora_config = None) :
         super().__init__()
-        self.num_att_A = num_att_A
-        # Apply only attention graph on convolution of Pose Attention of Human Pose Perception.
-        self.s_kernel_size = num_att_A
-        if PRETRAIN :
+        self.num_att_graph = num_att_graph
+        if pretrain :
             self.conv = nn.Conv2d(in_channels = in_channels,
-                                  out_channels = out_channels * self.s_kernel_size,
+                                  out_channels = out_channels * self.num_att_graph,
                                   kernel_size = (1, 1),
                                   padding = (0, 0),
                                   stride = (1, 1),
@@ -195,7 +198,7 @@ class A_GC(nn.Module) :
         else :
             # Lora Adapter
             self.conv = lora.Conv2d(in_channels = in_channels,
-                                    out_channels = out_channels * self.s_kernel_size,
+                                    out_channels = out_channels * self.num_att_graph,
                                     kernel_size = 1,
                                     padding = 0,
                                     stride = 1,
@@ -203,9 +206,9 @@ class A_GC(nn.Module) :
                                     r = lora_config["r"], 
                                     lora_alpha = lora_config["lora_alpha"],
                                     lora_dropout = lora_config["lora_dropout"])
-    def forward(self, x, A, att_A) :
+    def forward(self, x, spatial_graph, att_graph) :
         x = self.conv(x)
         n, kc, t, v = x.size()
-        x = x.view(n, self.s_kernel_size, kc // self.s_kernel_size, t, v)
-        x = torch.einsum('nkctv,nkvw->nctw', (x, att_A))
+        x = x.view(n, self.num_att_graph, kc // self.num_att_graph, t, v)
+        x = torch.einsum('nkctv,nkvw->nctw', (x, att_graph))
         return x.contiguous()

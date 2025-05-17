@@ -1,26 +1,24 @@
 import torch, torch.nn as nn, torch.nn.functional as F
 from .graph_convolution import Stgc_block
 
-class Perception_branch(nn.Module) :
-    def __init__(self, config, num_class, num_att_A, s_kernel_size, t_kernel_size, dropout, residual, A_size,
-                 PRETRAIN_SETTING, PRETRAIN, lora_config) :
+class PoseAttention(nn.Module) :
+    def __init__(self, config, num_att_graph, s_kernel_size, t_kernel_size, dropout, residual, A_size,
+                 hpp_way, pretrain, lora_config) :
         super().__init__()
-        self.PRETRAIN_SETTING = PRETRAIN_SETTING
-        self.PRETRAIN = PRETRAIN
         kwargs = dict(s_kernel_size = s_kernel_size,
                       t_kernel_size = t_kernel_size,
                       dropout = dropout,
                       residual = residual,
                       A_size = A_size,
-                      PRETRAIN_SETTING = self.PRETRAIN_SETTING,
-                      use_att_A = True,
-                      num_att_A = num_att_A,
-                      PRETRAIN = self.PRETRAIN,
+                      hpp_way = hpp_way,
+                      use_att_graph = True,
+                      num_att_graph = num_att_graph,
+                      pretrain = pretrain,
                       lora_config = lora_config)
 
         # The Pose Attention in Human Pose Perception and the perception branch of STA-GCN will both
-        # used this module. However, the architechtrue of the STGC block depends on the
-        # PRETRAIN_SETTING : the former will use Attention, while the latter will use STAGCN.
+        # used this module. However, the architechtrue of the STGC block depends on the hpp_way.
+        # HPP apply attention graph only, while STA-GCN apply attention graph and spatial graph.
         self.stgc_block0 = Stgc_block(config[0][0], config[0][1], config[0][2], **kwargs)
         self.stgc_block1 = Stgc_block(config[1][0], config[1][1], config[1][2], **kwargs)
         self.stgc_block2 = Stgc_block(config[2][0], config[2][1], config[2][2], **kwargs)
