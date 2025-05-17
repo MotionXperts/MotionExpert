@@ -73,8 +73,8 @@ class DatasetLoader(Dataset) :
         if not pretrain :
             standard_path = cfg.STANDARD_PATH
             with open(standard_path, 'rb') as f :
-                standard_features_file = pickle.load(f)
-            std_coords_list = [get_coords(item['features']) for item in standard_features_file]
+                standard_file = pickle.load(f)
+            std_coords_list = [get_coords(item['coordinates']) for item in standard_file]
 
         for item in self.data_list :
             video_name = item['video_name']
@@ -86,7 +86,7 @@ class DatasetLoader(Dataset) :
                 if "_" not in video_name :
                     continue
 
-            skeleton_coords = get_coords(item['features'])
+            skeleton_coords = get_coords(item['coordinates'])
 
             if pretrain == True or self.cfg.SETTING == "NO_SEGMENT":
                 std_coords = skeleton_coords
@@ -121,7 +121,7 @@ class DatasetLoader(Dataset) :
                     std_coords = std_coords[:, std_start : std_start + length]
                     subtraction = torch.empty(0)
 
-            # Get the feature with the number of frames matching the number of frames in the standard feature.
+            # Get the coordinates with the number of frames matching the number of frames in the standard coordinates.
             skeleton_coords = skeleton_coords[:, usr_start : usr_start + length]
             seq_len = skeleton_coords.shape[1]
             frame_mask = torch.ones(22)
