@@ -1,5 +1,5 @@
 import pickle, os, glob, json, re, torch
-from FX_augmentation import FS_augmentation
+from FS_augmentation import FS_augmentation
 from clean_instruction import clean_instruction
 
 folders = {
