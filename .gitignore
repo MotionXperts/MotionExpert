@@ -15,7 +15,8 @@ __pycache__/
 
 *.txt
 *.pkl
-!gt_augmentation/*.txt
+!gt_preprocess/BX_template/*.txt
+!gt_preprocess/FS_template/*.txt
 !SportIndicator/GEval_template/*.txt
 !utils/Geval_Consistency_Template.txt
 !requirements.txt
