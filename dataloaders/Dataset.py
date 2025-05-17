@@ -136,7 +136,7 @@ class DatasetLoader(Dataset) :
                                         seq_len,
                                         torch.FloatTensor(frame_mask),
                                         label,
-                                        labels,
+                                        item['labels'],
                                         torch.FloatTensor(std_coords),
                                         subtraction))
             # Every sample only need to feed into the model once when testing.
@@ -146,7 +146,7 @@ class DatasetLoader(Dataset) :
                                     seq_len,
                                     torch.FloatTensor(frame_mask),
                                     labels[0],
-                                    labels,
+                                    item['labels'],
                                     torch.FloatTensor(std_coords),
                                     subtraction))
             if pretrain == False :
