@@ -61,26 +61,28 @@ e.g.
 ```
 - `augmented_labels` : `<class 'list'>`
 - `original_seq_len` `<class 'int'>` e.g. `51`
-**Setting : aligned**
+
+**Setting : `GT`**
+- `gt_start_frame` : `<class 'int'>`
+- `gt_end_frame` `<class 'int'>`
+- `gt_std_start_frame` `<class 'int'>`
+- `gt_std_end_frame` `<class 'int'>`
+- `gt_seq_len` `<class 'int'>`
+
+**Setting : `ALIGNED`**
 - `aligned_start_frame` : `<class 'int'>` e.g. `0`
 - `aligned_end_frame` `<class 'int'>` e.g. `51`
 - `aligned_std_start_frame` `<class 'int'>` e.g. `39`
 - `aligned_std_end_frame` `<class 'int'>` e.g. `90`
 - `aligned_seq_len` `<class 'int'>` e.g. `51`
 
-**Setting : error**
+**Setting : `ERROR`**
 - `error_start_frame` : `<class 'int'>`
 - `error_end_frame` `<class 'int'>`
 - `error_std_start_frame` `<class 'int'>`
 - `error_std_end_frame` `<class 'int'>`
 - `error_seq_len` `<class 'int'>`
 
-**Setting : GT**
-- `gt_start_frame` : `<class 'int'>`
-- `gt_end_frame` `<class 'int'>`
-- `gt_std_start_frame` `<class 'int'>`
-- `gt_std_end_frame` `<class 'int'>`
-- `gt_seq_len` `<class 'int'>`
 ### Config File
 
 |Task | Ref | Segment | config file |
