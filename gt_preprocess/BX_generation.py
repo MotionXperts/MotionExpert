@@ -33,7 +33,6 @@ with open(folders["Coach2"], "r") as f:
 with open(folders["Coach3"], "r") as f:
     dataset_Coach3 = json.load(f)
 
-
 for video_name, comment in dataset_Coach1.items() :
     ori_video_name = video_name.split('.mp4')[0]
 
@@ -42,14 +41,17 @@ for video_name, comment in dataset_Coach1.items() :
     coach3_instruction = find_instruction(dataset_Coach3, video_name)
 
     coach1_eng_instruction = BX_translate_to_english(coach1_instruction)
+    coach1_eng_instruction = clean_instruction(coach1_eng_instruction)
     print("translate eng: ",coach1_eng_instruction)
     coach2_eng_instruction = BX_translate_to_english(coach2_instruction)
+    coach2_eng_instruction = clean_instruction(coach2_eng_instruction)
     print("translate eng: ",coach2_eng_instruction)
     coach3_eng_instruction = BX_translate_to_english(coach3_instruction)
+    coach3_eng_instruction = clean_instruction(coach3_eng_instruction)
     print("translate eng: ",coach3_eng_instruction)
-    labels = [clean_instruction(coach1_eng_instruction),
-              clean_instruction(coach2_eng_instruction),
-              clean_instruction(coach3_eng_instruction)]
+    labels = [coach1_eng_instruction,
+              coach2_eng_instruction,
+              coach3_eng_instruction]
 
     if "front" in ori_video_name:
         motion_type = "Jab"
@@ -62,8 +64,8 @@ for video_name, comment in dataset_Coach1.items() :
         try_times = 0
         while aug_label.strip() == "" and try_times < 5:
             aug_label = BX_augmentation(labels[idx], motion_type, 0)
-            print("aug_label: ",aug_label)
             aug_label = clean_instruction(aug_label)
+            print("aug_label: ",aug_label)
             if aug_label.strip() == "" :
                 print("Invalid rephrased instruction")
                 try_times += 1
@@ -72,7 +74,7 @@ for video_name, comment in dataset_Coach1.items() :
     item = {
             "video_name": ori_video_name,
             "motion_type": motion_type,
-            "coordinates": torch.randn(1, 66),
+            "coordinates": -1,
             "labels": labels,
             "augmented_labels": aug_labels,
             "original_seq_len" : -1,
@@ -143,7 +145,7 @@ for name in txt_filenames:
     item = {
             "video_name": ori_video_name,
             "motion_type": motion_type,
-            "coordinates": torch.randn(1, 66),
+            "coordinates": -1,
             "labels": label,
             "augmented_labels": aug_labels,
             "original_seq_len" : -1,
@@ -162,7 +164,7 @@ for name in txt_filenames:
 
 new_boxing_dataset = ""
 new_boxing_pkl = ""
-if(train == True):
+if(train == True) :
     new_boxing_dataset = "../dataset/boxing_train_dataset.json"
     new_boxing_pkl = "../dataset/boxing_train.pkl"
 else:
