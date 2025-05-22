@@ -1,3 +1,4 @@
+import re
 def clean_instruction(text):
     text = text.rstrip()
     if text.startswith(' '):
