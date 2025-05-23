@@ -160,6 +160,23 @@ For the developers:
 
 If you want to **restart** the whole training process, you need to delete whole `checkpoints` directory, otherwise it training from the last epoch next time.
 
+## Best Epoch
+
+|Task | Ref | Segment | best epoch |
+| - | - | - | - |
+Pretrain | X | NO_SEGMENT | `checkpoint_epoch_00009.pth` |
+Pretrain | V | NO_SEGMENT | `checkpoint_epoch_00012.pth` |
+Pretrain | Pad0 | NO_SEGMENT | |
+
+|Task | Ref | Segment | best epoch |
+| - | - | - | - |
+Skating | X | NO_SEGMENT | |
+Skating | V | GT | |
+Skating | V | error | |
+Skating | V | aligned | |
+Boxing | X | NO_SEGMENT | |
+Boxing | V | error | |
+Boxing | V | aligned | |
 
 ## Build
 #### template command
