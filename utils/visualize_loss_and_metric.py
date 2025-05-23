@@ -65,6 +65,21 @@ plt.savefig(image_path)
 plt.close()
 
 # Metrics
+def plot_metric_with_top3(metric_data, label, color):
+    metric_data_sorted = sorted(metric_data, key=lambda x: x[0])
+    epochs = [e for e, _ in metric_data_sorted]
+    scores = [s for _, s in metric_data_sorted]
+
+    top3 = sorted(metric_data_sorted, key=lambda x: x[1], reverse=True)[:3]
+
+    for epoch, score in top3:
+        plt.annotate(f"{score:.4f}",
+                     xy = (epoch, score),
+                     xytext = (epoch + 2, score + 6),
+                     arrowprops = dict(facecolor = color, arrowstyle="->"),
+                     fontsize = 8,
+                     color = "black")
+
 plt.figure(figsize = (10, 6))
 
 def plot_metric(metric_dict, label, color) :
@@ -79,6 +94,11 @@ plot_metric(rouge, "ROUGE", "orange")
 plot_metric(cider, "CIDEr", "cyan")
 plot_metric(bertscore, "BERTScore", "red")
 
+plot_metric_with_top3(list(bleu_1.items()), "BLEU-1", "lime")
+plot_metric_with_top3(list(bleu_4.items()), "BLEU-4", "magenta")
+plot_metric_with_top3(list(rouge.items()), "ROUGE", "orange")
+plot_metric_with_top3(list(cider.items()), "CIDEr", "cyan")
+plot_metric_with_top3(list(bertscore.items()), "BERTScore", "red")
 
 all_epochs = sorted(set().union(bleu_1, bleu_4, rouge, cider, bertscore))
 xtick_positions = [e for e in all_epochs if e % 5 == 0]
