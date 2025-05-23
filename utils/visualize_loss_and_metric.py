@@ -5,11 +5,7 @@ target_path = "skating_gt_ClosestSimGT"
 log_path = f"/home/weihsin/projects/MotionExpert_tmp/{target_path}/stdout.log"
 
 target_path = "boxing_gt_ClosestSimGT"
-log_path = f"/home/weihsin/projects/MotionExpert_tmp/MotionExpert/results/{target_path}/stdout.log"
-
 target_path = "skating_gt_PerGT"
-log_path = f"/home/weihsin/projects/MotionExpert_tmp/MotionExpert/results/{target_path}/stdout.log"
-
 target_path = "boxing_gt_PerGT"
 log_path = f"/home/weihsin/projects/MotionExpert_tmp/MotionExpert/results/{target_path}/stdout.log"
 
