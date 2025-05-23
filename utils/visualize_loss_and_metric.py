@@ -1,13 +1,15 @@
-import re
-import matplotlib.pyplot as plt
+import re, os, matplotlib.pyplot as plt
 
-target_path = "skating_gt_ClosestSimGT"
-log_path = f"/home/weihsin/projects/MotionExpert_tmp/{target_path}/stdout.log"
+task = "skating_gt_ClosestSimGT"
+task_path = f"/home/weihsin/projects/MotionExpert_tmp/{task}"
 
-target_path = "boxing_gt_ClosestSimGT"
-target_path = "skating_gt_PerGT"
-target_path = "boxing_gt_PerGT"
-log_path = f"/home/weihsin/projects/MotionExpert_tmp/MotionExpert/results/{target_path}/stdout.log"
+task = "boxing_gt_ClosestSimGT"
+task = "skating_gt_PerGT"
+task = "boxing_gt_PerGT"
+task = "pretrain_ref"
+task_path = f"/home/weihsin/projects/MotionExpert_tmp/MotionExpert/results/{task}"
+
+log_path = os.path.join(task_path, "stdout.log")
 
 with open(log_path, "r", encoding = "utf-8") as f:
     lines = f.readlines()
@@ -52,11 +54,14 @@ if eval_loss :
     plt.plot(sorted_eval_epochs, [eval_loss[e] for e in sorted_eval_epochs], label = "Evaluation Loss", color = 'orange')
 plt.xlabel("Epoch")
 plt.ylabel("Loss")
-plt.title(f"{target_path} : Training vs Evaluation Loss")
+plt.title(f"{task} : Training vs Evaluation Loss")
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-plt.savefig(f"{target_path}_loss.png")
+
+image_path = os.path.join(task_path, f"loss.png")
+
+plt.savefig(image_path)
 plt.close()
 
 # Metrics
@@ -84,9 +89,13 @@ plt.xticks(xtick_positions)
 
 plt.xlabel("Epoch")
 plt.ylabel("Score")
-plt.title(f"{target_path} : Evaluation Metrics")
+plt.title(f"{task} : Evaluation Metrics")
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-plt.savefig(f"{target_path}_metrics.png")
+
+image_path = os.path.join(task_path, f"metrics.png")
+
+plt.savefig(image_path)
+
 plt.close()
