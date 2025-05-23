@@ -18,7 +18,7 @@ __pycache__/
 !gt_preprocess/BX_template/*.txt
 !gt_preprocess/FS_template/*.txt
 !SportIndicator/GEval_template/*.txt
-!utils/Geval_Consistency_Template.txt
+!GEval/GEval_Consistency_Template.txt
 !requirements.txt
 *.json
 utils/loopgroundtruth.json
