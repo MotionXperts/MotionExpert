@@ -98,7 +98,7 @@ for data in dataset :
             item = {
                 "video_name": ori_video_name + "_" + str(clip_id),
                 "motion_type": motion_type,
-                "coordinates": torch.randn(1, 66),
+                "coordinates": -1,
                 "labels": label,
                 "augmented_labels": aug_labels,
                 "original_seq_len" : -1,
@@ -113,7 +113,7 @@ for data in dataset :
         item = {
             "video_name": ori_video_name,
             "motion_type": motion_type,
-            "coordinates": torch.randn(1, 66),
+            "coordinates": -1,
             "labels": labels,
             "original_seq_len" : -1,
             "aligned_start_frame" : -1,
