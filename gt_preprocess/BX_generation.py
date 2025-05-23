@@ -165,11 +165,11 @@ for name in txt_filenames:
 new_boxing_dataset = ""
 new_boxing_pkl = ""
 if(train == True) :
-    new_boxing_dataset = "../dataset/boxing_train_dataset.json"
-    new_boxing_pkl = "../dataset/boxing_train.pkl"
+    new_boxing_dataset = "../dataset/BX_train.json"
+    new_boxing_pkl = "../dataset/BX_train.pkl"
 else:
-    new_boxing_dataset = "../dataset/boxing_test_dataset.json"
-    new_boxing_pkl = "../dataset/boxing_test.pkl"
+    new_boxing_dataset = "../dataset/BX_test.json"
+    new_boxing_pkl = "../dataset/BX_test.pkl"
 
 # save new_skating_dataset to json
 with open(new_boxing_dataset, 'w', encoding='utf-8') as f:

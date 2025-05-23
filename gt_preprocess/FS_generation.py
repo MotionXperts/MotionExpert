@@ -134,17 +134,17 @@ for data in dataset :
 
 new_skating_dataset = ""
 if (train == True):
-    new_skating_dataset = "../dataset/skating_train_dataset.json"
+    new_skating_dataset = "../dataset/FS_train.json"
 else:
-    new_skating_dataset = "../dataset/skating_test_dataset.json"
+    new_skating_dataset = "../dataset/FS_test.json"
 # save new_skating_dataset to json
 with open(new_skating_dataset, 'w', encoding='utf-8') as f:
     json.dump(data_dict, f, indent=4, ensure_ascii=False)
 
 if (train == True):
-    skating_pkl = "../dataset/skating_train.pkl"
+    skating_pkl = "../dataset/FS_train.pkl"
 else:
-    skating_pkl = "../dataset/skating_test.pkl"
+    skating_pkl = "../dataset/FS_test.pkl"
 
 with open(skating_pkl, 'wb') as f:
     pickle.dump(data_dict, f)
