@@ -7,6 +7,7 @@ task = "boxing_gt_ClosestSimGT"
 task = "skating_gt_PerGT"
 task = "boxing_gt_PerGT"
 task = "pretrain_ref"
+task = "pretrain"
 task_path = f"/home/weihsin/projects/MotionExpert_tmp/MotionExpert/results/{task}"
 
 log_path = os.path.join(task_path, "stdout.log")
