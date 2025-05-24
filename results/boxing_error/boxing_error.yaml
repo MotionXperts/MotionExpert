@@ -1,0 +1,32 @@
+# command :
+# python -m torch.distributed.run --nproc_per_node=1 --master_port=29050 main.py --cfg_file ./results/boxing_error/boxing_error.yaml > ./output/boxing_error
+
+TASK :
+    PRETRAIN : False
+    SPORT : "Boxing"
+    HPP_WAY : "HPP"
+    REF : True
+    DIFF_WAY : "Subtraction"
+    DIFF_TYPE : "Skeleton"
+    PROJ_STRATEGY : "TIME_POOL"
+
+STANDARD_PATH : "/home/andrewchen/Error_Localize/standard_features_boxing.pkl"
+WEIGHT_PATH : "./results/pretrain_ref/pretrain_checkpoints/checkpoint_epoch_00012.pth"
+
+DATA : 
+    TRAIN : "./datasets/BX_train.pkl"
+    TEST : "./datasets/BX_test.pkl"
+    BATCH_SIZE : 4
+
+OPTIMIZER :
+    LR : 1e-4
+    MAX_EPOCH : 200
+    WARMUP_STEPS : 5000
+
+LOGDIR : "./results/boxing_error"
+LOSS : "ClosestSimGT"
+DEBUG : False
+SETTING: "ERROR"
+EVAL :
+    score : True
+    ckpt : "None"
