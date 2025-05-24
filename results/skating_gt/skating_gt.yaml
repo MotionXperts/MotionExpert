@@ -1,34 +1,32 @@
-# torchrun --nproc_per_node=1 --master_port=29051 main.py --cfg_file ./results/skating_gt/skating_gt.yaml > output/skating_gt
-HIDDEN_CHANNEL : 32
-OUT_CHANNEL : 128
-TRANSFORMATION :
-    REDUCTION_POLICY : "TIME_POOL"
+# command :
+# python -m torch.distributed.run --nproc_per_node=1 --master_port=29051 main.py --cfg_file ./results/skating_gt/skating_gt.yaml > output/skating_gt
+
 TASK:
     SPORT : "Skating"
-    PRETRAIN : false
-    PRETRAIN_SETTING : "Attention"
-    PRETRAIN_DIFFERENCE : true
-    DIFFERENCE_SETTING : "Subtraction"
-    DIFFERENCE_TYPE : "Skeleton"
+    PRETRAIN : False
+    HPP_WAY : "HPP"
+    REF : True
+    DIFF_WAY : "Subtraction"
+    DIFF_TYPE : "Skeleton"
+    PROJ_STRATEGY : "TIME_POOL"
 
 STANDARD_PATH : "/home/andrewchen/Error_Localize/standard_features.pkl"
-WEIGHT_PATH : "./results/skating_gt/pretrain_checkpoints/best_pretrained_weight.pth"
+WEIGHT_PATH : "./results/pretrain_ref/pretrain_checkpoints/checkpoint_epoch_00012.pth"
+
 DATA :
-    TRAIN : "/home/weihsin/datasets/SkatingDatasetPkl/skating_gt_train.pkl"
-    TEST : "/home/weihsin/datasets/SkatingDatasetPkl/skating_gt_test.pkl"
-    UNTRIMMED : "/home/weihsin/datasets/SkatingDatasetPkl/skating_untrimmed.pkl"
-    SEGMENT : "/home/weihsin/datasets/SkatingDatasetPkl/skating_segment.pkl"
+    TRAIN : "./datasets/FS_train.pkl"
+    TEST : "./datasets/FS_test.pkl"
     BATCH_SIZE : 4
+
 OPTIMIZER :
     LR : 1e-4
     MAX_EPOCH : 200
     WARMUP_STEPS : 5000
-BRANCH : 1
+
 LOGDIR : "./results/skating_gt"
-LOSS : "PerGT"
-DEBUG : false
+LOSS : "ClosestSimGT"
+DEBUG : False
+SETTING: "GT"
 args :
-    eval_name : "train"
-    gpt_sim : false
-    no_calc_score : false
-    ckpt : "./results/skating_gt/pretrain_checkpoints/best_pretrained_weight.pth"
+    score : True
+    ckpt : "None"
