@@ -2,8 +2,8 @@
 # python -m torch.distributed.run --nproc_per_node=1 --master_port=29051 main.py --cfg_file ./results/skating_gt/skating_gt.yaml > output/skating_gt
 
 TASK:
-    SPORT : "Skating"
     PRETRAIN : False
+    SPORT : "Skating"
     HPP_WAY : "HPP"
     REF : True
     DIFF_WAY : "Subtraction"
@@ -27,6 +27,6 @@ LOGDIR : "./results/skating_gt"
 LOSS : "ClosestSimGT"
 DEBUG : False
 SETTING: "GT"
-args :
+EVAL :
     score : True
     ckpt : "None"
