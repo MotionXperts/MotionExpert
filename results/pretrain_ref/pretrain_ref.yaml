@@ -1,4 +1,6 @@
+# command :
 # python -m torch.distributed.run --nproc_per_node=1 --master_port=29050 main.py --cfg_file ./results/pretrain_ref/pretrain_ref.yaml > output/pretrain_ref
+
 TASK :
     PRETRAIN : True
     HPP_WAY : "HPP"
