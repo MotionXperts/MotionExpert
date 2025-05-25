@@ -105,8 +105,8 @@ class DatasetLoader(Dataset) :
                 labels = get_label(pretrain, item['labels'], item['augmented_labels'])
 
                 # Specify the segment.
-                start_frame, end_frame, length = int(item['start_frame']), int(item['end_frame']), int(item['end_frame']) - int(item['start_frame'])
                 if self.cfg.TASK.DIFF_TYPE == 'RGB' :
+                    start_frame, end_frame, length = int(item['start_frame']), int(item['end_frame']), int(item['end_frame']) - int(item['start_frame'])
                     subtraction = item['subtraction']
                     trimmed_start = item['trimmed_start']
                     if item['standard_longer'] :
