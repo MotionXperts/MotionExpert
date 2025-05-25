@@ -30,10 +30,8 @@ def load_checkpoint(cfg, model, optimizer, name = None) :
     # Load Model
     if (not cfg.TASK.PRETRAIN) :
         # Find pretrain path.
-        pretrain_dir = os.path.join(logdir, "pretrain_checkpoints")
-        pretrain_paths = [f for f in os.listdir(pretrain_dir) if f.endswith(".pth")]
-        pretrain_path = pretrain_paths[0]
-        pretrain_checkpoint = torch.load(os.path.join(pretrain_dir, pretrain_path))
+        pretrain_path = cfg.WEIGHT_PATH
+        pretrain_checkpoint = torch.load(pretrain_path)
 
         # Load weights that were previously pre-trained.
         # pretrain_total_params = sum(v.numel() for v in pretrain_checkpoint["model_state"].values())
