@@ -43,6 +43,10 @@ The dataset is saved as a pickle file and is of type `<class 'list'>`.
 Each entry in the dataset contains the following information :
 - `video_name` : `<class 'str'>` e.g. `7_front_4_cam1`
 - `motion_type` : `<class 'str'>` e.g. `front`
+```
+In the FS dataset, there are four figure skating jumps: "Axel_single_jump", "Axel_double_jump", "Loop_double_jump", and "Lutz_double_jump".
+In the BX dataset, there are two boxing techniques: "Jab" and "Cross".
+```
 - `coordinates` : `<class 'torch.Tensor'>` shape : `torch.Size([number of frames, 66])`
 ```
 Each 66-dimensional feature vector in the dataset represents the 3D coordinates of 22 skeletal
