@@ -1,0 +1,3425 @@
+[
+    {
+        "video_name": "2_back_5",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "Your back foot isn't fully elevated, your hips aren't completely rotating, and your shoulders are a bit stiff.",
+            "Adjust your other hand's defense a bit more to the left.",
+            "The upper body is rotating too much instead of the hips. Also, the arms are too stiff."
+        ],
+        "augmented_labels": [
+            "Your back foot isn't lifted all the way, your hips aren't turning fully, and your shoulders are slightly rigid.",
+            "Move your other hand slightly to the left for better defense.",
+            "The upper body rotates excessively instead of the hips. Additionally, the arms are overly stiff."
+        ],
+        "original_seq_len": 66,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 66,
+        "aligned_std_start_frame": 10,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 66
+    },
+    {
+        "video_name": "3_front_5",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Your body is facing too square. Your arms are too stiff, and you're not generating power from your body. Lift your back heel, and make sure you're rotating your body.",
+            "The weight of your punch should be centered.",
+            "Your body isn't turning, you're only using arm strength. Engage your core for power."
+        ],
+        "augmented_labels": [
+            "You're standing too straight. Loosen your arms, and use your body to generate power. Lift your back heel, and rotate your body.",
+            "The force of your punch should be balanced.",
+            "You're only using your arm strength and not turning your body. Use your core for more power."
+        ],
+        "original_seq_len": 59,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 59,
+        "aligned_std_start_frame": 35,
+        "aligned_std_end_frame": 94,
+        "aligned_seq_len": 59
+    },
+    {
+        "video_name": "0_back_5",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "Your back is a bit stiff.",
+            "When throwing a punch, keep your weight centered.",
+            "Keep your chin tucked in."
+        ],
+        "augmented_labels": [
+            "Your back seems a little tight.",
+            "Your weight should stay centered when you throw a punch.",
+            "Tuck your chin in."
+        ],
+        "original_seq_len": 69,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 69,
+        "aligned_std_start_frame": 7,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 69
+    },
+    {
+        "video_name": "0_front_2",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "When throwing a punch, tuck your chin down.",
+            "Your lead hand is too low; it should be higher than your back hand.",
+            "You're standing with your lead knee too straight, and your guard is too low."
+        ],
+        "augmented_labels": [
+            "While punching, keep your chin down.",
+            "The lead hand is positioned too low; it needs to be higher than the back hand.",
+            "Your lead knee is too straight, and your guard is too low."
+        ],
+        "original_seq_len": 59,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 59,
+        "aligned_std_start_frame": 33,
+        "aligned_std_end_frame": 92,
+        "aligned_seq_len": 59
+    },
+    {
+        "video_name": "1_front_5",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Rotate your body less. Don't lock your knees. Aim your strikes directly in front of your eyes. Keep your head still. Lift the heel of your back foot.",
+            "Slightly turn your front foot inward.",
+            "You're over-rotating your body, your feet aren't in a proper fighting stance, and you're punching too low and not straight."
+        ],
+        "augmented_labels": [
+            "Turn your body slightly. Avoid locking your knees. Strike straight in front of your eyes. Hold your head still. Raise the heel of your back foot.",
+            "Turn your front foot a little bit to the inside.",
+            "Your body is turning too much, your feet need to be in the right stance, and you're punching too low and not directly straight."
+        ],
+        "original_seq_len": 75,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 75,
+        "aligned_std_start_frame": 26,
+        "aligned_std_end_frame": 101,
+        "aligned_seq_len": 75
+    },
+    {
+        "video_name": "7_front_6",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "The back foot isn't raised, and the rear hand isn't protecting the chin. You're only using your hands, not your body power. Make sure to clench your fist when you punch.",
+            "Keep your guard up.",
+            "Keep your rear hand up for defense, and make sure your punches are solid and precise."
+        ],
+        "augmented_labels": [
+            "The back foot stays flat, and the rear hand doesn't cover the chin. Only the hands are in use, not the body's strength. Keep your fist tightly closed when punching.",
+            "Hold your hands up to protect your face.",
+            "Stay alert with your back hand up for protection, and throw solid and precise punches."
+        ],
+        "original_seq_len": 54,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 54,
+        "aligned_std_start_frame": 35,
+        "aligned_std_end_frame": 89,
+        "aligned_seq_len": 54
+    },
+    {
+        "video_name": "9_back_7",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "You can relax your body a bit more.",
+            "Rotate your hips more.",
+            "You’re doing well."
+        ],
+        "augmented_labels": [
+            "Relax your body a little more.",
+            "Turn your hips further.",
+            "You’re doing a great job."
+        ],
+        "original_seq_len": 61,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 61,
+        "aligned_std_start_frame": 15,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 61
+    },
+    {
+        "video_name": "6_back_7",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "The back foot isn't elevated, the hips aren't rotating, the arms are too stiff, and the body isn't relaxed, preventing proper shoulder movement for effective shifting. The stance's center of gravity is too high.",
+            "Keep your lead foot angled inward.",
+            "You're only using arm strength, and both your arms and upper body are too stiff without hip rotation. Additionally, you're not doing a half-squat with your legs."
+        ],
+        "augmented_labels": [
+            "The back foot stays flat, the hips don't turn, the arms are too rigid, and the body is tense, which blocks the shoulders from moving properly for good shifting. The center of gravity in the stance is too high.",
+            "Angle your lead foot inward.",
+            "Right now, your punches rely solely on arm strength, and both your arms and upper body are too rigid because you're not rotating your hips. Also, you're not incorporating a half-squat with your legs."
+        ],
+        "original_seq_len": 63,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 63,
+        "aligned_std_start_frame": 13,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 63
+    },
+    {
+        "video_name": "3_back_7",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "The hips aren't rotating, you're standing too square, and your back foot isn't elevated.",
+            "When throwing a punch with your rear hand, make sure to keep it straight.",
+            "Your stance is too narrow, and you're not rotating your hips."
+        ],
+        "augmented_labels": [
+            "Your hips need to rotate, your stance is too square, and your back foot should be raised.",
+            "Keep your rear hand straight when throwing a punch.",
+            "Your stance is too close together, and you're not turning your hips."
+        ],
+        "original_seq_len": 63,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 63,
+        "aligned_std_start_frame": 13,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 63
+    },
+    {
+        "video_name": "8_back_10",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "Your back foot isn't lifted, your hips aren't rotating, your hands are too stiff, and you're leaning too far forward with a straight front knee when you punch.",
+            "Don't lean your body forward with the punch.",
+            "Too much forward lean is causing your hips to stick up; remember to rotate your hips."
+        ],
+        "augmented_labels": [
+            "Your back foot stays flat, your hips don't move, your hands are too rigid, and you lean too far forward with a straight front knee during your punch.",
+            "Avoid leaning your body forward when punching.",
+            "You're leaning too far forward, causing your hips to stick up; rotating your hips will help."
+        ],
+        "original_seq_len": 60,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 60,
+        "aligned_std_start_frame": 16,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 60
+    },
+    {
+        "video_name": "5_back_7",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "Your back foot isn't planted properly when you throw a punch, and your shoulders and arms are too tense.",
+            "Keep your body slightly hunched.",
+            "Your hands are too stiff."
+        ],
+        "augmented_labels": [
+            "Your back foot isn't positioned correctly when you punch, and your shoulders and arms are overly tense.",
+            "Your body should be a little hunched.",
+            "Your hands are too tense."
+        ],
+        "original_seq_len": 62,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 62,
+        "aligned_std_start_frame": 14,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 62
+    },
+    {
+        "video_name": "4_back_2",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "Your whole body isn't rotating; you're only using the power of your arms. Both shoulders are too stiff. Your weight isn't centered between your feet. Be careful not to straighten your front leg when punching.",
+            "Move your lead foot a little more inward.",
+            "If your arms are too stiff, you're not utilizing your lower body power."
+        ],
+        "augmented_labels": [
+            "Your body isn't fully rotating; you're relying just on your arm strength. Both shoulders are tense. Your weight isn't evenly balanced between your feet. Be cautious not to straighten your front leg when you punch.",
+            "Shift your front foot slightly towards the inside.",
+            "When your arms are too rigid, you're not using the strength from your lower body."
+        ],
+        "original_seq_len": 52,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 52,
+        "aligned_std_start_frame": 24,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 52
+    },
+    {
+        "video_name": "2_front_1",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "When rotating your body, make sure not to over-rotate. Raise the heel of your back foot and keep your back shoulder relaxed; don't shrug it.",
+            "When throwing a punch, don't let your weight shift forward.",
+            "Raise the rear shoulder and keep the back foot flat."
+        ],
+        "augmented_labels": [
+            "Don’t over-rotate your body. Lift the heel of your back foot. Keep your back shoulder relaxed without shrugging.",
+            "Avoid shifting your weight forward when you throw a punch.",
+            "Lift the back shoulder and keep your back foot flat."
+        ],
+        "original_seq_len": 75,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 75,
+        "aligned_std_start_frame": 27,
+        "aligned_std_end_frame": 102,
+        "aligned_seq_len": 75
+    },
+    {
+        "video_name": "9_front_3",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "When throwing a punch, be sure to rotate your rear hand with your body, but don't forget to keep your guard up.",
+            "When you throw a punch, your back foot tends to drift.",
+            "Good job with your punches."
+        ],
+        "augmented_labels": [
+            "As you punch, rotate your rear hand along with your body and keep your guard up.",
+            "Your back foot often moves when you throw a punch.",
+            "Your punches are looking good."
+        ],
+        "original_seq_len": 57,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 57,
+        "aligned_std_start_frame": 36,
+        "aligned_std_end_frame": 93,
+        "aligned_seq_len": 57
+    },
+    {
+        "video_name": "2_back_3",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "Smile sneakily. The back foot isn't on the toes. The shoulders seem a bit stiff.",
+            "Rotate your back foot significantly.",
+            "You're over-rotating your upper body instead of using your hips, and your arms are too stiff."
+        ],
+        "augmented_labels": [
+            "Sneaky smile. The back foot is flat. The shoulders look a little tense.",
+            "Turn your back foot a lot.",
+            "Your upper body is turning too much; use your hips more, and relax your arms."
+        ],
+        "original_seq_len": 70,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 70,
+        "aligned_std_start_frame": 6,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 70
+    },
+    {
+        "video_name": "5_back_3",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "Your shoulders are too tense. Bend your front knee slightly.",
+            "Move your lead foot a little more inward.",
+            "Your hands are too stiff."
+        ],
+        "augmented_labels": [
+            "Your shoulders seem tight. Slightly bend your front knee.",
+            "Shift your front foot slightly inward.",
+            "Your hands are too tense."
+        ],
+        "original_seq_len": 58,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 58,
+        "aligned_std_start_frame": 18,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 58
+    },
+    {
+        "video_name": "9_front_1",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Your back foot isn't stable.",
+            "Keep your center of gravity stable.",
+            "You're doing well."
+        ],
+        "augmented_labels": [
+            "Your back foot is not steady.",
+            "Make your center of gravity steady.",
+            "You're doing great."
+        ],
+        "original_seq_len": 54,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 54,
+        "aligned_std_start_frame": 44,
+        "aligned_std_end_frame": 98,
+        "aligned_seq_len": 54
+    },
+    {
+        "video_name": "1_back_8",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "Ensure your rear foot is lifted onto the ball. Keep your head aligned with the rotation of your punch. Aim higher with your strike. Fully rotate your hips. Bend your knees more, don't stand too straight. Avoid leaning too far forward.",
+            "Keep your weight centered.",
+            "Your targets are too low, your stance is too narrow, and you're not getting full body rotation from your hips."
+        ],
+        "augmented_labels": [
+            "Lift your back foot onto the ball. Align your head with your punch's rotation. Strike at a higher angle. Rotate your hips completely. Bend your knees more, avoid standing too upright. Don't lean too far forward.",
+            "Maintain your balance by distributing your weight evenly.",
+            "Your targets are positioned too low, your stance is not wide enough, and your hips aren't fully rotating."
+        ],
+        "original_seq_len": 84,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 76,
+        "aligned_std_start_frame": 0,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 76
+    },
+    {
+        "video_name": "8_back_2",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "Your back foot isn't lifted. Your hips need more rotation. Your arms are too stiff. You're leaning too far forward when punching. Engage your core more.",
+            "The back foot needs to have a wider stance.",
+            "You're leaning too far forward, causing your hips to lift. Remember to rotate your hips."
+        ],
+        "augmented_labels": [
+            "The back foot needs to be raised. Rotate your hips more. Relax your arms. Avoid leaning too far forward when punching. Engage your core.",
+            "The back foot should be placed further apart.",
+            "You're leaning too much forward, making your hips rise. Rotating your hips is important."
+        ],
+        "original_seq_len": 62,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 62,
+        "aligned_std_start_frame": 14,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 62
+    },
+    {
+        "video_name": "0_back_2",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "You're not relaxing your waist.",
+            "Throw straight punches inside.",
+            "Your chin isn't tucked properly."
+        ],
+        "augmented_labels": [
+            "Your waist is not relaxed.",
+            "Punch straight to the inside.",
+            "Your chin isn't tucked in the right way."
+        ],
+        "original_seq_len": 69,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 69,
+        "aligned_std_start_frame": 7,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 69
+    },
+    {
+        "video_name": "6_back_2",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "The back foot isn't elevated, the hips aren't rotating, the arms are too stiff, and a lack of relaxation in the body prevents the shoulders from moving and switching properly. The stance center of gravity is too high.",
+            "When throwing a punch, make sure your other hand is up for defense.",
+            "Only using hand strength, the arms and upper body are too stiff, and there's no hip rotation. Also, there's no slight bend in the knees."
+        ],
+        "augmented_labels": [
+            "The back foot is flat, the hips aren't turning, the arms are too rigid, and tension in the body stops the shoulders from moving and switching correctly. The center of gravity in the stance is too high.",
+            "Keep your other hand up to protect yourself when you punch.",
+            "Hand strength is being used without involving the arms, upper body, or hips, making them too stiff. The knees also need a slight bend."
+        ],
+        "original_seq_len": 62,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 62,
+        "aligned_std_start_frame": 14,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 62
+    },
+    {
+        "video_name": "9_front_2",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "The back feels a bit stiff.",
+            "When throwing a straight punch, the power is dissipating.",
+            "Nice punch!."
+        ],
+        "augmented_labels": [
+            "Your back feels a bit tight.",
+            "The force decreases when you throw a straight punch.",
+            "Good punch!."
+        ],
+        "original_seq_len": 57,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 57,
+        "aligned_std_start_frame": 41,
+        "aligned_std_end_frame": 98,
+        "aligned_seq_len": 57
+    },
+    {
+        "video_name": "7_back_4",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "The back foot isn't lifted properly. The hips aren't rotating. The arms are too stiff. The body isn't relaxed, which prevents the shoulders from moving and switching naturally. You're not paying attention to defense when punching.",
+            "When you throw a punch, make sure to keep your other hand up for defense.",
+            "Your punches lack accuracy, and your right hand isn't in a defensive position. You're also not rotating your hips."
+        ],
+        "augmented_labels": [
+            "The back foot needs to lift correctly. The hips should rotate. The arms are too tense. The body should relax so the shoulders can move and switch naturally. Defense isn't being considered when punching.",
+            "Keep your other hand up for defense when you throw a punch.",
+            "Your punches aren't hitting the target, your right hand isn't protecting, and you're not turning your hips."
+        ],
+        "original_seq_len": 60,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 60,
+        "aligned_std_start_frame": 16,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 60
+    },
+    {
+        "video_name": "3_front_7",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Body is too squared up. Arms are too stiff, you're not generating power from your body. Lift your back foot up onto the ball. You're not rotating your body.",
+            "Keep your weight centered on both feet.",
+            "Your body isn't turning."
+        ],
+        "augmented_labels": [
+            "You're facing too directly forward, and your arms are too tense. Power isn't coming from your body. Lift your back foot onto its ball and rotate your body.",
+            "Your weight should be evenly distributed on both feet.",
+            "Your body isn't rotating."
+        ],
+        "original_seq_len": 69,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 69,
+        "aligned_std_start_frame": 32,
+        "aligned_std_end_frame": 101,
+        "aligned_seq_len": 69
+    },
+    {
+        "video_name": "1_front_4",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "The body rotation angle is too large. Keep the knees slightly bent. The striking point should be right in front of your eyes. Do not rotate your head. Keep the back heel lifted.",
+            "Shift your upper body weight forward.",
+            "You're over-rotating your body, your feet aren't in a proper fighting stance, and you're punching too low."
+        ],
+        "augmented_labels": [
+            "The body is rotating too much. Bend your knees a bit. Aim to punch directly in front of your eyes. Avoid turning your head. Raise your back heel.",
+            "Move your upper body weight forward.",
+            "You are twisting too much, your stance isn't right, and your punch is too low."
+        ],
+        "original_seq_len": 80,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 80,
+        "aligned_std_start_frame": 28,
+        "aligned_std_end_frame": 108,
+        "aligned_seq_len": 80
+    },
+    {
+        "video_name": "6_front_5",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Your arms are too stiff, and your back foot isn't lifted. Your body's also too rigid, and your knees aren't slightly bent. Your center of gravity is too high.",
+            "Keep your feet shoulder-width apart.",
+            "Your arms are too stiff, and you're only using your hands for power. Make sure to get into the proper basic stance."
+        ],
+        "augmented_labels": [
+            "Your arms are too stiff, your back foot stays flat, and your body lacks flexibility. Your knees should have a slight bend, and your center of gravity needs to be lower.",
+            "Stand with your feet as wide as your shoulders.",
+            "Your arms are too rigid, and you're relying solely on your hands for strength. Ensure you adopt the correct basic stance."
+        ],
+        "original_seq_len": 71,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 71,
+        "aligned_std_start_frame": 24,
+        "aligned_std_end_frame": 95,
+        "aligned_seq_len": 71
+    },
+    {
+        "video_name": "7_front_9",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "You're not lifting your back foot, your rear hand isn't protecting your chin, and you're only using your arms instead of your whole body.",
+            "When the punch is halfway through, rotate to straighten it.",
+            "Your rear hand isn't guarding properly and your punches lack precision."
+        ],
+        "augmented_labels": [
+            "Your back foot stays flat, your rear hand doesn't guard your chin, and you rely only on your arms instead of using your entire body.",
+            "Rotate your arm to straighten the punch when it's halfway extended.",
+            "Your back hand isn't protecting well and your punches aren't accurate."
+        ],
+        "original_seq_len": 48,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 48,
+        "aligned_std_start_frame": 39,
+        "aligned_std_end_frame": 87,
+        "aligned_seq_len": 48
+    },
+    {
+        "video_name": "3_front_3",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Your body is too square. Your arms are too stiff. Lift your back heel.",
+            "Move your front foot slightly inward.",
+            "Your body isn't turning sideways, you're only using arm strength."
+        ],
+        "augmented_labels": [
+            "Stand at an angle. Relax your arms. Raise your back heel.",
+            "Shift your front foot a bit inward.",
+            "You're relying solely on arm power without turning your body sideways."
+        ],
+        "original_seq_len": 66,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 66,
+        "aligned_std_start_frame": 30,
+        "aligned_std_end_frame": 96,
+        "aligned_seq_len": 66
+    },
+    {
+        "video_name": "0_back_3",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "You're not relaxing your waist.",
+            "When throwing a punch, your hands should move freely.",
+            "Keep your chin tucked in."
+        ],
+        "augmented_labels": [
+            "Your waist is too tense.",
+            "Your hands should move freely when you throw a punch.",
+            "Tuck your chin in."
+        ],
+        "original_seq_len": 70,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 70,
+        "aligned_std_start_frame": 6,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 70
+    },
+    {
+        "video_name": "1_front_6",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Rotation angle of the body is too large Knees are too straight The punch should land in front of your eyes Don't rotate your head Keep the heel of the back foot lifted.",
+            "When throwing the lead hand, keep the back foot stable and stationary.",
+            "Over-rotating the body, not standing in a proper fighting stance, punching too low."
+        ],
+        "augmented_labels": [
+            "The body is rotating too much. Knees are not bent enough. Punch in front of your eyes. Head should stay still. The back foot's heel should be lifted.",
+            "Keep the back foot steady and still when using the lead hand.",
+            "Rotating your body too much, not maintaining a proper fighting stance, and punching too low."
+        ],
+        "original_seq_len": 69,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 69,
+        "aligned_std_start_frame": 28,
+        "aligned_std_end_frame": 97,
+        "aligned_seq_len": 69
+    },
+    {
+        "video_name": "0_front_4",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "When throwing a punch, keep your chin tucked down.",
+            "When you throw a lead hand punch, keep your back foot firmly planted.",
+            "Your front knee is too straight, and your guard is too low."
+        ],
+        "augmented_labels": [
+            "Tuck your chin down when you throw a punch.",
+            "Ensure your back foot stays firmly on the ground when you throw a lead hand punch.",
+            "Your front knee needs more bend, and your guard should be higher."
+        ],
+        "original_seq_len": 68,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 68,
+        "aligned_std_start_frame": 26,
+        "aligned_std_end_frame": 94,
+        "aligned_seq_len": 68
+    },
+    {
+        "video_name": "9_front_5",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "The back foot isn't properly planted.",
+            "When throwing a punch, keep your front foot grounded.",
+            "Nice punch!."
+        ],
+        "augmented_labels": [
+            "The back foot isn't firmly on the ground.",
+            "Keep your front foot on the ground when you punch.",
+            "That was a good punch!."
+        ],
+        "original_seq_len": 56,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 56,
+        "aligned_std_start_frame": 35,
+        "aligned_std_end_frame": 91,
+        "aligned_seq_len": 56
+    },
+    {
+        "video_name": "2_front_9",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Your body rotation angle is too large. Keep the heel of your back foot raised and avoid shrugging your back shoulder.",
+            "Don't rotate your body too much.",
+            "Raise your back shoulder and keep your back foot flat."
+        ],
+        "augmented_labels": [
+            "The angle at which you're rotating your body is too big. Raise the heel of your back foot and don't shrug your back shoulder.",
+            "Avoid excessive rotation of your body.",
+            "Lift your back shoulder while keeping your back foot flat."
+        ],
+        "original_seq_len": 96,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 96,
+        "aligned_std_start_frame": 13,
+        "aligned_std_end_frame": 109,
+        "aligned_seq_len": 96
+    },
+    {
+        "video_name": "4_back_10",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "You're only using arm power without rotating your whole body. Both shoulders are too tense. Your body's center of gravity isn't balanced between your feet. You're unintentionally locking your front leg when punching. Your chin isn't tucked.",
+            "Make sure to pivot more with your back foot.",
+            "Your arms are too rigid and you're not using your lower body strength."
+        ],
+        "augmented_labels": [
+            "You're just using arm strength and not turning your body. Your shoulders are stiff. Your weight isn't spread evenly between your feet. Your front leg is getting stiff when you punch. Your chin is not tucked in.",
+            "Pivot more with your back foot.",
+            "Your arms are too stiff and you're not using power from your lower body."
+        ],
+        "original_seq_len": 56,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 56,
+        "aligned_std_start_frame": 15,
+        "aligned_std_end_frame": 71,
+        "aligned_seq_len": 56
+    },
+    {
+        "video_name": "5_back_8",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "When throwing punches, your rear foot's toes aren't positioned correctly. Your arm and shoulder are too tense, and your front knee is too straight.",
+            "When throwing the rear hand punch, extend it a bit longer.",
+            "Your hands are too stiff."
+        ],
+        "augmented_labels": [
+            "Your rear foot's toes might need adjusting when you throw punches, and your arm and shoulder could be less tense. Also, your front knee should not be too straight.",
+            "Throw the rear hand punch with a little more extension.",
+            "Your hands are not relaxed enough."
+        ],
+        "original_seq_len": 46,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 46,
+        "aligned_std_start_frame": 28,
+        "aligned_std_end_frame": 74,
+        "aligned_seq_len": 46
+    },
+    {
+        "video_name": "7_front_8",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "The back foot wasn't elevated. The rear hand didn't protect the chin. You relied solely on your arm instead of using your body's power. You didn't clench your fist when throwing punches.",
+            "You left yourself open too many times without proper defense.",
+            "Your back hand lacks defense, and your punches aren't precise."
+        ],
+        "augmented_labels": [
+            "Your back foot should be lifted slightly. Make sure your rear hand shields your chin. Use your body's power instead of just your arm. Clench your fist when you throw punches.",
+            "You didn't protect yourself properly and left openings too often.",
+            "The back hand isn't providing enough defense, and the punches aren't accurate."
+        ],
+        "original_seq_len": 50,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 50,
+        "aligned_std_start_frame": 39,
+        "aligned_std_end_frame": 89,
+        "aligned_seq_len": 50
+    },
+    {
+        "video_name": "0_back_9",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "Your back feels a bit stiff.",
+            "Position your lead foot slightly inward to keep your balance centered.",
+            "Your chin isn't tucked properly."
+        ],
+        "augmented_labels": [
+            "You notice some stiffness in your back.",
+            "Set your front foot a bit inward so your balance stays centered.",
+            "Your chin is not tucked in the right way."
+        ],
+        "original_seq_len": 64,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 64,
+        "aligned_std_start_frame": 12,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 64
+    },
+    {
+        "video_name": "0_front_11",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "When you punch, keep your chin tucked down.",
+            "Shift your upper body weight forward.",
+            "Your front knee is too straight when standing. Your basic guard position has your hands too low. When you punch, the front knee is too straight, causing your body weight to shift forward."
+        ],
+        "augmented_labels": [
+            "Tuck your chin down when you throw a punch.",
+            "Move your upper body weight forward.",
+            "Your front knee needs more bend when standing. In your basic guard position, your hands are not high enough. When throwing a punch, the front knee should not be too straight, as it makes your body weight lean forward."
+        ],
+        "original_seq_len": 68,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 68,
+        "aligned_std_start_frame": 32,
+        "aligned_std_end_frame": 100,
+        "aligned_seq_len": 68
+    },
+    {
+        "video_name": "2_back_1",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "Your back foot isn't lifted. Your hips didn't fully rotate. Your shoulders are a bit tense.",
+            "The punch should go out straight and come back straight.",
+            "Your upper body is rotating too much instead of your hips. Also, your arms are too stiff."
+        ],
+        "augmented_labels": [
+            "Your back foot stays on the ground. Your hips don't rotate completely. Your shoulders are somewhat tense.",
+            "The punch moves directly forward and then directly back.",
+            "You're rotating your upper body excessively instead of your hips, and your arms are too rigid."
+        ],
+        "original_seq_len": 91,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 76,
+        "aligned_std_start_frame": 0,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 76
+    },
+    {
+        "video_name": "9_front_9",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "Your stance isn't stable.",
+            "When punching, it's easy for your weight to shift forward.",
+            "You're doing great."
+        ],
+        "augmented_labels": [
+            "Your stance is not steady.",
+            "Your weight might move forward when you throw a punch.",
+            "You're doing well."
+        ],
+        "original_seq_len": 54,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 54,
+        "aligned_std_start_frame": 39,
+        "aligned_std_end_frame": 93,
+        "aligned_seq_len": 54
+    },
+    {
+        "video_name": "7_back_9",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "You haven't raised your back heel, your hips aren't rotating, your arms are too stiff, and your body isn't relaxed, which is preventing your shoulders from moving and swinging properly. Also, you're not paying attention to defense when throwing punches.",
+            "Keep your balance steady on both feet.",
+            "Your punches lack accuracy, and your right hand isn't in a defensive position. Additionally, you're not rotating your hips."
+        ],
+        "augmented_labels": [
+            "Your back heel isn't up, your hips aren't rotating, your arms are too stiff, and your body isn't relaxed, which stops your shoulders from moving and swinging correctly. Additionally, you're not focusing on defense while throwing punches.",
+            "Maintain steady balance on both feet.",
+            "Your punches aren't precise, your right hand isn't protecting, and you're not turning your hips."
+        ],
+        "original_seq_len": 58,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 58,
+        "aligned_std_start_frame": 18,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 58
+    },
+    {
+        "video_name": "3_front_10",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Body is too squared up. Your arms are too stiff and you're not using your body to generate power. Raise your back heel. You're not rotating your body.",
+            "Step your back foot slightly to the side.",
+            "Your body isn't turning; you're only using arm strength."
+        ],
+        "augmented_labels": [
+            "Your body is too straight; your arms are too stiff, and you aren't using your body to generate power. Lift your back heel, and you're not rotating your body.",
+            "Move your back foot a little to the side.",
+            "You're not rotating your body; you're just using your arm muscles."
+        ],
+        "original_seq_len": 50,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 50,
+        "aligned_std_start_frame": 39,
+        "aligned_std_end_frame": 89,
+        "aligned_seq_len": 50
+    },
+    {
+        "video_name": "2_back_2",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "The back foot isn't raised, the hips aren't fully rotating, and the shoulders are too tense, preventing smooth movement from side to side.",
+            "When throwing punches, make sure your body movement isn't too exaggerated.",
+            "You're over-rotating your upper body instead of your hips, and your arms are too stiff."
+        ],
+        "augmented_labels": [
+            "The back foot stays flat, the hips don't rotate completely, and the shoulders are too stiff, stopping fluid side-to-side movement.",
+            "Avoid moving your body too dramatically when throwing punches.",
+            "Your upper body is rotating too much compared to your hips, and your arms are overly rigid."
+        ],
+        "original_seq_len": 88,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 76,
+        "aligned_std_start_frame": 0,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 76
+    },
+    {
+        "video_name": "5_front_6",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "Your arms are too stiff, which is preventing you from extending them properly. Your back foot isn't lifting. Your body is also too rigid.",
+            "Rotate your shoulders a bit more.",
+            "If your arms are too stiff, you're only using your hands for power."
+        ],
+        "augmented_labels": [
+            "Your arms are too stiff, making it hard to extend them properly. Your back foot isn't coming up. Your body is also too rigid.",
+            "Turn your shoulders slightly more.",
+            "When your arms are overly tense, you're relying on just your hands for strength."
+        ],
+        "original_seq_len": 32,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 32,
+        "aligned_std_start_frame": 41,
+        "aligned_std_end_frame": 73,
+        "aligned_seq_len": 32
+    },
+    {
+        "video_name": "3_back_2",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "The hips and shoulders aren't rotating. You're standing too square. The back foot isn't on the ball. The knees are too straight.",
+            "Keep your balance steady with both feet planted firmly.",
+            "Your stance is too narrow, and your hips aren't rotating."
+        ],
+        "augmented_labels": [
+            "Your hips and shoulders aren't twisting, and your stance is too square. You're not on the ball of your back foot, and your knees are too straight.",
+            "Stand with your feet firmly on the ground to stay balanced.",
+            "Your stance is too close, and your hips aren't turning."
+        ],
+        "original_seq_len": 61,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 61,
+        "aligned_std_start_frame": 15,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 61
+    },
+    {
+        "video_name": "0_front_5",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "When throwing a punch, keep your chin tucked in.",
+            "When throwing the jab, make sure to keep your rear hand tight to your body.",
+            "Your front knee is too straight when standing. Your basic stance has your hands too low. Your front knee is too straight when throwing punches."
+        ],
+        "augmented_labels": [
+            "Tuck your chin in when you throw a punch.",
+            "Keep your rear hand close to your body when you throw the jab.",
+            "Your front knee should bend more when standing. Your hands need to be held higher in your basic stance. Bend your front knee more when throwing punches."
+        ],
+        "original_seq_len": 69,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 69,
+        "aligned_std_start_frame": 32,
+        "aligned_std_end_frame": 101,
+        "aligned_seq_len": 69
+    },
+    {
+        "video_name": "0_back_1",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "You need to relax your waist.",
+            "When throwing a rear straight punch, make sure your body movements are not too large.",
+            "Your chin isn't tucked properly."
+        ],
+        "augmented_labels": [
+            "Loosen up your waist.",
+            "Your body movements should be kept small when you throw a rear straight punch.",
+            "Your chin needs to be tucked in more."
+        ],
+        "original_seq_len": 60,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 60,
+        "aligned_std_start_frame": 16,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 60
+    },
+    {
+        "video_name": "8_back_5",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "Your back foot isn't on the ball, your hips aren't rotating, your arms are too stiff, and you're leaning too far forward with your punches, causing your front knee to lock straight.",
+            "Keep your weight balanced and lower your stance.",
+            "You're leaning too far forward, causing your hips to rise. Don't forget to rotate your hips."
+        ],
+        "augmented_labels": [
+            "Your back foot isn't pressing on the ball, your hips aren't moving, your arms are too tense, and you're leaning too much forward when punching, which makes your front knee straighten completely.",
+            "Distribute your weight evenly and lower your stance.",
+            "Leaning too far forward makes your hips rise. Rotate your hips."
+        ],
+        "original_seq_len": 67,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 67,
+        "aligned_std_start_frame": 8,
+        "aligned_std_end_frame": 75,
+        "aligned_seq_len": 67
+    },
+    {
+        "video_name": "0_front_1",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Move your feet to initiate the punch, engage your whole body to generate power, and throw the punch at the end. Don't rely solely on your arms for power, and keep your chin tucked in.",
+            "Keep your lead foot slightly to the inside.",
+            "Your front knee is too straight. Keep your guard up higher."
+        ],
+        "augmented_labels": [
+            "Start the punch by shifting your feet, use your entire body for power, and finish by throwing the punch. Avoid using just your arms for strength, and keep your chin down.",
+            "Position your lead foot a little on the inside.",
+            "The front knee should not be too straight. Hold your guard higher."
+        ],
+        "original_seq_len": 61,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 61,
+        "aligned_std_start_frame": 35,
+        "aligned_std_end_frame": 96,
+        "aligned_seq_len": 61
+    },
+    {
+        "video_name": "8_back_9",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "Your back foot isn't lifted properly, your hips aren't rotating, your arms are too stiff, and when you punch, you're leaning too far forward and your front knee is too straight.",
+            "The stance's center of gravity is too high.",
+            "You're leaning too far forward, which is causing your hips to stick up. Remember to rotate your hips."
+        ],
+        "augmented_labels": [
+            "You're not lifting your back foot correctly, your hips aren't turning, your arms are too rigid, and you're leaning too far forward with a front knee that's too straight when you punch.",
+            "The center of gravity in the stance is too elevated.",
+            "Leaning too far forward is making your hips stick up. Rotate your hips."
+        ],
+        "original_seq_len": 58,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 58,
+        "aligned_std_start_frame": 18,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 58
+    },
+    {
+        "video_name": "6_back_8",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "Back foot isn't lifted. Hips aren't rotating. Hands are too stiff. Body isn't relaxed, causing shoulders to struggle with proper left-right movement. Stance's center of gravity is too high. Striking point is too low.",
+            "When throwing a straight rear hand punch, make sure to rotate your hips first.",
+            "Use only the power of your hands, but both your upper body and hands are too stiff, and there's no rotation in your hips. Also, your legs aren't bending into a half-squat."
+        ],
+        "augmented_labels": [
+            "The back foot stays flat. Hips don’t turn. Hands are clenched tightly. Tension in the body limits shoulder movement side to side. Balance is too high in your stance. The punch lands too low.",
+            "Rotate your hips first when throwing a straight rear hand punch.",
+            "Your hands should generate the power, but your upper body and hands are too rigid, there's no hip rotation, and your legs aren't bending into a half-squat."
+        ],
+        "original_seq_len": 64,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 64,
+        "aligned_std_start_frame": 12,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 64
+    },
+    {
+        "video_name": "2_front_8",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Your body is over-rotating. Lift the heel of your back foot, and keep your back shoulder relaxed without shrugging.",
+            "When throwing a punch, don't move your body forward.",
+            "Raise your rear shoulder and don't lift your back heel."
+        ],
+        "augmented_labels": [
+            "You're rotating too much. Lift the heel of your back foot and keep your back shoulder relaxed without shrugging.",
+            "Avoid leaning forward when you throw a punch.",
+            "Lift your back shoulder and keep your back heel on the ground."
+        ],
+        "original_seq_len": 84,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 84,
+        "aligned_std_start_frame": 24,
+        "aligned_std_end_frame": 108,
+        "aligned_seq_len": 84
+    },
+    {
+        "video_name": "1_back_1",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "The back foot is not on the ball. Keep your head in line with your punches. Your impact point is too low. Your hips aren't fully rotating. Your knees are too straight.",
+            "When punching, aim to keep your fist at eye level.",
+            "You're aiming too low, your stance is too narrow, and your hips aren't fully engaging in the rotation."
+        ],
+        "augmented_labels": [
+            "The back foot should be on the ball. Your head should be aligned with your punches. The impact point is higher. Hips need full rotation. Bend your knees slightly.",
+            "Keep your fist at eye level when you punch.",
+            "Your aim is too low, your stance is too narrow, and your hips don't fully rotate."
+        ],
+        "original_seq_len": 77,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 76,
+        "aligned_std_start_frame": 0,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 76
+    },
+    {
+        "video_name": "5_front_1",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Your arms are too stiff, which is preventing them from fully extending. You need to pick up your rear foot on the toes. Your body is also too rigid.",
+            "Turn your lead foot slightly inward.",
+            "Your arms are too stiff; you're only using your hands for power."
+        ],
+        "augmented_labels": [
+            "Your arms aren't extending fully because they're too stiff. Picking up your rear foot on the toes will help. Your body is also too tense.",
+            "Slightly angle your front foot inward.",
+            "Your arms are not relaxed enough, and you're relying only on your hands for strength."
+        ],
+        "original_seq_len": 40,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 40,
+        "aligned_std_start_frame": 41,
+        "aligned_std_end_frame": 81,
+        "aligned_seq_len": 40
+    },
+    {
+        "video_name": "7_front_2",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "You're not lifting your back foot, your back hand isn't protecting your chin, and you are relying only on your arms instead of using your body for power.",
+            "When you throw a punch, make sure to keep your fist tightly clenched.",
+            "Your rear hand isn't guarding properly, and your punches lack precision."
+        ],
+        "augmented_labels": [
+            "You're keeping your back foot flat, your back hand isn't guarding your chin, and you're using just your arms instead of your body to punch with force.",
+            "Keep your fist tightly clenched when throwing a punch.",
+            "Your back hand isn't protecting well, and your punches aren't accurate."
+        ],
+        "original_seq_len": 50,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 50,
+        "aligned_std_start_frame": 39,
+        "aligned_std_end_frame": 89,
+        "aligned_seq_len": 50
+    },
+    {
+        "video_name": "3_front_4",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "Body is too square on, the arms are too stiff and not utilizing body power. Lift the back heel.",
+            "Rotate your shoulders slightly.",
+            "Your body isn't rotating; you're only using arm strength."
+        ],
+        "augmented_labels": [
+            "The body faces forward too much, the arms are rigid, and not using body strength. Raise the back heel.",
+            "Turn your shoulders a little bit.",
+            "You're only using the strength of your arm; your body isn't turning."
+        ],
+        "original_seq_len": 53,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 53,
+        "aligned_std_start_frame": 32,
+        "aligned_std_end_frame": 85,
+        "aligned_seq_len": 53
+    },
+    {
+        "video_name": "3_back_4",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "Your hips aren't rotating, you're standing too square, your back heel isn't lifted, and your knees are too straight.",
+            "Your back foot balance can easily drift away.",
+            "Your stance is too narrow, and you're not rotating your hips."
+        ],
+        "augmented_labels": [
+            "Your hips are not turning, you're too straight on, your back heel is flat, and your knees are not bent enough.",
+            "It's easy to lose balance on your back foot.",
+            "Your feet are too close together, and you're not turning your hips."
+        ],
+        "original_seq_len": 63,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 63,
+        "aligned_std_start_frame": 13,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 63
+    },
+    {
+        "video_name": "4_front_9",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Relax your upper body, keep your knees slightly bent, punch straight, and tuck your chin in when throwing punches.",
+            "Keep your weight balanced between both feet.",
+            "Engage your core. Your front leg is too straight."
+        ],
+        "augmented_labels": [
+            "Loosen your upper body, slightly bend your knees, punch straight, and tuck your chin in while throwing punches.",
+            "Have your weight evenly distributed on both feet.",
+            "Tighten your core. Your front leg needs to bend more."
+        ],
+        "original_seq_len": 46,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 46,
+        "aligned_std_start_frame": 30,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 46
+    },
+    {
+        "video_name": "8_front_10",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Your back foot isn't elevated, which affects your stance. Your body is facing too forward. Your back isn't relaxed, preventing you from utilizing your full body power when punching. You're leaning too far forward when you throw punches.",
+            "Don't shift your weight forward with your punch.",
+            "Your body is too tense and you’re facing too directly forward. Your stance is too narrow."
+        ],
+        "augmented_labels": [
+            "Your back foot is flat, affecting your stance. Your body is too forward-facing. Your back is tense, stopping you from using your full body strength when punching. You lean too much forward when throwing punches.",
+            "Avoid moving your weight forward when you punch.",
+            "Your body is too tight, you're too square to the opponent, and your stance is too close together."
+        ],
+        "original_seq_len": 62,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 62,
+        "aligned_std_start_frame": 18,
+        "aligned_std_end_frame": 80,
+        "aligned_seq_len": 62
+    },
+    {
+        "video_name": "9_front_4",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "When throwing a punch, remember that your rear hand should follow the body's rotation without losing focus on defense.",
+            "The height of your punches should be level with your eyes.",
+            "Good job."
+        ],
+        "augmented_labels": [
+            "Your rear hand should move with your body's rotation when punching, while still maintaining focus on defense.",
+            "Your punches should be at eye level.",
+            "Great work."
+        ],
+        "original_seq_len": 56,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 56,
+        "aligned_std_start_frame": 36,
+        "aligned_std_end_frame": 92,
+        "aligned_seq_len": 56
+    },
+    {
+        "video_name": "5_back_6",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "Your back foot isn't positioned correctly when you throw a punch, and your arms and shoulders are too tense.",
+            "Lift your back foot a bit higher.",
+            "Your hands are too stiff."
+        ],
+        "augmented_labels": [
+            "When you punch, your back foot placement is off, and your arms and shoulders are holding too much tension.",
+            "Raise your back foot slightly more.",
+            "Your hands are too rigid."
+        ],
+        "original_seq_len": 62,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 62,
+        "aligned_std_start_frame": 14,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 62
+    },
+    {
+        "video_name": "3_front_6",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "Your body is too squared up; your arms are too stiff and you're not using your body to generate power. Lift your rear heel and rotate your body.",
+            "Move your body a bit more to the inside when defending.",
+            "Body not angled Only using arm strength."
+        ],
+        "augmented_labels": [
+            "Your stance is too straight; relax your arms and use your body more to create power. Lift your back heel and turn your body.",
+            "Shift your body slightly inward when defending.",
+            "Don't angle your body, just use arm strength."
+        ],
+        "original_seq_len": 58,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 58,
+        "aligned_std_start_frame": 31,
+        "aligned_std_end_frame": 89,
+        "aligned_seq_len": 58
+    },
+    {
+        "video_name": "6_back_4",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "Your back foot isn't pivoting, your hips aren't rotating, your arms are too stiff, and your body isn't relaxed, which is preventing your shoulders from swaying naturally from side to side. Also, your stance is too upright, causing your center of gravity to be too high.",
+            "Keep your center of gravity stable.",
+            "You're relying solely on arm strength, and both your arms and upper body are too tense, with no rotation in your hips. Plus, your legs aren't in a partial squat position."
+        ],
+        "augmented_labels": [
+            "Your back foot needs to pivot, your hips should rotate, your arms are too tense, and your body needs to relax so your shoulders can sway naturally. Additionally, you're standing too upright, which makes your center of gravity too high.",
+            "Maintain a steady balance.",
+            "Your arms and upper body are too tense, and you're only using arm strength, without rotating your hips. Additionally, your legs should be in a partial squat position."
+        ],
+        "original_seq_len": 60,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 60,
+        "aligned_std_start_frame": 12,
+        "aligned_std_end_frame": 72,
+        "aligned_seq_len": 60
+    },
+    {
+        "video_name": "8_back_7",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "Your back foot isn't elevated, your hips aren't rotating, your arm is too stiff, and when punching, you're leaning too far forward and your front knee is locking.",
+            "You need to rotate your hips a bit more.",
+            "Leaning too far forward causes your hips to stick out; don't forget to rotate your hips."
+        ],
+        "augmented_labels": [
+            "Your back foot should be raised, your hips need to rotate, keep your arm relaxed, avoid leaning too far forward, and make sure your front knee doesn't lock.",
+            "Rotate your hips a little more.",
+            "Leaning too far forward makes your hips stick out; remember to rotate your hips."
+        ],
+        "original_seq_len": 60,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 60,
+        "aligned_std_start_frame": 16,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 60
+    },
+    {
+        "video_name": "1_front_1",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Rotation of the body is too wide, bend your knees more. Punch should land in front of your eyes. Keep your head steady. Raise your back heel.",
+            "Your whole body is losing its center of gravity.",
+            "You're over-rotating your body, and your feet aren't in a proper fighting stance."
+        ],
+        "augmented_labels": [
+            "Your body's rotation is too wide; try bending your knees more. The punch should land in front of your eyes. Keep your head steady and raise your back heel.",
+            "It looks like you're not staying balanced.",
+            "You're twisting your body too much, and your feet aren't positioned correctly for a fighting stance."
+        ],
+        "original_seq_len": 72,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 72,
+        "aligned_std_start_frame": 30,
+        "aligned_std_end_frame": 102,
+        "aligned_seq_len": 72
+    },
+    {
+        "video_name": "5_front_9",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "Your arms are too tense, which is preventing you from extending them properly. Your back foot needs to be on the ball, and your body is too stiff.",
+            "Your lower body isn't involved at all in your punches, but the power from your punching hand is decent. You should incorporate more body rotation to generate power. When you throw your punch, there’s a slight hesitation, which means your body is effectively braking, and that’s good. However, your elbows flare out, and you're swinging your punches.",
+            "If your arms are too stiff, you're only using your hands for power."
+        ],
+        "augmented_labels": [
+            "Your arms are too tense, making it hard for you to extend them fully. Your back foot should be on the ball, and your body is too rigid.",
+            "The power from your punching hand is decent, but your lower body doesn't contribute to your punches. Incorporate more rotation to generate power. There's a slight hesitation when you punch, which effectively acts as a brake, and that's positive. However, your elbows flare out, causing you to swing your punches.",
+            "When your arms are too stiff, power mainly comes from your hands."
+        ],
+        "original_seq_len": 44,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 44,
+        "aligned_std_start_frame": 41,
+        "aligned_std_end_frame": 85,
+        "aligned_seq_len": 44
+    },
+    {
+        "video_name": "5_front_8",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "Your arms are too stiff, preventing proper extension. You're not lifting your back foot enough, and your body is too rigid.",
+            "There's a large opening in the middle of your body.",
+            "If your arms are too stiff, you're only using your hands for power."
+        ],
+        "augmented_labels": [
+            "Your arms are too tense, stopping them from extending correctly. You aren't lifting your back foot high enough, and your body is too tight.",
+            "You have a big gap in the center of your body.",
+            "Stiff arms mean you're relying solely on your hands for power."
+        ],
+        "original_seq_len": 35,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 35,
+        "aligned_std_start_frame": 41,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 35
+    },
+    {
+        "video_name": "7_back_2",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "Your back foot isn't lifted. Your hips aren't rotating. Your arms are too stiff. Your body isn't relaxed, which is preventing your shoulders from swinging properly. Your stance has your center of gravity too high.",
+            "Your back foot needs to step slightly to the right.",
+            "Your punches lack precision, your right hand isn't in a defensive position, and your hips aren't rotating."
+        ],
+        "augmented_labels": [
+            "You're not lifting your back foot. Your hips aren't moving. Your arms are rigid. Your body is tense, stopping your shoulders from swinging well. Your stance keeps your center of gravity too high.",
+            "Step your back foot a little toward the right.",
+            "Your punches aren't accurate, your right hand isn't protecting properly, and your hips aren't turning."
+        ],
+        "original_seq_len": 69,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 69,
+        "aligned_std_start_frame": 7,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 69
+    },
+    {
+        "video_name": "4_front_8",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Keep your upper body relaxed, bend your knees slightly, punch straight, and tuck your chin down when punching.",
+            "When you throw a punch, make sure it goes straight out and comes straight back.",
+            "Engage your core more. Your front foot is standing too straight."
+        ],
+        "augmented_labels": [
+            "Stay relaxed in your upper body, slightly bend your knees, punch straight, and tuck your chin down as you punch.",
+            "Your punch should travel straight out and return straight back.",
+            "Tighten your abdominal muscles more. Your front foot is too upright."
+        ],
+        "original_seq_len": 47,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 47,
+        "aligned_std_start_frame": 29,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 47
+    },
+    {
+        "video_name": "7_back_3",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "Your back foot isn't lifting properly, your hips aren't rotating, your hands are too tense, and your body isn't relaxed enough, which is preventing your shoulders from moving and exchanging naturally. Your stance has the weight too high, and you're not paying attention to defense when you throw punches.",
+            "When you throw a punch, make sure to rotate your back foot slightly.",
+            "Your punches lack precision, your right hand isn't in a defensive position, and your hips aren't rotating."
+        ],
+        "augmented_labels": [
+            "Your back foot isn't lifting correctly, your hips aren't turning enough, your hands are too stiff, and your body needs to be more relaxed for your shoulders to move smoothly. Your stance has your weight too high, and you're not focusing on defense when you punch.",
+            "Rotate your back foot slightly when you throw a punch.",
+            "Your punches aren't accurate, your right hand is not protecting, and your hips are not turning."
+        ],
+        "original_seq_len": 65,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 65,
+        "aligned_std_start_frame": 11,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 65
+    },
+    {
+        "video_name": "6_back_1",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "Your back foot isn't lifted properly, your hips aren't rotating, and your hands are too stiff. You're not relaxing your body, which is preventing your shoulders from moving and exchanging normally side to side. Also, your stance's center of gravity is too high.",
+            "When you throw a punch, your fist should be at the same level as your eyes.",
+            "You're only using your arm strength, and both your upper body and arms are too stiff without any hip rotation. Also, your legs aren't in a half-squat position."
+        ],
+        "augmented_labels": [
+            "The back foot should be lifted correctly, the hips need to rotate, and the hands should be more relaxed. This way, the body stays loose, allowing the shoulders to move side to side freely. Lower the center of gravity in your stance.",
+            "The punch should be thrown with your fist at the level of your eyes.",
+            "Only arm strength is being used, with a rigid upper body and arms lacking hip rotation. Additionally, the legs aren't positioned in a half-squat."
+        ],
+        "original_seq_len": 60,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 60,
+        "aligned_std_start_frame": 11,
+        "aligned_std_end_frame": 71,
+        "aligned_seq_len": 60
+    },
+    {
+        "video_name": "0_front_8",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "When you punch, keep your chin tucked down.",
+            "When you throw a punch, it's easy for the latter part to become loose.",
+            "Your front knee is standing too straight. In your basic stance, you're keeping your guard too low. When you throw a punch, your front knee being too straight is causing your body weight to shift forward."
+        ],
+        "augmented_labels": [
+            "Tuck your chin down when you punch.",
+            "It's common for the end of your punch to become loose.",
+            "The front knee remains too straight, and the guard is held too low in the basic stance. Throwing a punch with a straight front knee causes body weight to shift forward."
+        ],
+        "original_seq_len": 69,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 69,
+        "aligned_std_start_frame": 30,
+        "aligned_std_end_frame": 99,
+        "aligned_seq_len": 69
+    },
+    {
+        "video_name": "0_front_3",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "When you throw a punch, keep your chin tucked down.",
+            "Keep your body's center of gravity balanced in the middle.",
+            "Your front knee is too straight. Keep your basic stance with your hands up higher."
+        ],
+        "augmented_labels": [
+            "Tuck your chin down when you throw a punch.",
+            "Your body's center of gravity should stay balanced in the middle.",
+            "Your front knee is too straight. Hold your basic stance with your hands positioned higher."
+        ],
+        "original_seq_len": 70,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 70,
+        "aligned_std_start_frame": 34,
+        "aligned_std_end_frame": 104,
+        "aligned_seq_len": 70
+    },
+    {
+        "video_name": "8_front_7",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "The back foot isn't raised. Your stance is too square to the opponent. Your back is too tense, preventing you from using the full power of your body when punching.",
+            "Keep your chin down.",
+            "Your body is too stiff and you're facing too square to the opponent. Widen your stance."
+        ],
+        "augmented_labels": [
+            "The back foot should be more elevated. Your position is too directly facing the opponent. The tension in your back is too high, limiting your punching power.",
+            "Your chin should be down.",
+            "Loosen your body and turn slightly to the side, then spread your feet apart."
+        ],
+        "original_seq_len": 52,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 52,
+        "aligned_std_start_frame": 21,
+        "aligned_std_end_frame": 73,
+        "aligned_seq_len": 52
+    },
+    {
+        "video_name": "8_front_6",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "You're not lifting your back foot properly. Your stance is too square, and your back isn't relaxed, which is preventing you from using your full body power when punching.",
+            "Keep your body weight centered and don't lean forward with your punches.",
+            "Your body is too stiff and you're facing too square on. Your stance is also too narrow."
+        ],
+        "augmented_labels": [
+            "Your back foot isn't lifting right. Your stance is too square, and your back isn't relaxed, which stops you from using your full body power when punching.",
+            "Stay balanced and avoid leaning forward when throwing punches.",
+            "Your body is too rigid, you're too directly facing forward, and your stance is too close together."
+        ],
+        "original_seq_len": 51,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 51,
+        "aligned_std_start_frame": 39,
+        "aligned_std_end_frame": 90,
+        "aligned_seq_len": 51
+    },
+    {
+        "video_name": "6_back_9",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "The back foot isn't elevated, causing insufficient hip rotation. Your arms are too stiff, and your body isn't relaxed, which prevents proper shoulder movement for exchanging punches. Your stance has a center of gravity that's too high, and your strike point is too low.",
+            "Your punch isn't fully extended.",
+            "Use only your arm's strength, and your arm and upper body are too stiff while your hips do not rotate. Also, your legs are not bending into a semi-squat position."
+        ],
+        "augmented_labels": [
+            "Your back foot remains flat, leading to limited hip rotation. Your arms are too rigid, and your body is tense, which hinders effective shoulder movement for throwing punches. Your stance is too upright, and your target is too low.",
+            "Your punch doesn't reach out all the way.",
+            "Your arm is too rigid and you're not using your hip rotation, plus your legs aren't bending into a semi-squat."
+        ],
+        "original_seq_len": 64,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 64,
+        "aligned_std_start_frame": 12,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 64
+    },
+    {
+        "video_name": "3_back_3",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "Hip and shoulder aren't rotating. You're standing too square. Your back foot isn't on the ball. Your knees are too straight.",
+            "Rotate your back foot more.",
+            "Your stance is too narrow, and there's no hip rotation."
+        ],
+        "augmented_labels": [
+            "Your hips and shoulders need to rotate. Your stance is too square. Your back foot should be more on the ball. Your knees should be more bent.",
+            "Turn your back foot further.",
+            "You're standing too close together, and your hips aren't turning."
+        ],
+        "original_seq_len": 58,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 58,
+        "aligned_std_start_frame": 18,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 58
+    },
+    {
+        "video_name": "7_front_1",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "You're not lifting your back foot. Your rear hand isn't protecting your chin. You're using just your arms instead of your body's power.",
+            "When throwing a punch, make sure your rear hand is guarding properly.",
+            "Lack of defense with the rear hand, and your punches are not precise."
+        ],
+        "augmented_labels": [
+            "Your back foot stays flat. Your back hand doesn't guard your chin. You're relying only on your arms, not using your body's strength.",
+            "Keep your rear hand in a good defensive position when you throw a punch.",
+            "Your rear hand isn't protecting well, and your punches are inaccurate."
+        ],
+        "original_seq_len": 49,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 49,
+        "aligned_std_start_frame": 27,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 49
+    },
+    {
+        "video_name": "5_front_2",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "The arms are too stiff, causing a lack of reach. The back foot isn't elevated, and the body is also too rigid.",
+            "The knuckles should be facing you.",
+            "Your arms are too stiff; you're only using your hands for power."
+        ],
+        "augmented_labels": [
+            "The arms are too rigid, limiting reach. The back foot stays flat, and the body is also too stiff.",
+            "The knuckles need to be turned towards you.",
+            "Your arms are too rigid; you're relying solely on your hands for strength."
+        ],
+        "original_seq_len": 40,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 40,
+        "aligned_std_start_frame": 42,
+        "aligned_std_end_frame": 82,
+        "aligned_seq_len": 40
+    },
+    {
+        "video_name": "2_back_4",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "Your back foot isn't lifted. Your hips aren't fully rotating. Your shoulders are a bit stiff. Your chin isn't tucked down.",
+            "Shift your body's center of gravity forward.",
+            "You are rotating your upper body too much instead of using your hips. Also, your arms are too stiff."
+        ],
+        "augmented_labels": [
+            "Your back foot stays flat. Your hips don't fully turn. Your shoulders are slightly stiff. Your chin isn't tucked down.",
+            "Move your body's weight slightly forward.",
+            "You're turning your upper body too much instead of using your hips, and your arms are too rigid."
+        ],
+        "original_seq_len": 89,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 76,
+        "aligned_std_start_frame": 0,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 76
+    },
+    {
+        "video_name": "5_back_9",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "Your back foot's toe isn't grounded properly when you throw punches, and your shoulders are too tense.",
+            "Lower your stance a bit more.",
+            "Your hands are too stiff."
+        ],
+        "augmented_labels": [
+            "The toe of your back foot isn't properly planted when you punch, and your shoulders are too stiff.",
+            "Bend your knees slightly more.",
+            "Your hands need to be more relaxed."
+        ],
+        "original_seq_len": 53,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 53,
+        "aligned_std_start_frame": 18,
+        "aligned_std_end_frame": 71,
+        "aligned_seq_len": 53
+    },
+    {
+        "video_name": "4_front_2",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Keep your upper body relaxed, bend your knees slightly, and tuck your chin down when throwing punches.",
+            "Keep your shoulder movement minimal when throwing a punch.",
+            "Core not engaged. Front leg is too straight."
+        ],
+        "augmented_labels": [
+            "Relax your upper body, bend your knees a little, and lower your chin when you throw punches.",
+            "Minimize shoulder movement when throwing a punch.",
+            "Your core isn't engaged. Your front leg is too straight."
+        ],
+        "original_seq_len": 52,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 52,
+        "aligned_std_start_frame": 24,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 52
+    },
+    {
+        "video_name": "2_front_2",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Rotate your body without overextending. Lift the heel of your rear foot. Keep your rear shoulder relaxed, don’t shrug it. Keep your chin down.",
+            "Keep your rear hand up for defense, and don't make any unnecessary changes.",
+            "Raise your rear shoulder, make sure your rear foot is on the ball, and tuck your chin."
+        ],
+        "augmented_labels": [
+            "Twist your body gently without stretching too far. Lift the heel of your back foot. Relax your back shoulder instead of lifting it. Lower your chin.",
+            "Hold your back hand up for protection, and avoid making unnecessary changes.",
+            "Lift your back shoulder, keep the ball of your back foot grounded, and lower your chin."
+        ],
+        "original_seq_len": 74,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 74,
+        "aligned_std_start_frame": 25,
+        "aligned_std_end_frame": 99,
+        "aligned_seq_len": 74
+    },
+    {
+        "video_name": "7_back_5",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "Your back foot isn't pivoting, hips aren't rotating, your hands are too stiff, and your body isn't relaxed, preventing your shoulders from naturally swinging side to side. You're not paying attention to defense when throwing punches.",
+            "When throwing a punch, avoid making big preparatory movements.",
+            "The punch isn't solid, and your right hand isn't in a defensive position. Also, your hips aren't rotating."
+        ],
+        "augmented_labels": [
+            "Your back foot doesn't pivot, your hips don't rotate, your hands are too stiff, and your body is tense, which stops your shoulders from moving freely. You're not focusing on defense when throwing punches.",
+            "Don't make large movements before throwing a punch.",
+            "Your punch needs to be stronger, your right hand should be in a defensive position, and your hips should be rotating."
+        ],
+        "original_seq_len": 59,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 59,
+        "aligned_std_start_frame": 17,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 59
+    },
+    {
+        "video_name": "4_back_6",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "You're only using arm strength without rotating your entire body. Both shoulders are too stiff. Your body weight isn't centered between your feet. When throwing punches, you're accidentally locking your front leg.",
+            "Rotate your hips a bit more.",
+            "Your hands are too stiff, you're not using the power from your lower body."
+        ],
+        "augmented_labels": [
+            "You're relying only on arm strength without turning your whole body. Your shoulders are too tense. Your weight isn't evenly distributed between your feet. When punching, you're unintentionally locking your front leg.",
+            "Twist your hips a little more.",
+            "Your hands are too rigid, and you're not utilizing the power from your lower body."
+        ],
+        "original_seq_len": 50,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 50,
+        "aligned_std_start_frame": 26,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 50
+    },
+    {
+        "video_name": "6_back_3",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "Keep these pointers in mind: Your back foot isn't lifting properly, your hips aren't rotating, and your arms are too tense. Your body needs to relax more, which is preventing your shoulders from freely exchanging movement side to side. Also, your stance has your center of gravity too high.",
+            "When throwing a punch, keep your body from lunging forward.",
+            "You're using only arm strength, and your upper body and arms are too tense without any hip rotation. Also, your legs aren't in a half-squat position."
+        ],
+        "augmented_labels": [
+            "These points to consider: Your back foot isn't lifting properly, hips aren't rotating, and arms are too tense. Your body needs to relax more to allow your shoulders to move freely from side to side. Your stance has your center of gravity too high.",
+            "Avoid leaning forward when throwing a punch.",
+            "Your arm strength is doing all the work, and both your upper body and arms are too tight without incorporating hip rotation. Additionally, your legs aren't positioned in a half-squat."
+        ],
+        "original_seq_len": 58,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 58,
+        "aligned_std_start_frame": 14,
+        "aligned_std_end_frame": 72,
+        "aligned_seq_len": 58
+    },
+    {
+        "video_name": "6_front_2",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Your arms are too stiff, your back foot isn't elevated, your body is too rigid, your knees aren't slightly bent, and your center of gravity is too high.",
+            "When throwing the lead hand punch, stay relaxed.",
+            "Your arms are too rigid, you're only using hand strength. You need to establish a solid basic stance."
+        ],
+        "augmented_labels": [
+            "Your arms should be looser, your back foot needs to be lifted, your body less tense, your knees slightly bent, and your center of gravity lower.",
+            "Throw the lead hand punch while staying relaxed.",
+            "Your arms are too stiff, relying only on hand strength. You should set up a strong basic stance."
+        ],
+        "original_seq_len": 77,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 77,
+        "aligned_std_start_frame": 23,
+        "aligned_std_end_frame": 100,
+        "aligned_seq_len": 77
+    },
+    {
+        "video_name": "6_back_10",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "The back foot isn't elevated. The hips aren't rotating. The hands are too stiff. The body isn't relaxed, which prevents the shoulders from naturally swinging and switching. The stance's center of gravity is too high. The striking point is too low.",
+            "Keep your knees slightly bent.",
+            "You're only using your arm strength and your arms and upper body are too stiff. Plus, there's no hip rotation and you're not bending your knees at all."
+        ],
+        "augmented_labels": [
+            "The back foot stays flat. The hips don't move. The hands are rigid. The body is tense, stopping the shoulders from moving smoothly. The stance has a high center of gravity. The striking point is low.",
+            "Bend your knees a little.",
+            "You're relying solely on your arm power, and your arms and upper body are too rigid. There's also no movement in your hips, and your knees remain straight."
+        ],
+        "original_seq_len": 62,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 62,
+        "aligned_std_start_frame": 14,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 62
+    },
+    {
+        "video_name": "7_back_10",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "Rear foot is not on the ball Hips are not rotating Arms are too stiff Body tension is preventing proper shoulder sway Not mindful of defense when throwing punches.",
+            "The punch isn't coming out straight.",
+            "Your punches are not solid, and your right hand isn't in a defensive position. Additionally, your hips aren't rotating."
+        ],
+        "augmented_labels": [
+            "The rear foot should be on the ball, hips need to rotate, keep arms relaxed, loosen body tension for better shoulder sway, and stay aware of defense while throwing punches.",
+            "The punch isn't extending in a straight line.",
+            "Your punches lack strength, your right hand is not guarding, and your hips don't rotate."
+        ],
+        "original_seq_len": 58,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 58,
+        "aligned_std_start_frame": 18,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 58
+    },
+    {
+        "video_name": "1_front_10",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Body rotation angle is too wide. Knees are too straight. Striking point should be in front of your eyes. Keep your head still. Raise the heel of your back foot.",
+            "Keep your feet shoulder-width apart.",
+            "Body over-rotates, feet not in a fighting stance, punches are too low and not straight."
+        ],
+        "augmented_labels": [
+            "Your body rotation should be narrower. Bend your knees a bit more. Punch directly in front of your eyes. Keep your head steady. Lift the heel of your back foot.",
+            "Stand with your feet the same width as your shoulders.",
+            "The body rotates too much, the feet aren't in a proper stance, and the punches are low and not straight."
+        ],
+        "original_seq_len": 71,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 71,
+        "aligned_std_start_frame": 32,
+        "aligned_std_end_frame": 103,
+        "aligned_seq_len": 71
+    },
+    {
+        "video_name": "6_back_5",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "Your back foot isn't lifting properly, your hips aren't rotating, your hands are too stiff, your body isn't relaxed enough, which is preventing your shoulders from moving and shifting naturally. Also, your stance has too much weight up high.",
+            "Your body and head should move easily.",
+            "Only using arm strength, your arms and upper body are too stiff, and there's no rotation in the hips. Also, the legs aren't in a slight squat."
+        ],
+        "augmented_labels": [
+            "Your back foot isn’t lifting correctly, your hips aren’t turning, your hands are too tight, and your body is not relaxed enough, which stops your shoulders from moving smoothly. Additionally, your stance carries too much weight up high.",
+            "Move your body and head smoothly.",
+            "The arms and upper body are too rigid, there's no hip rotation, and the legs aren't slightly bent, relying only on arm strength."
+        ],
+        "original_seq_len": 63,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 63,
+        "aligned_std_start_frame": 13,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 63
+    },
+    {
+        "video_name": "6_front_9",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Your arms are too stiff, your back foot is not on the ball, your body is too rigid, and your knees aren't slightly bent.",
+            "Keep your weight centered.",
+            "Your arms are too tense and you're only using them for power. You need to work on your basic stance."
+        ],
+        "augmented_labels": [
+            "Your arms are not relaxed, your back foot isn't on its ball, your body is too tense, and your knees need to be slightly bent.",
+            "Stay balanced with your weight in the middle.",
+            "Your arms are too stiff, and you're relying solely on them for strength. Work on your basic stance."
+        ],
+        "original_seq_len": 57,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 57,
+        "aligned_std_start_frame": 32,
+        "aligned_std_end_frame": 89,
+        "aligned_seq_len": 57
+    },
+    {
+        "video_name": "3_front_9",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Your body is facing too squarely. Your arms are too stiff, and you're not using your body to generate power. Lift your back heel. Your body isn’t rotating.",
+            "You're losing your balance.",
+            "You're not using your torso; you're relying only on arm strength."
+        ],
+        "augmented_labels": [
+            "Your stance is too square. Your arms are too rigid, and you're not using your body to create power. Raise your back heel. Your body isn't rotating.",
+            "You're off balance.",
+            "Your torso isn't engaged; you're just using your arm strength."
+        ],
+        "original_seq_len": 53,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 53,
+        "aligned_std_start_frame": 39,
+        "aligned_std_end_frame": 92,
+        "aligned_seq_len": 53
+    },
+    {
+        "video_name": "8_front_5",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "Your back foot isn't lifted properly, and your stance is too square. Your back isn't relaxed, which is preventing you from using your whole body strength when punching.",
+            "Don't tense up your shoulders too much.",
+            "You're too stiff and standing too square. Your stance is too narrow."
+        ],
+        "augmented_labels": [
+            "Your back foot isn't lifted correctly, and your stance is too straight. Your back isn't relaxed, which stops you from using your full body strength when punching.",
+            "Try to keep your shoulders relaxed.",
+            "Your body is too rigid, and you're facing forward too much. Your stance isn't wide enough."
+        ],
+        "original_seq_len": 48,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 48,
+        "aligned_std_start_frame": 41,
+        "aligned_std_end_frame": 89,
+        "aligned_seq_len": 48
+    },
+    {
+        "video_name": "3_back_10",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "You're standing too face-on. Your back foot isn't elevated, and your knees are too straight.",
+            "You need to rotate your hips more.",
+            "Your stance is too narrow and you're not rotating your hips."
+        ],
+        "augmented_labels": [
+            "Your body is too square. Your back foot is flat, and your knees are not bent enough.",
+            "Rotate your hips more.",
+            "Your stance isn't wide enough, and you're not turning your hips."
+        ],
+        "original_seq_len": 64,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 64,
+        "aligned_std_start_frame": 12,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 64
+    },
+    {
+        "video_name": "4_back_1",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "You're only using arm strength without rotating your whole body. Both shoulders are too tense. Your weight isn't centered between your feet. When you punch, be careful not to lock your lead leg straight.",
+            "Extend your punch straighter and longer.",
+            "Your arms are too stiff, and your core isn't stable."
+        ],
+        "augmented_labels": [
+            "You're using only your arm strength and not rotating your entire body. Your shoulders are too tense, and your weight isn't balanced between your feet. When punching, avoid locking your lead leg straight.",
+            "Make your punch go out in a straight line and reach farther.",
+            "Your arms are too rigid, and your core lacks stability."
+        ],
+        "original_seq_len": 54,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 54,
+        "aligned_std_start_frame": 17,
+        "aligned_std_end_frame": 71,
+        "aligned_seq_len": 54
+    },
+    {
+        "video_name": "4_front_7",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Keep your upper body relaxed. Bend your knees slightly. When you punch, make sure to extend your arm fully. Keep your chin down as you throw a punch.",
+            "Shift your body's weight upwards.",
+            "Engage your core, and make sure your front leg isn't standing too straight."
+        ],
+        "augmented_labels": [
+            "Stay relaxed in your upper body. Bend your knees a bit. Extend your arm fully when you punch. Keep your chin down while throwing a punch.",
+            "Move your body weight upward.",
+            "Use your core muscles, and check that your front leg isn't too straight."
+        ],
+        "original_seq_len": 45,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 45,
+        "aligned_std_start_frame": 28,
+        "aligned_std_end_frame": 73,
+        "aligned_seq_len": 45
+    },
+    {
+        "video_name": "5_back_10",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "Your rear foot isn't positioned correctly when you throw punches, and your shoulders are too tense.",
+            "The pivot on your back foot is too wide.",
+            "Your hands are too stiff."
+        ],
+        "augmented_labels": [
+            "Your back foot needs to be in the right spot when you punch, and your shoulders should be more relaxed.",
+            "Your back foot is pivoting too widely.",
+            "Your hands are too rigid."
+        ],
+        "original_seq_len": 58,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 58,
+        "aligned_std_start_frame": 18,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 58
+    },
+    {
+        "video_name": "7_front_5",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Your back foot isn't elevated, your rear hand isn't protecting your chin, you're relying solely on your arm strength without engaging your body, and you're not making a fist when punching.",
+            "Step your back foot to the side.",
+            "Your rear hand lacks defense, and your punches are not solid."
+        ],
+        "augmented_labels": [
+            "Your back foot is flat, your rear hand isn't guarding your chin, you're using only your arm's strength without using your body, and your punch is not in a fist.",
+            "Move your back foot to the side.",
+            "Your back hand isn't protecting well, and your punches are weak."
+        ],
+        "original_seq_len": 53,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 53,
+        "aligned_std_start_frame": 23,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 53
+    },
+    {
+        "video_name": "3_front_1",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "Your body is too square. Your arms are too stiff. You need to be on the ball of your back foot.",
+            "Keep your weight balanced on both feet.",
+            "Your body isn't rotating; you're just using arm strength. Engage your core."
+        ],
+        "augmented_labels": [
+            "Your body is facing forward too much. Your arms are too rigid. Be on the ball of your back foot.",
+            "Balance your weight evenly on both feet.",
+            "You're only using your arm strength without rotating your body. Use your core muscles too."
+        ],
+        "original_seq_len": 63,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 63,
+        "aligned_std_start_frame": 33,
+        "aligned_std_end_frame": 96,
+        "aligned_seq_len": 63
+    },
+    {
+        "video_name": "1_back_5",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "Your back foot isn't raised, your strike point is too low, your hips aren't fully rotating, and your knees are too straight.",
+            "When throwing punches with your back foot, make sure to pivot as well.",
+            "Your punch is too low, your stance is too narrow, and you're not fully rotating your hips."
+        ],
+        "augmented_labels": [
+            "Your back foot should be lifted, your strike point is too low, your hips need more rotation, and your knees should have more bend.",
+            "When you throw punches using your back foot, pivot too.",
+            "The punch is low, the stance is narrow, and the hips aren't fully rotating."
+        ],
+        "original_seq_len": 81,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 76,
+        "aligned_std_start_frame": 0,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 76
+    },
+    {
+        "video_name": "9_back_4",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "Try to relax your body a bit more.",
+            "Initial stance: keep your weight slightly forward.",
+            "Nice job!."
+        ],
+        "augmented_labels": [
+            "Relax your body a bit more.",
+            "Start with your weight leaning a bit forward.",
+            "Well done!."
+        ],
+        "original_seq_len": 60,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 60,
+        "aligned_std_start_frame": 16,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 60
+    },
+    {
+        "video_name": "5_front_7",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "Your arms are too stiff, which prevents them from extending fully. Your back foot isn't raised up, and your body is also too rigid.",
+            "Keep your body and rear foot stable as you punch.",
+            "Your arms are too stiff, you're only using your hands for power."
+        ],
+        "augmented_labels": [
+            "Your arms need to be less stiff to extend fully. Raise your back foot, and try to relax your body.",
+            "Stay steady with your body and back foot while you punch.",
+            "Your arms are too rigid, and you're relying on just your hands for strength."
+        ],
+        "original_seq_len": 41,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 41,
+        "aligned_std_start_frame": 39,
+        "aligned_std_end_frame": 80,
+        "aligned_seq_len": 41
+    },
+    {
+        "video_name": "2_back_9",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "Relax your body a bit and focus on throwing your punches with speed. Keep your shoulders down, make sure to clench your fists, and aim for more coordinated movement between your upper and lower body.",
+            "The lead hand should not be at the same height as the rear hand.",
+            "Your upper body is rotating too much instead of your hips. Also, your arms are too stiff."
+        ],
+        "augmented_labels": [
+            "Loosen up your body slightly and concentrate on delivering your punches quickly. Keep your shoulders relaxed, clench your fists, and coordinate the movement of your upper and lower body better.",
+            "The lead hand shouldn't be at the same level as the rear hand.",
+            "You're rotating your upper body too much; try to rotate more from your hips. Also, relax your arms a bit."
+        ],
+        "original_seq_len": 89,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 76,
+        "aligned_std_start_frame": 0,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 76
+    },
+    {
+        "video_name": "8_back_6",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "You're not lifting your back foot properly. Your hips aren't rotating. Your arms are too stiff. You're leaning too much forward when punching, and your front knee is locking out.",
+            "When throwing a punch, make sure your body's center of gravity is stable.",
+            "Leaning too far forward causes your hips to lift up, and you’re forgetting to rotate your hips."
+        ],
+        "augmented_labels": [
+            "Your back foot isn’t coming up correctly. Your hips aren’t turning. Your arms are too tense. You’re leaning forward too much when you punch, and your front knee is getting stiff.",
+            "Keep your balance steady when you throw a punch.",
+            "When you lean too far forward, your hips lift up, and you don't rotate your hips."
+        ],
+        "original_seq_len": 59,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 59,
+        "aligned_std_start_frame": 11,
+        "aligned_std_end_frame": 70,
+        "aligned_seq_len": 59
+    },
+    {
+        "video_name": "5_back_1",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "Your back heel isn't elevated. Your shoulders are too tense. Your knees are too straight. Your hips aren't fully rotating.",
+            "Make sure to keep your body's center of gravity stable.",
+            "Using only arm strength makes your punches too rigid, and there's no rotation in the hips."
+        ],
+        "augmented_labels": [
+            "Your back heel should be raised. Your shoulders need to relax. Your knees should be more bent. Your hips aren't rotating fully.",
+            "Keep your balance steady by stabilizing your body's center of gravity.",
+            "Relying solely on arm strength makes punches stiff, lacking hip rotation."
+        ],
+        "original_seq_len": 46,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 46,
+        "aligned_std_start_frame": 27,
+        "aligned_std_end_frame": 73,
+        "aligned_seq_len": 46
+    },
+    {
+        "video_name": "0_back_4",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "When throwing a punch, your weight should be shifting forward. In the video, it was leaning a bit to the left.",
+            "Rotate your back foot a bit more.",
+            "Your chin isn't tucked properly."
+        ],
+        "augmented_labels": [
+            "As you punch, your weight needs to move forward, but in the video, it was tilting slightly to the left.",
+            "Turn your back foot slightly more.",
+            "Your chin is up too much."
+        ],
+        "original_seq_len": 70,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 70,
+        "aligned_std_start_frame": 6,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 70
+    },
+    {
+        "video_name": "5_back_2",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "During your punch, your back foot's toe position isn't stable. Your shoulders are too tense. Your front knee is standing too straight.",
+            "When pivoting on your back foot, it's slightly lifting off the ground.",
+            "Only using arm strength makes the hands too stiff, and there's no hip rotation."
+        ],
+        "augmented_labels": [
+            "Your back foot's toe needs to be more stable during your punch, your shoulders are too tense, and your front knee is too straight.",
+            "As you pivot on your back foot, it should slightly lift off the ground.",
+            "Using just arm strength can make your hands stiff and prevent your hips from rotating."
+        ],
+        "original_seq_len": 56,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 56,
+        "aligned_std_start_frame": 20,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 56
+    },
+    {
+        "video_name": "1_back_7",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "Your back foot isn't lifted. Keep your head aligned with your punch rotation. You're striking too low. Your hips aren't fully rotating. Your knees are too straight. You're leaning forward too much.",
+            "Your body should have a slight hunch.",
+            "The target is too low, your stance is too narrow, and you're not fully rotating your hips."
+        ],
+        "augmented_labels": [
+            "Your back foot should be lifted. Your head should stay in line with your punch rotation. You're aiming too low. Your hips should rotate fully. Your knees should have a bend. Avoid leaning forward too much.",
+            "Your body needs to be slightly hunched.",
+            "The target is set too low, your feet are too close together, and your hips aren't rotating all the way."
+        ],
+        "original_seq_len": 89,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 76,
+        "aligned_std_start_frame": 0,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 76
+    },
+    {
+        "video_name": "9_back_3",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "You can relax your body a bit more.",
+            "Keep your lead foot stable.",
+            "Good job!."
+        ],
+        "augmented_labels": [
+            "Relax your body a little more.",
+            "Your lead foot should remain stable.",
+            "Well done!."
+        ],
+        "original_seq_len": 58,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 58,
+        "aligned_std_start_frame": 18,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 58
+    },
+    {
+        "video_name": "4_front_6",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Keep your upper body relaxed, slightly bend your knees, and make sure to punch straight.",
+            "Lower your body slightly.",
+            "Your core isn't engaged. Your front leg is too straight."
+        ],
+        "augmented_labels": [
+            "Relax your upper body, bend your knees a bit, and punch in a straight line.",
+            "Bend down a bit.",
+            "Your core needs to be activated, and your front leg should maintain a slight bend."
+        ],
+        "original_seq_len": 44,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 44,
+        "aligned_std_start_frame": 28,
+        "aligned_std_end_frame": 72,
+        "aligned_seq_len": 44
+    },
+    {
+        "video_name": "4_front_5",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Keep your upper body relaxed, bend your knees slightly, and make sure to punch straight.",
+            "Keep your lead hand higher than your rear hand.",
+            "Core isn't engaged. Front foot is too straight."
+        ],
+        "augmented_labels": [
+            "Relax your upper body, bend your knees a little, and punch straight.",
+            "Your front hand should be held higher than your back hand.",
+            "Your core is not active, and your front foot is positioned too straight."
+        ],
+        "original_seq_len": 44,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 44,
+        "aligned_std_start_frame": 47,
+        "aligned_std_end_frame": 91,
+        "aligned_seq_len": 44
+    },
+    {
+        "video_name": "8_front_2",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Your back foot isn't coming up. You're standing too square. Your back isn't relaxed, which means you're not using your full body strength when punching.",
+            "Keep your lead hand higher than your rear hand.",
+            "Your body is too stiff, and you're standing too square on to your opponent. Also, your foot stance is too narrow."
+        ],
+        "augmented_labels": [
+            "Your back foot is staying flat, and your stance is too straight. Your back is tense, so you're not using all your body strength for punching.",
+            "Your front hand should be higher than your back hand.",
+            "Your body is tense, you're facing your opponent too directly, and your feet are too close together."
+        ],
+        "original_seq_len": 56,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 56,
+        "aligned_std_start_frame": 35,
+        "aligned_std_end_frame": 91,
+        "aligned_seq_len": 56
+    },
+    {
+        "video_name": "6_front_1",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Your arms are too stiff. You're not lifting your back foot. Your body is also too rigid. Your knees need to be slightly bent.",
+            "When throwing a punch, keep your rear hand tightly in place.",
+            "Your arms are too stiff, and you're only using arm strength. Your basic stance needs to be corrected."
+        ],
+        "augmented_labels": [
+            "Your arms are too stiff, and you're not lifting your back foot. Your body is also too rigid, and your knees should be slightly bent.",
+            "While you punch, hold your back hand firmly in position.",
+            "Your arms are too rigid, and you're relying solely on arm strength. Adjust your basic stance."
+        ],
+        "original_seq_len": 83,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 83,
+        "aligned_std_start_frame": 20,
+        "aligned_std_end_frame": 103,
+        "aligned_seq_len": 83
+    },
+    {
+        "video_name": "8_back_4",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "The back foot isn't elevated. The hips aren't rotating. The arms are too stiff. You're leaning too far forward when punching. The core isn't engaged.",
+            "Your center of gravity is too high.",
+            "You're leaning too far forward, which causes your hips to stick out. Remember to rotate your hips."
+        ],
+        "augmented_labels": [
+            "The back foot should be lifted. Rotate your hips more. Loosen your arms. Avoid leaning too far forward when you punch. Engage your core.",
+            "Your weight is too high up.",
+            "You are leaning too much to the front, making your hips stick out. Rotate your hips."
+        ],
+        "original_seq_len": 59,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 59,
+        "aligned_std_start_frame": 17,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 59
+    },
+    {
+        "video_name": "9_front_8",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "Your footwork isn't stable.",
+            "Keep your balance steady; it's easy to lose stability.",
+            "Nice job punching!."
+        ],
+        "augmented_labels": [
+            "Your footwork is unsteady.",
+            "Hold your balance steady; it's easy to become unstable.",
+            "Great work on the punch!."
+        ],
+        "original_seq_len": 52,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 52,
+        "aligned_std_start_frame": 39,
+        "aligned_std_end_frame": 91,
+        "aligned_seq_len": 52
+    },
+    {
+        "video_name": "6_front_3",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "The arms are too stiff, the back foot isn't lifted, the body is also too rigid, the knees aren't slightly bent, and the body's center of gravity is too high.",
+            "The jab should be at the height of your eyes.",
+            "Your arms are too stiff and you're only using your hands for power. Make sure to establish a proper stance."
+        ],
+        "augmented_labels": [
+            "The arms need to be more relaxed, the back foot should be raised, the body needs to be looser, the knees should be a bit bent, and the center of gravity should be lower.",
+            "The jab should reach eye level.",
+            "Your arms are too tense and you're relying only on your hands for strength. Ensure you have a proper stance."
+        ],
+        "original_seq_len": 65,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 65,
+        "aligned_std_start_frame": 30,
+        "aligned_std_end_frame": 95,
+        "aligned_seq_len": 65
+    },
+    {
+        "video_name": "7_front_4",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Your back foot isn't raised. Your rear hand isn't protecting your chin. You're only using your arm strength, not your whole body. You're not clenching your fist when you punch.",
+            "Keep your feet shoulder-width apart.",
+            "Backhand lacks defense, and your punches aren't solid."
+        ],
+        "augmented_labels": [
+            "Your back foot is flat. Your rear hand isn't shielding your chin. You’re using just arm strength instead of your whole body. Your fist isn't clenched when you punch.",
+            "Stand with your feet shoulder-width apart.",
+            "Your backhand doesn't protect well, and your punches need more power."
+        ],
+        "original_seq_len": 51,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 51,
+        "aligned_std_start_frame": 24,
+        "aligned_std_end_frame": 75,
+        "aligned_seq_len": 51
+    },
+    {
+        "video_name": "3_front_8",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "You're facing too squarely. Your arms are too stiff without generating power from your body. Your back foot needs to be on the ball. You're not rotating your body.",
+            "When throwing a punch, keep your weight balanced on your feet.",
+            "Keep your body angled."
+        ],
+        "augmented_labels": [
+            "You are standing too straight on. Your arms are too rigid and lack power from your body. Your back foot should be on the ball. You aren't twisting your body.",
+            "Your weight should stay balanced on your feet when you throw a punch.",
+            "Position your body at an angle."
+        ],
+        "original_seq_len": 59,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 59,
+        "aligned_std_start_frame": 35,
+        "aligned_std_end_frame": 94,
+        "aligned_seq_len": 59
+    },
+    {
+        "video_name": "5_front_5",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Your arms are too stiff, which is preventing you from extending properly. Your back foot isn't lifted, and your body is too rigid.",
+            "Slightly lower your body.",
+            "Your arms are too stiff; you're only using your hands to generate power."
+        ],
+        "augmented_labels": [
+            "Your arms are too tight, stopping you from reaching out correctly. Your back foot stays flat, and your body is too tense.",
+            "Bend your body down a little.",
+            "Your arms are too rigid, and you're relying solely on your hands for power."
+        ],
+        "original_seq_len": 42,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 42,
+        "aligned_std_start_frame": 41,
+        "aligned_std_end_frame": 83,
+        "aligned_seq_len": 42
+    },
+    {
+        "video_name": "1_front_2",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Your body rotation angle is too large. Keep your knees slightly bent. Your striking point should be right in front of your eyes. Don't rotate your head.",
+            "When throwing a jab, make sure your head doesn't move with the punch.",
+            "You're over-rotating your body and head. Make sure your feet are in a fighting stance."
+        ],
+        "augmented_labels": [
+            "The angle of your body rotation is too wide. Bend your knees a little. Your striking point needs to be directly in front of your eyes. Avoid turning your head.",
+            "Keep your head still when you throw a jab.",
+            "You are turning your body and head too much. Your feet should be in a fighting stance."
+        ],
+        "original_seq_len": 66,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 66,
+        "aligned_std_start_frame": 34,
+        "aligned_std_end_frame": 100,
+        "aligned_seq_len": 66
+    },
+    {
+        "video_name": "2_back_6",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "Your back foot isn't lifted. Your hips aren't fully rotated. Your shoulders are a bit stiff.",
+            "When throwing a punch, keep your body stable.",
+            "You're over-rotating your upper body instead of your hips, and your arms are too tense."
+        ],
+        "augmented_labels": [
+            "Your back foot stays flat. Your hips don't turn completely. Your shoulders feel tight.",
+            "Keep your body steady while throwing a punch.",
+            "You're twisting your upper body too much and not using your hips enough, and your arms are too stiff."
+        ],
+        "original_seq_len": 84,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 76,
+        "aligned_std_start_frame": 0,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 76
+    },
+    {
+        "video_name": "8_front_3",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Your back foot isn't lifting properly, you're standing too face-on, and your back is too tense, which is preventing you from using your full body power when punching.",
+            "Bring your lead foot inward.",
+            "Your whole body is too stiff and you're standing too square. Your stance is too narrow."
+        ],
+        "augmented_labels": [
+            "Your back foot isn't lifting correctly, your stance is too square, and your back is too tense, limiting your full body power in punches.",
+            "Move your front foot slightly inward.",
+            "Your body is too rigid, you're standing too straight on, and your stance is too narrow."
+        ],
+        "original_seq_len": 60,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 60,
+        "aligned_std_start_frame": 39,
+        "aligned_std_end_frame": 99,
+        "aligned_seq_len": 60
+    },
+    {
+        "video_name": "6_front_7",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "Your arms are too stiff, your back foot isn't on the ball, your body's too rigid, and your knees aren't slightly bent.",
+            "Keep your back foot from getting too close to your front foot.",
+            "Your arms are too stiff; you're only using your hands for power. Your basic stance isn't set correctly."
+        ],
+        "augmented_labels": [
+            "Your arms need to be more relaxed, your back foot should be on the ball, your body needs to be less rigid, and your knees should be slightly bent.",
+            "Make sure there is enough distance between your back foot and your front foot.",
+            "Your arms are too rigid, and you're relying only on your hands for strength. Your basic stance needs to be adjusted."
+        ],
+        "original_seq_len": 61,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 61,
+        "aligned_std_start_frame": 32,
+        "aligned_std_end_frame": 93,
+        "aligned_seq_len": 61
+    },
+    {
+        "video_name": "9_back_9",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "Try to relax your body a bit more.",
+            "Slightly hunch your back.",
+            "Good job on your punches."
+        ],
+        "augmented_labels": [
+            "Relax your body a little more.",
+            "Curve your back a little.",
+            "You're doing well with your punches."
+        ],
+        "original_seq_len": 63,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 63,
+        "aligned_std_start_frame": 13,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 63
+    },
+    {
+        "video_name": "6_front_10",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Your arms are too stiff, and your back foot isn't on the ball. Your body is also too rigid, and you need to bend your knees slightly. The impact point is too low.",
+            "Draw your front foot inward.",
+            "Your arms are too stiff and you're only using your hands for power. Your basic stance isn't correct."
+        ],
+        "augmented_labels": [
+            "Your arms are too tense, and your back foot should be on the ball. Your body is too rigid, and you should bend your knees slightly. The impact point is too low.",
+            "Move your front foot slightly closer to the inside.",
+            "Your arms are too rigid, and you're relying on just your hands for strength. Your basic stance is incorrect."
+        ],
+        "original_seq_len": 59,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 59,
+        "aligned_std_start_frame": 21,
+        "aligned_std_end_frame": 80,
+        "aligned_seq_len": 59
+    },
+    {
+        "video_name": "8_front_9",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "Your back foot isn't lifted properly, causing your body to stand too square. Your back isn't relaxed, which prevents you from using your full body power when you punch.",
+            "Position your body at a slight angle.",
+            "Your body is too rigid and you're facing too squarely. Your stance is also too narrow."
+        ],
+        "augmented_labels": [
+            "Your back foot isn't raised correctly, making your stance too square. Your back is tense, which stops you from utilizing your full body strength in your punches.",
+            "Stand with your body slightly turned.",
+            "Your body is too stiff, you're facing too straight-on, and your stance is too tight."
+        ],
+        "original_seq_len": 58,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 58,
+        "aligned_std_start_frame": 32,
+        "aligned_std_end_frame": 90,
+        "aligned_seq_len": 58
+    },
+    {
+        "video_name": "2_back_10",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "Relax your body a bit, focus on getting speed in your punches. Keep your shoulders down and make sure to clench your fists. Work on better coordination between your upper and lower body movement.",
+            "Your weight and body balance are off.",
+            "Your upper body is rotating too much instead of your hips, and your arms are too stiff."
+        ],
+        "augmented_labels": [
+            "Loosen up your body slightly, aiming for faster punches. Lower your shoulders and clench your fists. Improve the coordination between your upper and lower body movements.",
+            "Your weight and balance aren't right.",
+            "Your upper body rotates more than your hips, and your arms aren't relaxed enough."
+        ],
+        "original_seq_len": 88,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 76,
+        "aligned_std_start_frame": 0,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 76
+    },
+    {
+        "video_name": "0_front_7",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "Keep your chin tucked when you throw a punch. Don't let your upper body lean forward too much when extending your punch to its full range.",
+            "When throwing a punch, keep your weight centered.",
+            "Your lead leg knee is too straight. Keep your guard up. When you punch, make sure the knee of your lead leg isn't locked straight."
+        ],
+        "augmented_labels": [
+            "Tuck your chin while punching, and avoid leaning your upper body too far forward when reaching full extension.",
+            "Keep your balance in the middle when you punch.",
+            "Your lead leg knee is too straight. Keep your guard up. As you punch, ensure the knee of your lead leg stays slightly bent."
+        ],
+        "original_seq_len": 69,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 69,
+        "aligned_std_start_frame": 30,
+        "aligned_std_end_frame": 99,
+        "aligned_seq_len": 69
+    },
+    {
+        "video_name": "3_back_6",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "Hip rotation is lacking, you're standing too square, and you're not on the ball of your back foot.",
+            "Keep your chin tucked down a bit.",
+            "Your stance is too narrow, and your hips aren't rotating."
+        ],
+        "augmented_labels": [
+            "Your hip rotation needs more work, your stance is too square, and your back foot isn't on the ball.",
+            "Tuck your chin down a little.",
+            "Your stance is too close together, and your hips aren't turning."
+        ],
+        "original_seq_len": 60,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 60,
+        "aligned_std_start_frame": 16,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 60
+    },
+    {
+        "video_name": "2_front_10",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Your body is rotating too much. Make sure to raise the heel of your back foot. Keep your back shoulder relaxed, and don’t tilt your head upwards.",
+            "Your stance is too narrow for defensive maneuvers.",
+            "Raise your back shoulder. Keep your back foot flat."
+        ],
+        "augmented_labels": [
+            "You're rotating your body too much. Raise the heel of your back foot. Relax your back shoulder, and avoid tilting your head upwards.",
+            "Your stance is not wide enough for defensive moves.",
+            "Lift your back shoulder. Make sure your back foot stays flat."
+        ],
+        "original_seq_len": 81,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 81,
+        "aligned_std_start_frame": 21,
+        "aligned_std_end_frame": 102,
+        "aligned_seq_len": 81
+    },
+    {
+        "video_name": "4_back_7",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "Your whole body isn't rotating—you're only using arm strength. Both shoulders are too tense. Your body weight isn't centered between your feet. Be careful not to straighten your front leg when you punch.",
+            "When you throw a punch, keep your elbows in.",
+            "Your arms are too stiff; you're not using the power from your lower body."
+        ],
+        "augmented_labels": [
+            "You're not turning your whole body—you're just using your arm strength. Your shoulders are too tense. Your body weight isn't balanced between your feet. Be cautious about straightening your front leg when punching.",
+            "Throw a punch with your elbows close to your body.",
+            "Your arms are too rigid, and you're not generating power from your lower body."
+        ],
+        "original_seq_len": 52,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 52,
+        "aligned_std_start_frame": 16,
+        "aligned_std_end_frame": 68,
+        "aligned_seq_len": 52
+    },
+    {
+        "video_name": "4_front_10",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Keep your upper body relaxed. Slightly bend your knees. When you punch, extend your arm straight. Keep your chin down when you punch.",
+            "Bend your body slightly forward.",
+            "Core isn't engaged; your front leg is too straight."
+        ],
+        "augmented_labels": [
+            "Relax your upper body. Bend your knees a little. Extend your arm straight while punching. Lower your chin as you punch.",
+            "Lean your body a little bit forward.",
+            "Your core isn't active, and your front leg is too straight."
+        ],
+        "original_seq_len": 46,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 46,
+        "aligned_std_start_frame": 26,
+        "aligned_std_end_frame": 72,
+        "aligned_seq_len": 46
+    },
+    {
+        "video_name": "1_front_9",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "The body rotation angle is too wide. Keep your knees slightly bent. Your striking point should be in front of your eyes. Don't twist your head. Lift the heel of your back foot.",
+            "After throwing a punch, make sure your lead hand is higher than your rear hand.",
+            "Over-rotating your body and not standing in a proper fighting stance. You're punching too low."
+        ],
+        "augmented_labels": [
+            "Your body rotation angle is too wide. Bend your knees a little. Aim to strike in front of your eyes. Avoid twisting your head. Raise the heel of your back foot.",
+            "After you punch, ensure your front hand is higher than your back hand.",
+            "You are rotating your body too much and not maintaining the correct fighting stance. Your punch is aiming too low."
+        ],
+        "original_seq_len": 68,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 68,
+        "aligned_std_start_frame": 28,
+        "aligned_std_end_frame": 96,
+        "aligned_seq_len": 68
+    },
+    {
+        "video_name": "4_front_1",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Relax your upper body and keep your knees slightly bent.",
+            "Slightly angle your lead foot inward.",
+            "Your core isn't engaged properly. Your front leg is too straight."
+        ],
+        "augmented_labels": [
+            "Loosen your upper body and bend your knees a little.",
+            "Turn your front foot slightly inward.",
+            "Your core isn't active enough. The front leg is overly straight."
+        ],
+        "original_seq_len": 54,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 54,
+        "aligned_std_start_frame": 26,
+        "aligned_std_end_frame": 80,
+        "aligned_seq_len": 54
+    },
+    {
+        "video_name": "5_front_3",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "If your arms are too stiff, you won't be able to fully extend them. Remember, your back foot needs to be on the ball for better movement. Also, your body is too tense; try to relax.",
+            "Punch with both feet firmly planted.",
+            "Your arms are too stiff and you're only using them for power."
+        ],
+        "augmented_labels": [
+            "If your arms are too rigid, you won't be able to extend them completely. Keep in mind that your back foot should rest on the ball for improved movement. In addition, your body is too tight; try to loosen up.",
+            "Keep both feet securely on the ground while punching.",
+            "Your arms are too rigid, and you're relying solely on them for strength."
+        ],
+        "original_seq_len": 41,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 41,
+        "aligned_std_start_frame": 50,
+        "aligned_std_end_frame": 91,
+        "aligned_seq_len": 41
+    },
+    {
+        "video_name": "8_front_4",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Your back foot isn't pivoting, and your stance is too square. Relax your back to ensure you engage your whole body when punching.",
+            "When you throw a punch, make sure it's straight.",
+            "Your whole body is too tense, and your stance is too square. Your footwork is too narrow."
+        ],
+        "augmented_labels": [
+            "Your back foot needs to pivot, and your stance is too square. Relax your back so you use your entire body when punching.",
+            "When you punch, keep it straight.",
+            "Your body is very tight, your stance is too straight, and your foot positioning is too close together."
+        ],
+        "original_seq_len": 52,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 52,
+        "aligned_std_start_frame": 38,
+        "aligned_std_end_frame": 90,
+        "aligned_seq_len": 52
+    },
+    {
+        "video_name": "7_front_7",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Your rear foot isn't elevated, your back hand isn't protecting your chin, you're only using your arms without engaging your body, and you're not clenching your fist when throwing punches.",
+            "Adjust your body to angle slightly.",
+            "Your rear hand lacks defense, and your punches are not precise."
+        ],
+        "augmented_labels": [
+            "Your back foot is flat, your rear hand isn't covering your chin, you're just using your arms without involving your body, and your fist isn't clenched when you punch.",
+            "Position your body at a slight angle.",
+            "The hand at the back isn't protecting you, and your punches aren't accurate."
+        ],
+        "original_seq_len": 45,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 45,
+        "aligned_std_start_frame": 41,
+        "aligned_std_end_frame": 86,
+        "aligned_seq_len": 45
+    },
+    {
+        "video_name": "1_back_3",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "Back foot didn't lift up Head should rotate with the punch Striking point is too low Hips didn't fully rotate Knees are too straight.",
+            "Keep your body weight from leaning forward.",
+            "The target is too low, your stance is too narrow, and your hips aren't fully rotating with your body."
+        ],
+        "augmented_labels": [
+            "Your back foot isn't lifting up, your head should move with the punch, your striking point is too low, your hips aren't fully rotating, and your knees are too straight.",
+            "Don't let your weight shift forward.",
+            "Your target is set too low, your stance is narrow, and your hips aren't rotating completely with your body."
+        ],
+        "original_seq_len": 81,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 76,
+        "aligned_std_start_frame": 0,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 76
+    },
+    {
+        "video_name": "9_back_1",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "Try to relax your body a bit more.",
+            "Keep a wider stance with your back foot.",
+            "Good job on your punching!."
+        ],
+        "augmented_labels": [
+            "Relax your body a bit more.",
+            "Widen your stance using your back foot.",
+            "Your punching is coming along well!."
+        ],
+        "original_seq_len": 62,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 62,
+        "aligned_std_start_frame": 14,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 62
+    },
+    {
+        "video_name": "7_back_6",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "Your back foot isn't elevated, your hips aren't rotating, your arms are too stiff, and you're not relaxed, which prevents proper shoulder movement for side-to-side exchange. You're also not maintaining defense while punching.",
+            "When throwing a punch, make sure your fist goes straight out and comes straight back.",
+            "Your punches lack precision, and your right hand isn't in a defensive position. Also, your hips aren't rotating."
+        ],
+        "augmented_labels": [
+            "Your back foot should be elevated, your hips should rotate, your arms need to be more relaxed to allow proper shoulder movement for side-to-side exchange. Also, keep your defense up while punching.",
+            "When punching, your fist should go straight out and return straight back.",
+            "Your punches are not precise, your right hand isn't protecting, and your hips aren't turning."
+        ],
+        "original_seq_len": 58,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 58,
+        "aligned_std_start_frame": 18,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 58
+    },
+    {
+        "video_name": "3_front_11",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "Your body is too square. Your arms are too stiff and lack natural rotation. Your back foot needs to be elevated. Your body isn't rotating.",
+            "When throwing punches, extend straight out and bring them straight back.",
+            "You're not turning your body; you're only using arm strength."
+        ],
+        "augmented_labels": [
+            "Your stance is too straight. Your arms are too rigid and aren't rotating naturally. Your back foot should be raised. Your body isn't turning.",
+            "Extend your punches straight out and pull them straight back.",
+            "Your body isn't rotating; you're just using your arm strength."
+        ],
+        "original_seq_len": 54,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 54,
+        "aligned_std_start_frame": 29,
+        "aligned_std_end_frame": 83,
+        "aligned_seq_len": 54
+    },
+    {
+        "video_name": "2_front_6",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Your body's rotation angle is too large. Lift the heel of your back foot. Keep your back shoulder relaxed, don't hunch it up.",
+            "Keep your back foot steady and in place.",
+            "Raise your back shoulder and keep your back foot flat."
+        ],
+        "augmented_labels": [
+            "You're rotating too much. Lift the heel of your back foot. Relax your back shoulder; don't raise it.",
+            "Your back foot should remain steady and in place.",
+            "Lift your back shoulder and keep your back foot flat."
+        ],
+        "original_seq_len": 84,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 84,
+        "aligned_std_start_frame": 23,
+        "aligned_std_end_frame": 107,
+        "aligned_seq_len": 84
+    },
+    {
+        "video_name": "7_front_3",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Your back foot isn't lifted. Your rear hand isn't protecting your chin. You're relying only on your arms instead of using your body strength.",
+            "Keep your chin down a bit.",
+            "Your rear hand lacks defense, and your punches aren't landing effectively."
+        ],
+        "augmented_labels": [
+            "Your back foot stays flat, your rear hand is not guarding your chin, and you're using just your arms instead of your whole body's strength.",
+            "Lower your chin slightly.",
+            "Your back hand isn't providing enough defense, and your punches aren't hitting accurately."
+        ],
+        "original_seq_len": 51,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 51,
+        "aligned_std_start_frame": 32,
+        "aligned_std_end_frame": 83,
+        "aligned_seq_len": 51
+    },
+    {
+        "video_name": "0_front_6",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Keep your chin tucked down when you punch. Avoid leaning your upper body forward too much when your punch is fully extended.",
+            "When you punch with your lead hand, make sure to keep your rear hand tight.",
+            "Keep your front knee slightly bent Your basic stance has your hands too low Your front knee is too straight when you throw punches."
+        ],
+        "augmented_labels": [
+            "Tuck your chin down while punching, and don't lean your upper body too far forward when your punch is fully extended.",
+            "Keep your rear hand secure when you punch with your lead hand.",
+            "Your front knee should be a little bent. Your basic stance has your hands positioned too low. Your front knee is too straight when throwing punches."
+        ],
+        "original_seq_len": 69,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 69,
+        "aligned_std_start_frame": 34,
+        "aligned_std_end_frame": 103,
+        "aligned_seq_len": 69
+    },
+    {
+        "video_name": "2_back_7",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "Your back foot isn't lifted. Your hips aren't fully rotating. Your shoulders are a bit stiff.",
+            "Defensive moves and your body should stay close together.",
+            "You're over-rotating your upper body instead of using your hips, and your arms are too stiff."
+        ],
+        "augmented_labels": [
+            "Your back foot is flat. Your hips aren't turning all the way. Your shoulders are somewhat tense.",
+            "Your body and defensive moves should remain closely aligned.",
+            "You are rotating your upper body too much rather than using your hips, and your arms are too tense."
+        ],
+        "original_seq_len": 81,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 76,
+        "aligned_std_start_frame": 0,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 76
+    },
+    {
+        "video_name": "4_back_9",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "The whole body isn't rotating, relying only on arm strength. Both shoulders are too tense. Your body's center of gravity is not between your feet. When punching, your front leg accidentally straightens. The chin isn't tucked.",
+            "Shift your body weight forward as you throw the punch.",
+            "Your hands are too stiff; you're not using the power from your lower body."
+        ],
+        "augmented_labels": [
+            "You're only using arm strength because your whole body isn't rotating. Your shoulders are tense. Your body's balance isn't centered between your feet. Your front leg straightens when punching. Your chin isn't tucked.",
+            "Move your body weight forward when you throw the punch.",
+            "Your hands are too rigid, and you're missing the strength from your lower body."
+        ],
+        "original_seq_len": 56,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 56,
+        "aligned_std_start_frame": 15,
+        "aligned_std_end_frame": 71,
+        "aligned_seq_len": 56
+    },
+    {
+        "video_name": "3_front_2",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Your body is too squared up, your arms are too stiff, and your back heel needs to be off the ground.",
+            "Keep your lead hand higher than your rear hand.",
+            "Your body isn't rotating; you're only using arm strength. Engage your core."
+        ],
+        "augmented_labels": [
+            "You're facing too directly forward, your arms are too rigid, and your back heel should be lifted.",
+            "Hold your front hand higher than your back hand.",
+            "You're not rotating your body; you're just using your arms. Use your core muscles."
+        ],
+        "original_seq_len": 66,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 66,
+        "aligned_std_start_frame": 27,
+        "aligned_std_end_frame": 93,
+        "aligned_seq_len": 66
+    },
+    {
+        "video_name": "6_front_8",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Your arms are too stiff, your back foot isn't lifted properly, your body is too rigid, and you're not bending your knees slightly.",
+            "Keep your lead hand higher than your back hand.",
+            "Your arms are too stiff, and you're only using your hands for power. Your basic stance isn't correct."
+        ],
+        "augmented_labels": [
+            "Your arms are too tense, your back foot isn't raised correctly, your body is too stiff, and you're not slightly bending your knees.",
+            "Hold your front hand above your back hand.",
+            "Your arms feel rigid, and you're relying solely on your hands for strength. Your fundamental stance needs adjustment."
+        ],
+        "original_seq_len": 69,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 69,
+        "aligned_std_start_frame": 25,
+        "aligned_std_end_frame": 94,
+        "aligned_seq_len": 69
+    },
+    {
+        "video_name": "0_front_9",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "When you throw a punch, keep your chin tucked down.",
+            "When throwing the lead hand, make sure there's a gap in your center.",
+            "The front knee is too straight when standing. Keep your basic stance with your hands up. Straightening your front knee too much when punching causes your center of gravity to lean forward."
+        ],
+        "augmented_labels": [
+            "Keep your chin down when throwing a punch.",
+            "When throwing the lead hand, ensure there's space in your center.",
+            "Standing with your front knee too straight during a punch can tip your center of gravity forward. Stay in your basic stance with your hands up."
+        ],
+        "original_seq_len": 69,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 69,
+        "aligned_std_start_frame": 29,
+        "aligned_std_end_frame": 98,
+        "aligned_seq_len": 69
+    },
+    {
+        "video_name": "4_front_3",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Keep your upper body relaxed, bend your knees slightly, and make sure to punch straight.",
+            "When punching, don't shift your weight forward.",
+            "The core isn't engaged, and your front leg is too straight."
+        ],
+        "augmented_labels": [
+            "Relax your upper body, slightly bend your knees, and punch straight.",
+            "Avoid leaning forward while punching.",
+            "Your core isn't activated, and your front leg is very straight."
+        ],
+        "original_seq_len": 51,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 51,
+        "aligned_std_start_frame": 31,
+        "aligned_std_end_frame": 82,
+        "aligned_seq_len": 51
+    },
+    {
+        "video_name": "1_back_9",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "The back foot isn't elevated. The strike point is too low. The hips aren't fully rotated. The knees are too straight.",
+            "When you throw a punch, make sure it goes out straight and comes back straight.",
+            "Your punches are too low, your stance is too narrow, and you're not fully rotating your hips with your body."
+        ],
+        "augmented_labels": [
+            "The back foot is flat. The punch lands too low. The hips aren't turned completely. The knees are too straight.",
+            "Your punch should extend out straight and return back straight.",
+            "Your punches are coming in too low, your stance isn't wide enough, and you're not rotating your hips fully with your body."
+        ],
+        "original_seq_len": 87,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 76,
+        "aligned_std_start_frame": 0,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 76
+    },
+    {
+        "video_name": "6_front_4",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "Your arms are too stiff, and your back foot isn't lifted. Your body is also too rigid, your knees aren't slightly bent, and your center of gravity is too high.",
+            "Keep your shoulders relaxed so your punches can flow smoothly.",
+            "Your arms are too stiff and you're only using your hands for power. Make sure you're in the correct basic stance."
+        ],
+        "augmented_labels": [
+            "Your arms need to be looser, and your back foot should lift slightly. Keep your body relaxed, bend your knees a bit, and lower your center of gravity.",
+            "Relax your shoulders to let your punches move smoothly.",
+            "Your arms are too stiff and you're only relying on your hands for power. Ensure you're standing in the correct basic stance."
+        ],
+        "original_seq_len": 63,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 63,
+        "aligned_std_start_frame": 33,
+        "aligned_std_end_frame": 96,
+        "aligned_seq_len": 63
+    },
+    {
+        "video_name": "5_front_4",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Your arms are too stiff, preventing proper extension. You're not getting up on your back foot, and your body is too rigid.",
+            "When throwing a punch, keep your center of gravity stable and don't let it spread out.",
+            "Your arms are too tense, and you're only using your hands for power."
+        ],
+        "augmented_labels": [
+            "Your arms are too stiff, which stops them from extending properly. You aren't rising up on your back foot, and your body lacks flexibility.",
+            "Hold your center of gravity steady when you punch, and don't let it spread.",
+            "Your arms are too tight, and you're relying just on your hands for strength."
+        ],
+        "original_seq_len": 41,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 41,
+        "aligned_std_start_frame": 32,
+        "aligned_std_end_frame": 73,
+        "aligned_seq_len": 41
+    },
+    {
+        "video_name": "0_front_10",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "When you throw a punch, keep your chin tucked down.",
+            "When throwing a punch, keep your lead foot stable and do not pivot.",
+            "Your front knee is too straight. Keep your basic stance with hands up. When you punch, your front knee straightens too much, causing your body to lean forward."
+        ],
+        "augmented_labels": [
+            "Tuck your chin down when you throw a punch.",
+            "Your lead foot should stay steady and should not pivot when you throw a punch.",
+            "Your front knee is too straight. Maintain your basic stance with hands up. As you punch, your front knee straightens too much, making your body lean forward."
+        ],
+        "original_seq_len": 72,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 72,
+        "aligned_std_start_frame": 24,
+        "aligned_std_end_frame": 96,
+        "aligned_seq_len": 72
+    },
+    {
+        "video_name": "3_back_5",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "Your hips and shoulders aren't rotating enough. You're standing too square. Your back foot isn't lifted properly, and your knees are too straight.",
+            "Extend your back hand a little longer.",
+            "Your stance is too narrow and your hips aren't rotating."
+        ],
+        "augmented_labels": [
+            "Your hips and shoulders need more rotation. You're standing too straight on. Your back foot isn't lifted right, and your knees aren't bent enough.",
+            "Stretch out your rear hand a bit more.",
+            "Your stance is too close together and your hips are not moving."
+        ],
+        "original_seq_len": 62,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 62,
+        "aligned_std_start_frame": 14,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 62
+    },
+    {
+        "video_name": "8_front_8",
+        "motion_type": "Jab",
+        "camera_view": "3",
+        "labels": [
+            "Your back foot isn't elevated. Your stance is too square. Your back isn't relaxed, which means you're not utilizing your full body power when punching.",
+            "When you throw a punch, make sure your rear hand stays close to your body.",
+            "Your body is too stiff, and you're standing too square to your opponent. Your footwork is too narrow."
+        ],
+        "augmented_labels": [
+            "Your back foot is flat, and your stance is too square. Your back is tense, preventing you from using your full body power for punching.",
+            "Your rear hand should stay close to your body when you throw a punch.",
+            "Loosen up your body, and avoid facing your opponent directly. Widen your footwork stance."
+        ],
+        "original_seq_len": 54,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 54,
+        "aligned_std_start_frame": 35,
+        "aligned_std_end_frame": 89,
+        "aligned_seq_len": 54
+    },
+    {
+        "video_name": "4_back_5",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "The whole body doesn't rotate, relying only on arm strength. Both shoulders are too tense. The body's center of gravity isn't between both feet. The front leg straightens unintentionally when punching.",
+            "Punch straighter, don't throw only halfway.",
+            "Your hands are too stiff, and you're not utilizing the power of your lower body."
+        ],
+        "augmented_labels": [
+            "The body doesn't fully rotate and depends just on arm strength. Both shoulders feel tight. The body's weight isn't balanced between both feet. The front leg straightens by accident during the punch.",
+            "Throw the punch in a straight line, not stopping halfway.",
+            "Your hands are too tense, and you're not using the strength from your legs."
+        ],
+        "original_seq_len": 53,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 53,
+        "aligned_std_start_frame": 18,
+        "aligned_std_end_frame": 71,
+        "aligned_seq_len": 53
+    },
+    {
+        "video_name": "4_back_8",
+        "motion_type": "Cross",
+        "camera_view": "3",
+        "labels": [
+            "The entire body isn't rotating; you're only using the strength of your arms. Both shoulders are too tense. Your body's center of gravity isn't balanced between your feet. When throwing punches, be careful not to lock your front leg straight.",
+            "When returning your punch, keep your rear hand close.",
+            "Your arms are too stiff; make sure to use your lower body strength."
+        ],
+        "augmented_labels": [
+            "You're not rotating your whole body; you're just using arm strength. Both of your shoulders are too tense. Your weight isn't balanced evenly between your feet. Avoid locking your front leg straight when punching.",
+            "Bring your back hand in close after punching.",
+            "Your arms are too rigid; use strength from your lower body."
+        ],
+        "original_seq_len": 52,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 52,
+        "aligned_std_start_frame": 24,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 52
+    },
+    {
+        "video_name": "1_back_2",
+        "motion_type": "Cross",
+        "camera_view": "1",
+        "labels": [
+            "You're not lifting the back foot. Make sure your head follows the rotation of your punch. Strike higher, your impact point is too low. Rotate your hips fully. Don't stand with your knees too straight.",
+            "When throwing punches, keep your head from constantly turning.",
+            "Your punches are too low, your stance is too narrow, and you're not using your hips to fully rotate your body."
+        ],
+        "augmented_labels": [
+            "You're not lifting the back foot. Your head should move with the rotation of your punch. Aim higher with your strikes; your impact point is too low. Rotate your hips completely. Avoid standing with your knees too straight.",
+            "Avoid turning your head too much when throwing punches.",
+            "Your punches are too low, your stance is too narrow, and you're not fully rotating your body with your hips."
+        ],
+        "original_seq_len": 72,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 72,
+        "aligned_std_start_frame": 4,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 72
+    },
+    {
+        "video_name": "4_front_4",
+        "motion_type": "Jab",
+        "camera_view": "2",
+        "labels": [
+            "Keep your upper body relaxed, slightly bend your knees, and make sure your punches are straight when you throw them.",
+            "Stand with your back foot slightly to the side.",
+            "You're not engaging your core. Your front leg is too straight."
+        ],
+        "augmented_labels": [
+            "Relax your upper body, bend your knees a little, and throw your punches straight.",
+            "Place your back foot a little to the side.",
+            "Your core isn't activated. Your front leg needs more bend."
+        ],
+        "original_seq_len": 38,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 38,
+        "aligned_std_start_frame": 21,
+        "aligned_std_end_frame": 59,
+        "aligned_seq_len": 38
+    },
+    {
+        "video_name": "9_back_2",
+        "motion_type": "Cross",
+        "camera_view": "2",
+        "labels": [
+            "Try to relax your body a bit more.",
+            "Keep your center of gravity balanced.",
+            "Nice punch."
+        ],
+        "augmented_labels": [
+            "Relax your body a bit more.",
+            "Stay balanced over your center of gravity.",
+            "Good punch."
+        ],
+        "original_seq_len": 60,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 60,
+        "aligned_std_start_frame": 16,
+        "aligned_std_end_frame": 76,
+        "aligned_seq_len": 60
+    },
+    {
+        "video_name": "9_front_10",
+        "motion_type": "Jab",
+        "camera_view": "1",
+        "labels": [
+            "Your footing isn't right.",
+            "Your body should stay still, but keep your feet from moving.",
+            "Good job."
+        ],
+        "augmented_labels": [
+            "Your stance is off.",
+            "Your body stays still, and your feet don't move.",
+            "Nice work."
+        ],
+        "original_seq_len": 50,
+        "aligned_start_frame": 0,
+        "aligned_end_frame": 50,
+        "aligned_std_start_frame": 39,
+        "aligned_std_end_frame": 89,
+        "aligned_seq_len": 50
+    }
+]
