@@ -92,8 +92,9 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
                 best_losses.append(min_loss)
                 best_gts.append(best_gt)
                 best_gt_indices.append(best_idx)
-                vid = video_name[i]
-                video_best_gt_indices[vid] = best_idx
+                if cfg.DEBUG == True :
+                    vid = video_name[i]
+                    video_best_gt_indices[vid] = best_idx
 
             final_labels = torch.stack(best_gts)
             loss = loss_fn(logits.view(-1, vocab_size), final_labels.view(-1))
