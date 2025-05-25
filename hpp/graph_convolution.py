@@ -129,10 +129,10 @@ class S_GC(nn.Module) :
             # Lora Adapter
             self.conv = lora.Conv2d(in_channels = in_channels,
                                     out_channels = out_channels * s_kernel_size,
-                                    kernel_size = (1, 1),
-                                    padding = (0, 0),
-                                    stride = (1, 1),
-                                    dilation = (1, 1),
+                                    kernel_size = 1,
+                                    padding = 0,
+                                    stride = 1,
+                                    dilation = 1,
                                     r = lora_config["r"],
                                     lora_alpha = lora_config["lora_alpha"],
                                     lora_dropout = lora_config["lora_dropout"])
@@ -162,10 +162,10 @@ class SA_GC(nn.Module) :
             # Lora Adapter
             self.conv = lora.Conv2d(in_channels = in_channels,
                                     out_channels = out_channels * self.s_kernel_size,
-                                    kernel_size = (1, 1),
-                                    padding = (0, 0),
-                                    stride = (1, 1),
-                                    dilation = (1, 1),
+                                    kernel_size = 1,
+                                    padding = 0,
+                                    stride = 1,
+                                    dilation = 1,
                                     r = lora_config["r"],
                                     lora_alpha = lora_config["lora_alpha"],
                                     lora_dropout = lora_config["lora_dropout"])
