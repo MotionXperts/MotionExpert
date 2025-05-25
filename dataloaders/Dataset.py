@@ -82,13 +82,14 @@ class DatasetLoader(Dataset) :
 
         for item in self.data_list :
             video_name = item['video_name']
-            # Setting is 'ERROR' or 'ALIGNED' or 'NO_REF'
-            if self.cfg.SETTING != 'GT' :
-                if "_" in video_name :
-                    continue
-            else :
-                if "_" not in video_name :
-                    continue
+            if self.cfg.TASK.PRETRAIN == False and self.cfg.TASK.SPORT == "Skating" :
+                if self.cfg.SETTING != 'GT' :
+                    if "_" in video_name :
+                        continue
+                else :
+                    # Setting is 'ERROR' or 'ALIGNED'
+                    if "_" not in video_name :
+                        continue
 
             skeleton_coords = get_coords(item['coordinates'])
 
