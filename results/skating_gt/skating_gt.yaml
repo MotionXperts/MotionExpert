@@ -14,8 +14,8 @@ STANDARD_PATH : "/home/andrewchen/Error_Localize/standard_features.pkl"
 WEIGHT_PATH : "./results/pretrain_ref/pretrain_checkpoints/checkpoint_epoch_00012.pth"
 
 DATA :
-    TRAIN : "./datasets/FS_train.pkl"
-    TEST : "./datasets/FS_test.pkl"
+    TRAIN : "./dataset/FS_train.pkl"
+    TEST : "./dataset/FS_test.pkl"
     BATCH_SIZE : 4
 
 OPTIMIZER :
