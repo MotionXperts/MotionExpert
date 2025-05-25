@@ -51,6 +51,10 @@ the x, y, and z coordinates of each joint. Specifically, the first three element
 to the x, y, and z coordinates of joint 0, the next three elements to joint 1, and this
 pattern continues up to joint 21.
 ```
+- `camera_view` : `<class 'str'>`
+```
+ The 'camera_view' field is present only in the BX dataset.
+```
 - `labels` : `<class 'list'>`
 e.g.
 ```
