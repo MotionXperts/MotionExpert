@@ -58,7 +58,8 @@ def load_checkpoint(cfg, model, optimizer, name = None) :
             # Load weights that were previously fine-tuned.
             model.module.load_state_dict(checkpoint["model_state"], strict = True)
 
-        if (cfg.args.eval_name != 'train') :
+        # If the checkpoint path is 'None', it indicates that the process is training rather than evaluation.
+        if (cfg.EVAL.ckpt != "None") :
             checkpoint_path = cfg.args.ckpt
             dist.barrier()
             print("checkpoint_path", checkpoint_path)
