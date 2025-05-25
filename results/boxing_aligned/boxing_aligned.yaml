@@ -1,5 +1,5 @@
 # command :
-# python -m torch.distributed.run --nproc_per_node=1 --master_port=29050 main.py --cfg_file ./results/boxing_gt/boxing_gt.yaml > ./output/boxing_gt
+# python -m torch.distributed.run --nproc_per_node=1 --master_port=29050 main.py --cfg_file ./results/boxing_aligned/boxing_aligned.yaml > ./output/boxing_aligned
 
 TASK :
     PRETRAIN : False
