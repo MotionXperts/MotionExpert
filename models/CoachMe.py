@@ -25,8 +25,8 @@ class CoachMe(nn.Module) :
             hpp_lora_config = {"bias" : "none", "r" : 32, "lora_alpha" : 64, "lora_dropout" : 0.1}
             proj_lora_config = {"bias" : "none", "r" : 32, "lora_alpha" : 64, "lora_dropout" : 0.1}
         elif not self.pretrain and cfg.TASK.SPORT == "Boxing" :
-            hpp_lora_config = {"bias" : "none", "r" : 64, "lora_alpha" : 128, "lora_dropout" : 0.5}
-            proj_lora_config = {"bias" : "none", "r" : 64, "lora_alpha" : 128, "lora_dropout" : 0.5}
+            hpp_lora_config = {"bias" : "none", "r" : 32, "lora_alpha" : 64, "lora_dropout" : 0.1}
+            proj_lora_config = {"bias" : "none", "r" : 32, "lora_alpha" : 64, "lora_dropout" : 0.1}
 
         self.HumanPosePerception = HumanPosePerception(num_class = 1024, in_channel = 6, residual = True,
                                                        dropout = 0.5, t_kernel_size = 9, layout = 'SMPL',
