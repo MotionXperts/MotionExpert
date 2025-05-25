@@ -24,7 +24,7 @@ OPTIMIZER :
     WARMUP_STEPS : 5000
 
 LOGDIR : "./results/boxing_aligned"
-LOSS : "ClosestSimGT"
+LOSS : "PerGT"
 DEBUG : False
 SETTING: "ALIGNED"
 EVAL :
