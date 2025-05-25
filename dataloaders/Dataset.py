@@ -30,11 +30,11 @@ def get_std_coords(sport, motion_type, std_coords_list) :
     elif sport == 'Boxing' :
         if motion_type == 'Cross' :
             for std in std_coords_list :
-                if (std["video_name"] == "Cross"):
+                if (motion_type == "Cross"):
                     return std
         elif motion_type == 'Jab' :
             for std in std_coords_list :
-                if (std["video_name"] == "Jab"):
+                if (motion_type == "Jab"):
                     return std
 
 def get_label(pretrain, labels, augmented_labels) :
