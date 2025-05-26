@@ -34,6 +34,8 @@ $ pip install openai
 # nlgmetricverse
 $ pip install nlg-metricverse
 $ pip install timm==0.9.10
+# anthropic for Claude
+$ pip install anthropic
 ```
 In case of installation of language_evaluation, you need to install from github source code
 
