@@ -1,0 +1,1282 @@
+[
+    {
+        "video_name": "467205989414993988_0",
+        "motion_type": "Loop",
+        "labels": [
+            "Your body to much down on air, u should up your body more before jump. It is necessary that the legs do not fly away from the body on the air."
+        ],
+        "augmented_labels": [
+            "Your body is too low in the air; you need to lift it more before jumping. It's important that the legs stay close to the body in the air.",
+            "Your body is too low in the air; elevate your body more before jumping. It's important that your legs remain close to your body in the air.",
+            "Lift your body more before jumping, and keep your legs close to your body while in the air.",
+            "It's important to elevate your body more before the jump to avoid your legs drifting away from the body while in the air.",
+            "Your body seems to be too low in the air; try lifting your body higher before jumping. It's important that your legs stay close to your body while in the air."
+        ],
+        "original_seq_len": 127,
+        "gt_start_frame": 68,
+        "gt_end_frame": 94,
+        "gt_std_start_frame": 5,
+        "gt_std_end_frame": 31,
+        "gt_seq_len": 26
+    },
+    {
+        "video_name": "467205989414993988_1",
+        "motion_type": "Loop",
+        "labels": [
+            "Left leg too high before open for landing position."
+        ],
+        "augmented_labels": [
+            "The left leg is raised too high before opening for the landing position.",
+            "The left leg is positioned too high before transitioning to the open landing position.",
+            "The left leg is raised too high before positioning for the landing.",
+            "The left leg is raised a bit too high before reaching the open position for landing.",
+            "The left leg is elevated too much before opening for the landing position."
+        ],
+        "original_seq_len": 127,
+        "gt_start_frame": 93,
+        "gt_end_frame": 102,
+        "gt_std_start_frame": 35,
+        "gt_std_end_frame": 44,
+        "gt_seq_len": 9
+    },
+    {
+        "video_name": "467205985925333417_0",
+        "motion_type": "Loop",
+        "labels": [
+            "You should not extend your left leg forward before doing the landing position."
+        ],
+        "augmented_labels": [
+            "Don't extend your left leg forward before getting into the landing position.",
+            "Avoid extending your left leg forward before achieving the landing position.",
+            "Avoid extending your left leg forward before the landing position.",
+            "Avoid extending your left leg forward before reaching the landing position.",
+            "Avoid extending your left leg forward before getting into the landing position."
+        ],
+        "original_seq_len": 118,
+        "gt_start_frame": 24,
+        "gt_end_frame": 47,
+        "gt_std_start_frame": 22,
+        "gt_std_end_frame": 45,
+        "gt_seq_len": 23
+    },
+    {
+        "video_name": "467205985925333417_1",
+        "motion_type": "Loop",
+        "labels": [
+            "Same mistake in the second jump: You should not extend your left leg forward before doing the landing position."
+        ],
+        "augmented_labels": [
+            "Don't stretch your left leg forward before landing from the second jump.",
+            "The same mistake occurred in the second jump: Extending your left leg forward before achieving the landing position should be avoided.",
+            "Avoid extending your left leg forward before achieving the landing position in the second jump.",
+            "In the second jump, the left leg shouldn't be extended forward before assuming the landing position.",
+            "Avoid extending your left leg forward before achieving the landing position in the second jump."
+        ],
+        "original_seq_len": 118,
+        "gt_start_frame": 80,
+        "gt_end_frame": 87,
+        "gt_std_start_frame": 48,
+        "gt_std_end_frame": 55,
+        "gt_seq_len": 7
+    },
+    {
+        "video_name": "485952733385064626_0",
+        "motion_type": "Loop",
+        "labels": [
+            "Your jump very high it’s good but your left leg need to go down to the right ankle on air position."
+        ],
+        "augmented_labels": [
+            "Your jump is very high, which is great, but your left leg needs to lower to the right ankle while in the air.",
+            "Your jump is very high, which is good, but your left leg needs to lower to align with the right ankle during the air position.",
+            "You jump high, which is good, but your left leg should be positioned down by the right ankle while in the air.",
+            "Your jump height is excellent, and your left leg should move down to your right ankle during the air position.",
+            "Your jump height is impressive; however, your left leg should be positioned closer to your right ankle while in the air."
+        ],
+        "original_seq_len": 208,
+        "gt_start_frame": 50,
+        "gt_end_frame": 76,
+        "gt_std_start_frame": 33,
+        "gt_std_end_frame": 59,
+        "gt_seq_len": 26
+    },
+    {
+        "video_name": "495775905407828051_0",
+        "motion_type": "Loop",
+        "labels": [
+            "First jump looks good."
+        ],
+        "augmented_labels": [
+            "The initial jump is good.",
+            "The initial jump appears to be well-executed.",
+            "The initial jump seems solid.",
+            "The initial jump appears well-executed.",
+            "The initial jump appears solid."
+        ],
+        "original_seq_len": 129,
+        "gt_start_frame": 51,
+        "gt_end_frame": 72,
+        "gt_std_start_frame": 26,
+        "gt_std_end_frame": 47,
+        "gt_seq_len": 21
+    },
+    {
+        "video_name": "485952685250445858_0",
+        "motion_type": "Loop",
+        "labels": [
+            "When you do takeoff, your body cannot go so much backward. Before take off your outside backward edge should be much deeper and longer. Air position have some problem your body not really straight and your left leg too high. You need to put your left ankle down to the right ankle."
+        ],
+        "augmented_labels": [
+            "During takeoff, avoid leaning too far backward. Make sure your outside backward edge is deeper and longer before taking off. In the air, your body isn't straight, and your left leg is too high. Place your left ankle closer to your right ankle.",
+            "During takeoff, avoid letting your body lean backward excessively. Prior to takeoff, ensure that your outside backward edge is significantly deeper and longer. There are issues with your air position as your body isn't fully straight, and your left leg is too elevated. Align your left ankle with the right ankle.",
+            "During takeoff, avoid leaning too far backward. Make the outside backward edge deeper and longer before takeoff. In the air, ensure your body stays straight and keep your left leg lower, aligning your left ankle with the right ankle.",
+            "During takeoff, try not to allow your body to move too far backward. It's important to maintain a deeper and longer outside backward edge before takeoff. There seems to be a slight issue with your air position, as your body isn't completely straight and your left leg is positioned too high. Bringing your left ankle closer to the right ankle could help with this.",
+            "During takeoff, try to avoid leaning too far backward. Prior to takeoff, aim for a deeper and longer outside backward edge. In the air, work on straightening your body and lowering your left leg so your left ankle is closer to the right ankle."
+        ],
+        "original_seq_len": 99,
+        "gt_start_frame": 35,
+        "gt_end_frame": 57,
+        "gt_std_start_frame": 18,
+        "gt_std_end_frame": 40,
+        "gt_seq_len": 22
+    },
+    {
+        "video_name": "495776057106891191_0",
+        "motion_type": "Loop",
+        "labels": [
+            "Body can be more straight on Aira position: You need to make sure that your body weight under your right toe pick. You can close Ankles tightly on air position. Overall good."
+        ],
+        "augmented_labels": [
+            "Your body can be straighter in the Aira position. Place your body weight under your right toe pick. Close your ankles tightly in the air position. Overall, it's good.",
+            "The body could be straighter in the Aira position: Ensure that your body weight is centered under your right toe pick. Ankles can be tightly closed in the air position. Overall, good work.",
+            "Ensure your body is straighter in the Aira position, with your weight centered on the right toe pick. Close your ankles tightly in the air. Overall good job.",
+            "Your body could be straighter in the air position; ensure your weight is centered under your right toe pick. Closing your ankles tightly in the air position can help. Overall, it's looking good.",
+            "Your body could be straighter in the Aira position; ensure your weight is centered under your right toe pick. Close your ankles tightly in the air position. Overall, well done."
+        ],
+        "original_seq_len": 87,
+        "gt_start_frame": 73,
+        "gt_end_frame": 88,
+        "gt_std_start_frame": 29,
+        "gt_std_end_frame": 44,
+        "gt_seq_len": 15
+    },
+    {
+        "video_name": "485952546285027444_0",
+        "motion_type": "Loop",
+        "labels": [
+            "When you do free turn Make sure your butt doesn’t put out And also your body too much forward."
+        ],
+        "augmented_labels": [
+            "Keep your hips aligned and your body upright during a free turn.",
+            "Ensure your hips remain aligned, and avoid leaning excessively forward during the free turn.",
+            "Ensure your hips and upper body stay aligned when performing the free turn.",
+            "When performing a free turn, be mindful not to stick your butt out or lean your body too far forward.",
+            "Ensure your butt stays aligned and your body doesn't lean too far forward during the free turn."
+        ],
+        "original_seq_len": 114,
+        "gt_start_frame": 57,
+        "gt_end_frame": 63,
+        "gt_std_start_frame": 55,
+        "gt_std_end_frame": 61,
+        "gt_seq_len": 6
+    },
+    {
+        "video_name": "485952546285027444_1",
+        "motion_type": "Loop",
+        "labels": [
+            "Right before takeoff when you stand on the backward edge Please put your left leg down because you need to switch your left knee up, but you left knee already up."
+        ],
+        "augmented_labels": [
+            "Right before takeoff when you’re on the backward edge, put your left leg down since you need to lift your left knee, but it's already up.",
+            "Right before takeoff on the backward edge, put your left leg down as you will need to lift your left knee, but it is already lifted.",
+            "Right before takeoff, with your left knee already up, lower your left leg to prepare for switching your left knee upwards again.",
+            "As you approach takeoff on the backward edge, ensure your left leg is down since the left knee needs to be raised, but it might already be in that position.",
+            "When you are about to take off and are on the backward edge, it's important to lower your left leg since you'll need to switch your left knee up, but it is already in the upward position."
+        ],
+        "original_seq_len": 114,
+        "gt_start_frame": 69,
+        "gt_end_frame": 81,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 12,
+        "gt_seq_len": 12
+    },
+    {
+        "video_name": "485952546285027444_2",
+        "motion_type": "Loop",
+        "labels": [
+            "I don’t like your air position your left leg too high. You need to put your left ankle close to the right ankle and also straight to your body and put your butt inside."
+        ],
+        "augmented_labels": [
+            "Your air position needs improvement; your left leg is too high. Bring your left ankle closer to your right ankle, keep it aligned with your body, and tuck your hips in.",
+            "The air position isn't quite right; your left leg is too high. The left ankle should be close to the right ankle, aligned with your body, and your hips should be tucked in.",
+            "Your air position isn't quite right; the left leg is too high. The left ankle should be closer to the right ankle, aligned straight with your body, and your hips should be tucked in.",
+            "Your air position could improve by bringing your left ankle closer to the right ankle, keeping it straight with your body, and tucking your hips in.",
+            "Your air position could be improved by bringing your left ankle closer to your right ankle, straightening it with your body, and tucking your hips in."
+        ],
+        "original_seq_len": 114,
+        "gt_start_frame": 69,
+        "gt_end_frame": 90,
+        "gt_std_start_frame": 15,
+        "gt_std_end_frame": 36,
+        "gt_seq_len": 21
+    },
+    {
+        "video_name": "485952546285027444_3",
+        "motion_type": "Loop",
+        "labels": [
+            "Straight to your landing position And don’t overturn you left the left side."
+        ],
+        "augmented_labels": [
+            "Go directly to your landing position without over-rotating to the left side.",
+            "Achieve your landing position directly without overturning to the left side.",
+            "Land with your body straight and avoid over-rotating to your left side.",
+            "Move directly into your landing position without overturning to the left side.",
+            "Maintain your landing position without overturning to the left side."
+        ],
+        "original_seq_len": 114,
+        "gt_start_frame": 102,
+        "gt_end_frame": 114,
+        "gt_std_start_frame": 49,
+        "gt_std_end_frame": 61,
+        "gt_seq_len": 12
+    },
+    {
+        "video_name": "467206024831435067_0",
+        "motion_type": "Loop",
+        "labels": [
+            "Stretch your body and legs in the jump, do not lower your body in the air."
+        ],
+        "augmented_labels": [
+            "Keep your body and legs extended during the jump and avoid dropping your body while airborne.",
+            "Extend your body and legs during the jump, avoiding dropping your body while airborne.",
+            "Keep your body and legs extended during the jump, avoiding lowering your body while airborne.",
+            "It's helpful to extend your body and legs while in the jump, while keeping your body from lowering in the air.",
+            "Aim to extend your body and legs while jumping, maintaining an upright position without lowering your body mid-air."
+        ],
+        "original_seq_len": 120,
+        "gt_start_frame": 64,
+        "gt_end_frame": 120,
+        "gt_std_start_frame": 5,
+        "gt_std_end_frame": 61,
+        "gt_seq_len": 56
+    },
+    {
+        "video_name": "467206024831435067_1",
+        "motion_type": "Loop",
+        "labels": [
+            "U can/need take more speed."
+        ],
+        "augmented_labels": [
+            "Go a bit faster.",
+            "You need to increase your speed.",
+            "You need more speed.",
+            "Going a bit faster could be beneficial.",
+            "Consider taking more speed."
+        ],
+        "original_seq_len": 120,
+        "gt_start_frame": 26,
+        "gt_end_frame": 74,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 48,
+        "gt_seq_len": 48
+    },
+    {
+        "video_name": "467206024831435067_2",
+        "motion_type": "Loop",
+        "labels": [
+            "Please don’t over turning to the left on the landing position."
+        ],
+        "augmented_labels": [
+            "Avoid turning too much to the left when landing.",
+            "Avoid excessive turning to the left in the landing position.",
+            "Avoid excessive leftward turning when landing.",
+            "It's best not to rotate too much to the left when landing.",
+            "It's a good idea to minimize excessive turning to the left when landing."
+        ],
+        "original_seq_len": 120,
+        "gt_start_frame": 105,
+        "gt_end_frame": 120,
+        "gt_std_start_frame": 46,
+        "gt_std_end_frame": 61,
+        "gt_seq_len": 15
+    },
+    {
+        "video_name": "467206000638951883_0",
+        "motion_type": "Loop",
+        "labels": [
+            "Good."
+        ],
+        "augmented_labels": [
+            "That was well done.",
+            "That's satisfactory.",
+            "Well done.",
+            "That's looking great.",
+            "Nice work."
+        ],
+        "original_seq_len": 47,
+        "gt_start_frame": 0,
+        "gt_end_frame": 46,
+        "gt_std_start_frame": 15,
+        "gt_std_end_frame": 61,
+        "gt_seq_len": 46
+    },
+    {
+        "video_name": "471706009942622389_0",
+        "motion_type": "Axel",
+        "labels": [
+            "You need to fully transfer your body weight to your right leg. You need to put ur left leg down on air position."
+        ],
+        "augmented_labels": [
+            "Shift all your body weight onto your right leg. Lower your left leg into the air position.",
+            "It's necessary to shift your entire body weight onto your right leg and place your left leg in the air position.",
+            "Completely shift your body weight to your right leg and lower your left leg to the air position.",
+            "Ensure your body weight is fully shifted to your right leg while positioning your left leg down during the air position.",
+            "It is important to move your body weight completely onto your right leg, and position your left leg down in the air position."
+        ],
+        "original_seq_len": 115,
+        "gt_start_frame": 74,
+        "gt_end_frame": 114,
+        "gt_std_start_frame": 6,
+        "gt_std_end_frame": 46,
+        "gt_seq_len": 40
+    },
+    {
+        "video_name": "471703098860503282_0",
+        "motion_type": "Axel",
+        "labels": [
+            "When u do beginning of toe loop jump u stop in the moment of jump: your right leg should freely go up without of moment stop in front of left leg. Your toe loop don’t have enough rotation. I advise you not to roll too much in a circle, make the jump more in a straight line but still keep on edges. Landing has some problems."
+        ],
+        "augmented_labels": [
+            "At the start of the toe loop jump, don't pause when your right leg goes up; let it move freely past the front of your left leg. Your toe loop doesn't rotate enough. Try to avoid rotating too much in a circle; aim for a straighter jump while staying on edges. Your landing needs some work.",
+            "At the start of the toe loop jump, there is a pause during the jump where your right leg should move freely upward without halting in front of your left leg. The toe loop lacks sufficient rotation. It's recommended not to roll excessively in a circular motion; execute the jump in a straighter path while remaining on edges. There are also issues with the landing.",
+            "In the start of your toe loop jump, avoid pausing during the jump moment; let your right leg move up smoothly without stopping in front of your left leg. The jump needs more rotation. Try not to roll excessively in a circle and aim for a straighter path while maintaining edges. There's an issue with the landing.",
+            "While starting the toe loop jump, try to maintain continuous motion, allowing your right leg to move smoothly without pausing in front of the left leg. It seems the toe loop isn't getting enough rotation. It might be helpful to reduce the circular motion and focus on a straighter line while still using the edges. It looks like the landing needs some work as well.",
+            "During the initiation of the toe loop jump, there is a moment where you pause at the jump. Your right leg should smoothly continue upward without halting in front of the left leg. The rotation on your toe loop is insufficient. Avoid rolling excessively in a circle; aim for a straighter jump path while maintaining your edge. There are some issues with the landing as well."
+        ],
+        "original_seq_len": 132,
+        "gt_start_frame": 91,
+        "gt_end_frame": 131,
+        "gt_std_start_frame": 6,
+        "gt_std_end_frame": 46,
+        "gt_seq_len": 40
+    },
+    {
+        "video_name": "471703098860503282_1",
+        "motion_type": "Axel",
+        "labels": [
+            "When you do Axel u can transfer your body faster to the right side."
+        ],
+        "augmented_labels": [
+            "You can move your body more quickly to the right side during the Axel.",
+            "Performing an Axel jump allows for the quicker transfer of your body to the right side.",
+            "Transferring your body to the right side can be done faster when performing an Axel.",
+            "During the Axel, your body can shift more quickly to the right side.",
+            "Transferring your body more quickly to the right side can benefit your Axel."
+        ],
+        "original_seq_len": 132,
+        "gt_start_frame": 31,
+        "gt_end_frame": 60,
+        "gt_std_start_frame": 11,
+        "gt_std_end_frame": 40,
+        "gt_seq_len": 29
+    },
+    {
+        "video_name": "471703066060784233_0",
+        "motion_type": "Axel",
+        "labels": [
+            "Bend your arms on the swing for the jump, work your right knee up at the moment of the swing."
+        ],
+        "augmented_labels": [
+            "Bend your arms as you swing for the jump, and lift your right knee when swinging.",
+            "During the swing for the jump, bend your arms and engage your right knee upward at the time of the swing.",
+            "During the swing for the jump, bend your arms and work your right knee upward at the same time.",
+            "During the swing for the jump, have your arms bent and lift your right knee at the moment of the swing.",
+            "Consider keeping your arms bent as you swing for the jump, and focus on driving your right knee upward during the swing."
+        ],
+        "original_seq_len": 212,
+        "gt_start_frame": 0,
+        "gt_end_frame": 41,
+        "gt_std_start_frame": 5,
+        "gt_std_end_frame": 46,
+        "gt_seq_len": 41
+    },
+    {
+        "video_name": "471703066060784233_1",
+        "motion_type": "Axel",
+        "labels": [
+            "Do not unravel the left shoulder and hip so much outwards at the moment of landing position."
+        ],
+        "augmented_labels": [
+            "Keep the left shoulder and hip more aligned at the moment of landing.",
+            "Avoid excessive outward rotation of the left shoulder and hip when landing.",
+            "Avoid overly turning the left shoulder and hip outwards during the landing position.",
+            "Try to maintain the left shoulder and hip more aligned inwardly during the landing position.",
+            "Avoid excessive outward movement of the left shoulder and hip when landing."
+        ],
+        "original_seq_len": 212,
+        "gt_start_frame": 71,
+        "gt_end_frame": 87,
+        "gt_std_start_frame": 30,
+        "gt_std_end_frame": 46,
+        "gt_seq_len": 16
+    },
+    {
+        "video_name": "471703104162365684_0",
+        "motion_type": "Axel",
+        "labels": [
+            "Second jump toe loop: do not put your left foot too close to the right at the beginning of the jump. The second jump should be fully rotated. In the beginning of the second jump right leg should pass left faster and go out more. Axel jump looks ok."
+        ],
+        "augmented_labels": [
+            "On the second jump toe loop, avoid placing your left foot too close to your right at the start. The second jump needs a full rotation. At the start of the second jump, your right leg should move past your left faster and extend out more. The Axel jump is fine.",
+            "Avoid positioning your left foot too close to the right at the outset of the second jump toe loop. Ensure the second jump is fully rotated. At the start of the second jump, the right leg should move past the left more quickly and extend outward further. The Axel jump appears satisfactory.",
+            "Avoid placing your left foot too near the right at the start of the second jump toe loop. Ensure the second jump is fully rotated. The right leg should move past the left quicker and extend out more at the start of the second jump. Axel jump appears fine.",
+            "For the second jump toe loop, ensure that your left foot isn’t too close to the right at the start. The full rotation of the second jump is important. At the beginning of the second jump, the right leg should pass the left more quickly and extend further out. The Axel jump looks good.",
+            "For the second jump toe loop, ensure your left foot isn't too close to the right as you start the jump. The second jump needs to achieve full rotation. At the start of the second jump, the right leg should move past the left more quickly and extend outward more. Your Axel jump is looking good."
+        ],
+        "original_seq_len": 216,
+        "gt_start_frame": 175,
+        "gt_end_frame": 216,
+        "gt_std_start_frame": 5,
+        "gt_std_end_frame": 46,
+        "gt_seq_len": 41
+    },
+    {
+        "video_name": "471706263479386249_0",
+        "motion_type": "Axel_com",
+        "labels": [
+            "In the last teo jumps, you try to make a toe loop, but it looks like Alex's jump, because you turned your body over and turn your right sock before the jump."
+        ],
+        "augmented_labels": [
+            "During the last two jumps, it seems like you're attempting a toe loop, but it resembles Alex's jump because you rotated your body and twisted your right sock before taking off.",
+            "In the last two jumps, a toe loop is attempted, but it resembles Alex's jump due to your body turning over and the right foot rotating before the jump.",
+            "In the last two jumps, it seems you attempted a toe loop, but it resembled an Axel due to turning your body and rotating your right foot before the jump.",
+            "During the last two jumps, it seems you've attempted a toe loop, but it's a bit like Alex's jump. Your body turns too early and your right foot positions before the jump.",
+            "During the last two jumps, your attempt at a toe loop resembles Alex's jump because you rotated your body and twisted your right sock before taking off."
+        ],
+        "original_seq_len": 363,
+        "gt_start_frame": 235,
+        "gt_end_frame": 281,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 46,
+        "gt_seq_len": 147
+    },
+    {
+        "video_name": "471706263479386249_1",
+        "motion_type": "Axel_com",
+        "labels": [
+            "Bend your arms and right leg at the moment of the swing so that the jump goes up. Don't lift your left leg up so much in the air."
+        ],
+        "augmented_labels": [
+            "Bend both your arms and your right leg during the swing to help the jump rise. Avoid raising your left leg too high in the air.",
+            "Bend your arms and right leg as you swing to help the jump reach upward. Avoid raising your left leg too high.",
+            "Bend your arms and right leg during the swing to gain height in the jump, and keep your left leg closer to the ground.",
+            "As you swing into the jump, bend your arms and right leg to help elevate the jump, while avoiding lifting your left leg too high in the air.",
+            "Bending your arms and right leg during the swing helps the jump to go upward. Keep the lift of your left leg controlled and not too high."
+        ],
+        "original_seq_len": 363,
+        "gt_start_frame": 159,
+        "gt_end_frame": 205,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 46,
+        "gt_seq_len": 99
+    },
+    {
+        "video_name": "471706290155159700_0",
+        "motion_type": "Axel_com",
+        "labels": [
+            "Bend your arms and right leg on the swing."
+        ],
+        "augmented_labels": [
+            "Bend the arms and right leg when swinging.",
+            "Your arms and right leg should be bent on the swing.",
+            "Bend your arms and right leg during the swing.",
+            "Your arms and right leg should be bent during the swing.",
+            "Your arms and right leg should be bent on the swing."
+        ],
+        "original_seq_len": 263,
+        "gt_start_frame": 134,
+        "gt_end_frame": 157,
+        "gt_std_start_frame": 6,
+        "gt_std_end_frame": 29,
+        "gt_seq_len": 23
+    },
+    {
+        "video_name": "471706290155159700_1",
+        "motion_type": "Axel_com",
+        "labels": [
+            "Your condition the body in the air is too relaxed, lower your right leg down and press your hands to the body."
+        ],
+        "augmented_labels": [
+            "Your body position in the air is too relaxed, bring your right leg down and hold your hands close to your body.",
+            "The position of your body in the air is too relaxed; bring your right leg down and keep your hands close to your body.",
+            "The position of your body in the air is too relaxed; bring your right leg down and pull your hands close to your body.",
+            "In the air, your body is a bit too relaxed; try lowering your right leg and bringing your hands closer to your body.",
+            "It seems your body is too relaxed in the air; try bringing your right leg down and pressing your hands towards your body."
+        ],
+        "original_seq_len": 263,
+        "gt_start_frame": 134,
+        "gt_end_frame": 164,
+        "gt_std_start_frame": 5,
+        "gt_std_end_frame": 35,
+        "gt_seq_len": 30
+    },
+    {
+        "video_name": "471706290155159700_2",
+        "motion_type": "Axel_com",
+        "labels": [
+            "Before toe loop jump you don’t need fill up in to circle so much."
+        ],
+        "augmented_labels": [
+            "You don't need to make a large circle before the toe loop jump.",
+            "Prior to a toe loop jump, excessive filling into the circle is unnecessary.",
+            "The circle doesn't need to be filled so much before the toe loop jump.",
+            "You don’t need to fill up into the circle too much before the toe loop jump.",
+            "Filling into the circle too much isn't necessary before the toe loop jump."
+        ],
+        "original_seq_len": 263,
+        "gt_start_frame": 188,
+        "gt_end_frame": 212,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 24,
+        "gt_seq_len": 24
+    },
+    {
+        "video_name": "471706290155159700_3",
+        "motion_type": "Axel_com",
+        "labels": [
+            "This is jump not gonna count as toe loop because you over turn your body and toe pick. Your right knee on the swing should go up and forward but you use it to side to circle."
+        ],
+        "augmented_labels": [
+            "Your jump won't count as a toe loop because you twist your body too much and use the toe pick. Your right knee on the swing should go up and forward, but you're moving it sideways in a circular motion.",
+            "This jump won't be considered as a toe loop because there is an overturn of the body and toe pick. The right knee on the swing should move up and forward; however, it is being used to the side in a circular motion.",
+            "The jump won't be considered a toe loop because you over-rotate your body and use the toe pick. Your right knee during the swing should move up and forward rather than circling to the side.",
+            "The jump won't be recognized as a toe loop because you've overturned your body and used the toe pick. Instead of using your right knee to circle to the side, it should go up and forward during the swing.",
+            "The jump won't be considered a toe loop because your body over-rotates and the toe pick is used. The right knee on the swing is meant to move upwards and forwards, but instead, it's being directed to the side in a circular motion."
+        ],
+        "original_seq_len": 263,
+        "gt_start_frame": 191,
+        "gt_end_frame": 237,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 46,
+        "gt_seq_len": 49
+    },
+    {
+        "video_name": "471706304466387043_0",
+        "motion_type": "Axel_com",
+        "labels": [
+            "Bend your arms and right leg on the swing. Axel jump should be go more up: use your right knee up on the swing move."
+        ],
+        "augmented_labels": [
+            "Bend your arms and right leg while swinging. The Axel jump needs more height: lift your right knee during the swing motion.",
+            "Your arms and right leg should be bent on the swing. The Axel jump requires more height; utilize your right knee during the swing movement.",
+            "Bend your arms and right leg during the swing. The Axel jump needs to gain more height, so bring your right knee up in the swing motion.",
+            "As you prepare for the Axel jump, bend your arms and right leg during the swing. Elevating the jump can be achieved by lifting your right knee higher on the swing move.",
+            "As you prepare to swing, bend your arms and right leg, focusing on using your right knee to help propel the Axel jump higher."
+        ],
+        "original_seq_len": 272,
+        "gt_start_frame": 26,
+        "gt_end_frame": 72,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 46,
+        "gt_seq_len": 72
+    },
+    {
+        "video_name": "471706304466387043_1",
+        "motion_type": "Axel_com",
+        "labels": [
+            "It’s not toe loop jump because u over turn your body and toe pick before jump."
+        ],
+        "augmented_labels": [
+            "This is not a toe loop jump since you turn your body too much and use the toe pick before jumping.",
+            "The jump is not a toe loop because you overturn your body and use the toe pick before jumping.",
+            "This isn't a toe loop jump because your body overturns and you use the toe pick before jumping.",
+            "This isn't a toe loop jump because your body turns too much and you use the toe pick before jumping.",
+            "This isn't a toe loop jump as there's an overturn of the body and the toe pick occurs before the jump."
+        ],
+        "original_seq_len": 272,
+        "gt_start_frame": 94,
+        "gt_end_frame": 135,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 41,
+        "gt_seq_len": 41
+    },
+    {
+        "video_name": "471706304466387043_2",
+        "motion_type": "Axel_com",
+        "labels": [
+            "Why your right leg do so weird move on swing when u do salchow? Control your right leg don’t need Swing from side to side."
+        ],
+        "augmented_labels": [
+            "Your right leg is moving oddly during the swing of your salchow. Control it to avoid swinging from side to side.",
+            "Your right leg is making an unusual motion during the swing when performing the Salchow. Control your right leg to avoid unnecessary side-to-side swinging.",
+            "Control the right leg during the swing on the Salchow to prevent it from moving side to side.",
+            "Your right leg is making an unusual motion during the swing on the salchow. It might help to stabilize your right leg to prevent it from swinging side to side.",
+            "It seems your right leg makes an unusual movement during the swing when performing the salchow. Try to control it to prevent swinging from side to side."
+        ],
+        "original_seq_len": 272,
+        "gt_start_frame": 183,
+        "gt_end_frame": 224,
+        "gt_std_start_frame": 1,
+        "gt_std_end_frame": 42,
+        "gt_seq_len": 41
+    },
+    {
+        "video_name": "468398494953242881_0",
+        "motion_type": "Axel",
+        "labels": [
+            "Don't stick your hips back out. Other things is good."
+        ],
+        "augmented_labels": [
+            "Keep your hips in line with the rest of your body. Everything else looks good.",
+            "Avoid pushing your hips backward. Everything else is good.",
+            "Avoid sticking your hips out; everything else looks good.",
+            "It's best to avoid sticking your hips out too much, everything else looks good.",
+            "Avoid pushing your hips backward. Everything else looks good."
+        ],
+        "original_seq_len": 135,
+        "gt_start_frame": 106,
+        "gt_end_frame": 134,
+        "gt_std_start_frame": 19,
+        "gt_std_end_frame": 47,
+        "gt_seq_len": 28
+    },
+    {
+        "video_name": "471703083593236980_0",
+        "motion_type": "Axel",
+        "labels": [
+            "Double Axel attempt. You need to swing your right foot up and push up with your left foot in the moment of jump. Lack of height and rotation speed, as well as too relaxed position in the air do not allow you to perform this element well."
+        ],
+        "augmented_labels": [
+            "Swing your right foot up and push off with your left foot as you jump. Not enough height, slow rotation speed, and being too relaxed in the air make it difficult to perform this move successfully.",
+            "During a Double Axel attempt, your right foot needs to swing upward and your left foot should push off at the moment of the jump. Insufficient height and speed of rotation, along with a too relaxed position in the air, prevent you from executing this element effectively.",
+            "To successfully execute a Double Axel, swing your right foot upward and push off with your left foot during the jump. Insufficient height and rotation speed, along with a relaxed body position while airborne, hinder the performance of this element.",
+            "During your Double Axel attempt, swinging your right foot up and pushing off with your left foot while jumping is important. Insufficient height and rotation speed, along with a too relaxed position in the air, are hindering your execution of this element.",
+            "In your Double Axel attempt, try to focus on swinging your right foot upwards and pushing off with your left foot at the moment of jump. Insufficient height and rotation speed, along with a too-relaxed position in the air, are affecting your performance of this element."
+        ],
+        "original_seq_len": 131,
+        "gt_start_frame": 41,
+        "gt_end_frame": 88,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 47,
+        "gt_seq_len": 92
+    },
+    {
+        "video_name": "495779172569055492_0",
+        "motion_type": "Axel",
+        "labels": [
+            "the outward arc (edge) is too short, roll into the jump and your legs may bend your knees."
+        ],
+        "augmented_labels": [
+            "The outward arc (edge) is too short, transition into the jump and your knees might bend.",
+            "The outward arc (edge) is too short, which may cause your knees to bend as you roll into the jump.",
+            "The outward arc (edge) needs to be longer; rolling into the jump can cause unnecessary bending of the knees.",
+            "The outward arc (edge) is on the short side; rolling into the jump could lead to bending your knees.",
+            "The outward arc (edge) is too short; rolling into the jump might cause your knees to bend."
+        ],
+        "original_seq_len": 87,
+        "gt_start_frame": 53,
+        "gt_end_frame": 59,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 6,
+        "gt_seq_len": 6
+    },
+    {
+        "video_name": "495779172569055492_1",
+        "motion_type": "Axel",
+        "labels": [
+            "you need to close your feet more tightly in the air."
+        ],
+        "augmented_labels": [
+            "Keep your feet closer together when you're in the air.",
+            "It's necessary to close your feet more tightly in the air.",
+            "Close your feet more tightly in the air.",
+            "It's important to close your feet more tightly while in the air.",
+            "Your feet could be closed more tightly while in the air."
+        ],
+        "original_seq_len": 87,
+        "gt_start_frame": 65,
+        "gt_end_frame": 71,
+        "gt_std_start_frame": 22,
+        "gt_std_end_frame": 28,
+        "gt_seq_len": 6
+    },
+    {
+        "video_name": "471703087418179585_0",
+        "motion_type": "Axel",
+        "labels": [
+            "Attempt 2A."
+        ],
+        "augmented_labels": [
+            "Try the double Axel.",
+            "Perform a 2A.",
+            "Perform a double Axel.",
+            "Give 2A a try.",
+            "Go for a double Axel."
+        ],
+        "original_seq_len": 94,
+        "gt_start_frame": 16,
+        "gt_end_frame": 63,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 47,
+        "gt_seq_len": 93
+    },
+    {
+        "video_name": "471703087418179585_1",
+        "motion_type": "Axel",
+        "labels": [
+            "The right leg at the moment of the swing should not go so forward, the knee of the right leg should work upwards."
+        ],
+        "augmented_labels": [
+            "The knee of the right leg needs to lift upwards without the leg swinging too far forward.",
+            "The right leg should not swing too far forward; instead, the knee should move upward.",
+            "The right leg shouldn't extend too far forward during the swing; the knee should move upwards.",
+            "During the swing, the right leg shouldn't move too far forward, and the knee should lift upwards.",
+            "When swinging, the right leg shouldn't extend too far forward, and the knee should move upward."
+        ],
+        "original_seq_len": 94,
+        "gt_start_frame": 0,
+        "gt_end_frame": 30,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 30,
+        "gt_seq_len": 30
+    },
+    {
+        "video_name": "471703087418179585_2",
+        "motion_type": "Axel",
+        "labels": [
+            "The jump does not have enough height, so you need to improve speed and pull yourself up with the help of your left leg and the swing of your right knee and the strength of your right (if possible left) hands. Position on air should be more close and strong."
+        ],
+        "augmented_labels": [
+            "The jump is too low, so work on gaining more speed and use your left leg to lift yourself, while swinging your right knee and using the strength of your right and possibly left hands. Keep your body tight and strong in the air.",
+            "The jump lacks sufficient height, requiring better speed and an upward motion by using your left leg, swinging your right knee, and utilizing the strength of your right hand, as well as your left hand if possible. The position in the air should be tighter and more robust.",
+            "The jump lacks height, so increasing speed and using your left leg, right knee swing, and arm strength to lift yourself is needed. Aim for a tighter and stronger mid-air position.",
+            "The jump could use more height, with increased speed and using your left leg to lift yourself, enhanced by the swing of your right knee and the strength of your right (or if possible, left) hands. The position in the air should be tighter and firmer.",
+            "The jump lacks sufficient height; enhancing your speed and using your left leg, the swing of your right knee, and the strength of your right (if possible left) hands will help you pull yourself up. A closer and stronger position in the air is also important."
+        ],
+        "original_seq_len": 94,
+        "gt_start_frame": 48,
+        "gt_end_frame": 82,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 34,
+        "gt_seq_len": 34
+    },
+    {
+        "video_name": "479777184677101621_0",
+        "motion_type": "Axel",
+        "labels": [
+            "It will be better if your hands work from the bottom up at the approach at the moment of repulsion."
+        ],
+        "augmented_labels": [
+            "Your hands should move upward from the bottom during the take-off.",
+            "Your hands moving from the bottom up during the approach at the moment of takeoff will be more effective.",
+            "Your hands should move from low to high on the approach during the takeoff.",
+            "Your performance might improve if your hands move from the bottom up during the approach at the moment you take off.",
+            "Your hands would improve the approach by working from the bottom up at the moment of repulsion."
+        ],
+        "original_seq_len": 152,
+        "gt_start_frame": 75,
+        "gt_end_frame": 91,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 16,
+        "gt_seq_len": 16
+    },
+    {
+        "video_name": "479777184677101621_1",
+        "motion_type": "Axel",
+        "labels": [
+            "close your feet as you jump, your right leg is too high."
+        ],
+        "augmented_labels": [
+            "Bring your feet together as you jump; your right leg is too high.",
+            "Bring your feet together as you jump, as your right leg is elevated too much.",
+            "Bring your feet together during the jump; your right leg is positioned too high.",
+            "As you jump, notice if your right leg is too high and try bringing your feet closer together.",
+            "Keep your feet together during the jump, noticing that your right leg is raised too high."
+        ],
+        "original_seq_len": 152,
+        "gt_start_frame": 89,
+        "gt_end_frame": 98,
+        "gt_std_start_frame": 10,
+        "gt_std_end_frame": 19,
+        "gt_seq_len": 9
+    },
+    {
+        "video_name": "485956824340889665_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "This jumps not too bad, But you need to coordinate your shoulders and hips. Make sure that you turn your right side Together with left side. Also try to don’t drop your left shoulders on air control. Your takeoff need to pass your left leg fully to the direction of the jump when you switching."
+        ],
+        "augmented_labels": [
+            "Your jump is pretty good, but work on coordinating your shoulders and hips. Turn your right side along with your left side. Be sure not to drop your left shoulder in the air for control. During takeoff, your left leg should fully follow the direction of the jump as you switch.",
+            "The jump is not too bad, but coordinating your shoulders and hips is necessary. Ensure you turn your right side along with your left side. Additionally, avoid dropping your left shoulder during air control. Your takeoff should pass your left leg completely in the direction of the jump when switching.",
+            "Coordinate your shoulders and hips more effectively. Rotate your right side together with your left. Keep your left shoulder stable in the air. Ensure your takeoff propels your left leg fully in the direction of the jump during the switch.",
+            "This jump is not too bad, but coordinating your shoulders and hips will help. Turning your right side together with your left side is important. Also, try to keep your left shoulder steady in the air. During the takeoff, ensure your left leg fully moves in the direction of the jump when switching.",
+            "The jump is pretty good, though you should work on coordinating your shoulders and hips. Ensure your right side turns in unison with your left side. Also, be mindful of keeping your left shoulder up for air control. Your takeoff should have your left leg fully moving in the direction of the jump when you switch."
+        ],
+        "original_seq_len": 77,
+        "gt_start_frame": 37,
+        "gt_end_frame": 52,
+        "gt_std_start_frame": 9,
+        "gt_std_end_frame": 24,
+        "gt_seq_len": 15
+    },
+    {
+        "video_name": "485956903277691217_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "U need to take more speed before jump."
+        ],
+        "augmented_labels": [
+            "Gain more speed before you jump.",
+            "It is necessary to gain more speed prior to the jump.",
+            "Try to gain more speed before the jump.",
+            "It's helpful to build up more speed before attempting the jump.",
+            "Consider gaining more speed before the jump."
+        ],
+        "original_seq_len": 118,
+        "gt_start_frame": 11,
+        "gt_end_frame": 44,
+        "gt_std_start_frame": 21,
+        "gt_std_end_frame": 54,
+        "gt_seq_len": 33
+    },
+    {
+        "video_name": "485956903277691217_1",
+        "motion_type": "Lutz",
+        "labels": [
+            "Coordinate your hips and shoulders together when u do takeoff. Make sure that you turn your body to the direction of the jump. And switch your left knees higher for help yourself jump up. Don’t forget use more power."
+        ],
+        "augmented_labels": [
+            "Move your hips and shoulders in sync when taking off. Turn your body in the direction of the jump, lift your left knee higher to help with the jump, and use more power.",
+            "Align your hips and shoulders during takeoff, ensuring that your body turns in the direction of the jump. Raise your left knee higher to assist with the jump, and apply additional power.",
+            "Align your hips and shoulders at takeoff, turning your body in the direction of the jump, while lifting your left knee higher to assist with the jump. Use more power.",
+            "It's helpful to align your hips and shoulders during takeoff, turning your body in the jump's direction. Lifting your left knee higher can aid in jumping up. Applying more power can also be beneficial.",
+            "Coordinate your hips and shoulders when taking off, ensuring your body turns in the direction of the jump. Elevate your left knee higher to assist with jumping up. Remember to apply more power."
+        ],
+        "original_seq_len": 118,
+        "gt_start_frame": 50,
+        "gt_end_frame": 70,
+        "gt_std_start_frame": 10,
+        "gt_std_end_frame": 30,
+        "gt_seq_len": 20
+    },
+    {
+        "video_name": "485958828110905364_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "You should control your body position on air. Make sure set your body straight up, but now your body going to much backward."
+        ],
+        "augmented_labels": [
+            "Keep your body upright when you're in the air. You're leaning too far backward right now.",
+            "It's important to control your body position while in the air by aligning it straight up, as currently, it is leaning too far backward.",
+            "Control your body position in the air, ensuring you set your body straight up, as it's currently leaning too far back.",
+            "It's important to control your body position while in the air, keeping it straight up, as it's currently leaning too far backward.",
+            "Try to maintain your body position in the air by straightening up, as you're currently leaning too far backward."
+        ],
+        "original_seq_len": 96,
+        "gt_start_frame": 22,
+        "gt_end_frame": 76,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 54,
+        "gt_seq_len": 95
+    },
+    {
+        "video_name": "468961490423775240_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "When you go to the air position, make sure that your left leg go down to your right ankle and close yourself faster. Also make sure that your weight of your body on the right leg."
+        ],
+        "augmented_labels": [
+            "As you move into the air position, bring your left leg down to your right ankle and close your body quickly. Keep your body weight on your right leg.",
+            "Ensure your left leg moves down to your right ankle when transitioning to the air position, and close your body quickly. Also, keep your body weight centered on your right leg.",
+            "As you transition to the air position, your left leg should move down to your right ankle, closing yourself more quickly. Your body weight should be on your right leg.",
+            "As you enter the air position, your left leg should move down to your right ankle, allowing you to close yourself faster, with your body weight on the right leg.",
+            "As you transition into the air position, ensure that your left leg moves down to your right ankle, closing more quickly, and keep your body weight on your right leg."
+        ],
+        "original_seq_len": 150,
+        "gt_start_frame": 95,
+        "gt_end_frame": 131,
+        "gt_std_start_frame": 18,
+        "gt_std_end_frame": 54,
+        "gt_seq_len": 36
+    },
+    {
+        "video_name": "485956942436237491_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "Problem of this jump, you’re switching your left leg and jumping in the same time try to switch your left leg first and then you jump up. Please control your hand when you do takeoff your hand getting over your head. It’s not really good."
+        ],
+        "augmented_labels": [
+            "The issue with this jump is that you're switching your left leg and jumping at the same time. First, switch your left leg, then jump. Also, check the position of your hand during takeoff, as it is going over your head, which isn't ideal.",
+            "The issue with this jump is that you're switching your left leg and jumping simultaneously; try switching your left leg first before jumping up. Control your hand during takeoff, as it is going over your head, which isn't ideal.",
+            "Issue with this jump: you're switching your left leg and jumping simultaneously. Try switching your left leg first before jumping up. Control your hand during takeoff as it’s going over your head, which isn't ideal.",
+            "You’re experiencing an issue with the jump because you’re switching your left leg and jumping simultaneously; try adjusting by switching your left leg first before jumping. Also, be mindful of your hand position during takeoff, as it tends to go over your head, which isn't ideal.",
+            "The issue with this jump is that you're switching your left leg and jumping simultaneously. Switch your left leg first, then jump. Pay attention to your hands during takeoff, as they are going over your head, which isn't ideal."
+        ],
+        "original_seq_len": 139,
+        "gt_start_frame": 72,
+        "gt_end_frame": 79,
+        "gt_std_start_frame": 2,
+        "gt_std_end_frame": 9,
+        "gt_seq_len": 7
+    },
+    {
+        "video_name": "485956942436237491_1",
+        "motion_type": "Lutz",
+        "labels": [
+            "Your Lending position it’s bad: Stretch your hands straight your left knee and your left leg higher also up your body you should look gorgeous."
+        ],
+        "augmented_labels": [
+            "Your landing position isn't good: Extend your arms, lift your left knee and left leg higher, and hold your upper body upright to look graceful.",
+            "The landing position needs improvement: Extend your hands, straighten your left knee, and lift your left leg higher, while also keeping your body upright to achieve a more graceful appearance.",
+            "The lending position needs improvement: stretch your hands, straighten your left knee, lift your left leg higher, and elevate your body to look elegant.",
+            "Your landing position needs improvement: Extend your arms straight, raise your left knee and left leg higher, and lift your upper body to enhance your appearance.",
+            "The lending position needs improvement: Extend your arms, raise your left knee and leg, and elevate your body to maintain a graceful appearance."
+        ],
+        "original_seq_len": 139,
+        "gt_start_frame": 106,
+        "gt_end_frame": 137,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 31,
+        "gt_seq_len": 31
+    },
+    {
+        "video_name": "485956878548074535_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "When need to takeoff you need to put the weight of your body to the right leg fully. Make sure that your hands Don’t up too much. When you do takeoff, you need to pass your left leg over your right leg and switch it up to the direction of the jump."
+        ],
+        "augmented_labels": [
+            "Shift all of your body weight onto your right leg for the takeoff. Keep your hands from raising too high. As you take off, move your left leg over your right leg and turn it towards the direction of the jump.",
+            "During takeoff, fully transfer your body weight to your right leg. Ensure that your hands do not raise too high. When executing the takeoff, pass your left leg over your right leg and adjust it in the direction of the jump.",
+            "Shift your body weight fully onto your right leg for the takeoff. Keep your hands from rising too high. As you take off, pass your left leg over your right leg and turn it towards the direction of the jump.",
+            "As you prepare for takeoff, your body weight should be fully on your right leg. Ensure your hands don't lift too high. During takeoff, pass your left leg over your right leg and shift it to the direction of the jump.",
+            "For takeoff, shift your body weight entirely onto your right leg. Ensure your hands don't rise too high. As you take off, pass your left leg over your right and switch it to align with the direction of the jump."
+        ],
+        "original_seq_len": 73,
+        "gt_start_frame": 28,
+        "gt_end_frame": 33,
+        "gt_std_start_frame": 11,
+        "gt_std_end_frame": 16,
+        "gt_seq_len": 5
+    },
+    {
+        "video_name": "485956878548074535_1",
+        "motion_type": "Lutz",
+        "labels": [
+            "Use your toe pick with more power it’s gonna help you to jump higher."
+        ],
+        "augmented_labels": [
+            "Apply more force with your toe pick to help you jump higher.",
+            "Apply greater force with your toe pick, as it will aid in achieving a higher jump.",
+            "Activate your toe pick with more force to achieve greater height in your jump.",
+            "Applying more force with your toe pick can assist you in achieving a higher jump.",
+            "Applying greater force with your toe pick can assist in achieving more height in your jump."
+        ],
+        "original_seq_len": 73,
+        "gt_start_frame": 28,
+        "gt_end_frame": 33,
+        "gt_std_start_frame": 11,
+        "gt_std_end_frame": 16,
+        "gt_seq_len": 5
+    },
+    {
+        "video_name": "485956909619216682_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "You are disordinate when you do takeoff you need to make sure that you switch your left side to the direction of the jump, turning your body and then you jumping up make sure that you have a temple when you have a jump."
+        ],
+        "augmented_labels": [
+            "Your takeoff is not organized. As you prepare to jump, turn your left side in the direction of the jump and rotate your body before you jump up. Keep a rhythm when jumping.",
+            "Your takeoff is unorganized; ensure that you rotate your left side in the direction of the jump, turn your body, and establish a rhythm when jumping upwards.",
+            "Your takeoff is uncoordinated; switch your left side in the direction of the jump, turn your body, then jump upward while maintaining a rhythm.",
+            "Your body position is disorganized during the takeoff, so it's important to adjust by turning your left side in the direction of the jump. Ensure your body rotates before you jump and establish a rhythm as you take off.",
+            "It seems there's a lack of coordination during your takeoff. Make sure to adjust your left side in the direction of the jump, rotate your body, and create a rhythm before jumping up."
+        ],
+        "original_seq_len": 73,
+        "gt_start_frame": 34,
+        "gt_end_frame": 41,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 7,
+        "gt_seq_len": 7
+    },
+    {
+        "video_name": "485958794455810145_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "You should take more speed."
+        ],
+        "augmented_labels": [
+            "Increase your speed.",
+            "You need to increase your speed.",
+            "Increase your speed.",
+            "It might be beneficial to increase your speed.",
+            "Try taking more speed."
+        ],
+        "original_seq_len": 93,
+        "gt_start_frame": 0,
+        "gt_end_frame": 37,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 37,
+        "gt_seq_len": 37
+    },
+    {
+        "video_name": "485958794455810145_1",
+        "motion_type": "Lutz",
+        "labels": [
+            "Pass your left leg on the ice until right feet and then up your left knee with more power. Don’t drop your toe pick."
+        ],
+        "augmented_labels": [
+            "Slide your left leg on the ice until it reaches your right foot, then lift your left knee with extra force. Keep your toe pick from dropping.",
+            "Move your left leg on the ice until it aligns with your right foot, then lift your left knee with increased force. Keep your toe pick from dropping.",
+            "Slide your left leg along the ice to your right foot, then lift your left knee with greater force. Keep your toe pick up.",
+            "Glide your left leg on the ice up to your right foot, followed by lifting your left knee with increased force, ensuring your toe pick stays elevated.",
+            "Move your left leg along the ice past your right foot and lift your left knee with more strength. Keep your toe pick raised."
+        ],
+        "original_seq_len": 93,
+        "gt_start_frame": 49,
+        "gt_end_frame": 55,
+        "gt_std_start_frame": 10,
+        "gt_std_end_frame": 16,
+        "gt_seq_len": 6
+    },
+    {
+        "video_name": "467206698017751158_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "I still suggest you don’t up your left leg so high before lending."
+        ],
+        "augmented_labels": [
+            "I recommend not raising your left leg too high before landing.",
+            "It is advised not to raise your left leg so high before landing.",
+            "Try not to lift your left leg too high before landing.",
+            "It might be beneficial not to raise your left leg so high before landing.",
+            "It's recommended to keep your left leg at a moderate height before landing."
+        ],
+        "original_seq_len": 158,
+        "gt_start_frame": 126,
+        "gt_end_frame": 157,
+        "gt_std_start_frame": 23,
+        "gt_std_end_frame": 54,
+        "gt_seq_len": 31
+    },
+    {
+        "video_name": "485956876367036449_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "Take speed before takeoff and take power when you jumping you’re jump looks so relaxed. Please pass your left leg over your right leg and Switch it outside for help yourself jump higher in a moment of takeoff."
+        ],
+        "augmented_labels": [
+            "Build up speed before takeoff for a relaxed jump. Pass your left leg over your right leg and switch it to the outside to help jump higher during takeoff.",
+            "Gain speed before takeoff and apply power during the jump for a more relaxed appearance. Pass your left leg over your right leg and switch it outward to assist with jumping higher at the moment of takeoff.",
+            "Build up speed before takeoff and utilize power as you jump. Pass your left leg over your right leg and switch it outside to help achieve a higher jump at takeoff.",
+            "Build up speed before takeoff and harness power during your jump, making it look relaxed. Cross your left leg over your right leg and switch it to the outside to help you jump higher at the moment of takeoff.",
+            "Consider building up speed before taking off and using power during the jump to maintain a relaxed appearance. Crossing your left leg over your right leg and switching it outside can help you achieve greater height at the moment of takeoff."
+        ],
+        "original_seq_len": 76,
+        "gt_start_frame": 32,
+        "gt_end_frame": 39,
+        "gt_std_start_frame": 3,
+        "gt_std_end_frame": 10,
+        "gt_seq_len": 7
+    },
+    {
+        "video_name": "485956893093920833_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "You don’t turn your right side to the direction of the jump, and you left side blocking you from the jumping to the right direction. Also, when you do takeoff, you need to make sure that you’re right like don’t go over left leg and you left like passing your right leg and go outside to help you jump higher. I don’t like your air position you can should be together and closed and your left knee should turn outside and close your ankles and also stretch your body fully up."
+        ],
+        "augmented_labels": [
+            "Your right side isn't facing where you want to jump, and your left side is preventing you from going in the right direction. At takeoff, avoid your right leg crossing over your left. Instead, let your left leg pass your right leg and move outward to help you jump higher. Your air position needs improvement; keep your legs together and close, turn your left knee outward, close your ankles, and fully stretch your body upward.",
+            "The right side should be aligned with the direction of the jump, rather than being blocked by the left side. At takeoff, ensure the right leg does not cross over the left leg, and the left leg should pass the right leg, extending outward to aid in achieving height. The air position requires improvement; the legs should be together and closed, with the left knee turned outward, ankles closed, and the body fully stretched upward.",
+            "Your right side isn’t aligning with the jump direction, and your left side is obstructing the jump path. During takeoff, your right leg shouldn't cross over the left, while your left leg should pass outward for more height. Your air position needs improvement; your legs should be together and closed, with your left knee turned outward and ankles closed, and your body fully stretched upward.",
+            "Your right side isn’t aligned with the direction of the jump, and your left side hinders your jump toward the right direction. During takeoff, ensure that your right leg doesn’t cross over your left leg while your left leg moves past your right leg to help achieve a higher jump. Your air position could be improved by keeping your legs together and closed, turning your left knee outward, closing your ankles, and fully stretching your body upward.",
+            "Your right side isn't aligned properly with the direction of the jump, and your left side is preventing you from jumping in the correct direction. At takeoff, ensure your right leg doesn't cross over your left leg, and your left leg should move past your right leg, extending outward to aid in achieving more height in your jump. Additionally, your air position could be improved by keeping your legs together and closed, turning your left knee outward, closing your ankles, and fully stretching your body upwards."
+        ],
+        "original_seq_len": 83,
+        "gt_start_frame": 52,
+        "gt_end_frame": 61,
+        "gt_std_start_frame": 21,
+        "gt_std_end_frame": 30,
+        "gt_seq_len": 9
+    },
+    {
+        "video_name": "485956866787246619_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "After you do takeoff, you need a straight your body up to create faster speed, but your position on air very loose. When you do takeoff, you need to take more power and turn your shoulders and hips faster."
+        ],
+        "augmented_labels": [
+            "Once you take off, straighten your body for more speed, but your position in the air is very loose. During takeoff, gather more power and rotate your shoulders and hips more quickly.",
+            "Once you take off, straighten your body to increase speed, but maintain a firm position in the air. During the takeoff, apply more power and rotate your shoulders and hips more quickly.",
+            "Once you take off, straighten your body to increase speed, but your position in the air is quite loose. When taking off, generate more power and rotate your shoulders and hips more quickly.",
+            "Once you take off, it's important to straighten your body to gain more speed, but your position in the air appears quite loose. During takeoff, try using more power and rotate your shoulders and hips more quickly.",
+            "Following takeoff, maintaining a straightened body helps in achieving greater speed, though your position in the air appears somewhat loose. During takeoff, aiming to generate more power and rotating the shoulders and hips more swiftly is important."
+        ],
+        "original_seq_len": 105,
+        "gt_start_frame": 45,
+        "gt_end_frame": 63,
+        "gt_std_start_frame": 10,
+        "gt_std_end_frame": 28,
+        "gt_seq_len": 18
+    },
+    {
+        "video_name": "485956897489551409_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "This jump u didn’t take any power. When u do takeoff make sure that u don’t Drop your left side down. You need to fully turn to the direction of the jump and switch your left me up. it gonna help you to go to the right direction."
+        ],
+        "augmented_labels": [
+            "You didn't use enough power for this jump. During takeoff, avoid dropping your left side. Fully rotate in the direction of the jump and lift your left knee. This will help you move in the right direction.",
+            "The jump lacked power. During the takeoff, ensure that your left side doesn't drop down. It's important to fully rotate in the direction of the jump and lift your left knee, which will aid in guiding you in the correct direction.",
+            "You lacked power in this jump. During takeoff, don’t let your left side drop. Fully turn in the direction of the jump and lift your left knee to guide you properly.",
+            "In this jump, there wasn't enough power. During takeoff, avoid dropping your left side; it's important to fully turn towards the direction of the jump and lift your left knee, as this will help guide you in the right direction.",
+            "The jump lacked power. During takeoff, ensure that your left side doesn't drop. Fully turn in the direction of the jump and lift your left knee to help guide you in the correct direction."
+        ],
+        "original_seq_len": 109,
+        "gt_start_frame": 44,
+        "gt_end_frame": 71,
+        "gt_std_start_frame": 1,
+        "gt_std_end_frame": 28,
+        "gt_seq_len": 27
+    },
+    {
+        "video_name": "485958835224182962_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "When you jump your body should be clearly over your right toe but your body has gone back, this makes the jump more difficult and you should also lower your left leg down during Air position."
+        ],
+        "augmented_labels": [
+            "While jumping, position your body clearly over your right toe. If your body has leaned back, it will make the jump more challenging. Additionally, lower your left leg during the air position.",
+            "Your body needs to be clearly over your right toe as you jump; however, if your body leans back, it complicates the jump. In air position, your left leg should be lowered.",
+            "Your body should be over your right toe when you jump, but if it leans back, the jump becomes more difficult. Also, lower your left leg during the air position.",
+            "It's important for your body to stay properly positioned over your right toe during the jump, as leaning back can increase difficulty, and it's also beneficial to lower your left leg while in the air position.",
+            "Your body being over your right toe during the jump is important, as leaning back can increase the jump's difficulty. Additionally, try lowering your left leg during the air position."
+        ],
+        "original_seq_len": 189,
+        "gt_start_frame": 49,
+        "gt_end_frame": 59,
+        "gt_std_start_frame": 31,
+        "gt_std_end_frame": 41,
+        "gt_seq_len": 10
+    },
+    {
+        "video_name": "479777901231997329_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "First jump is good, you can just try improve your hands work: Don’t up so much when you do takeoff."
+        ],
+        "augmented_labels": [
+            "The first jump is good; you just need to refine your arm movements: Avoid raising them too high during takeoff.",
+            "The initial jump is fine; you might want to refine the movement of your hands by not lifting them excessively during takeoff.",
+            "The first jump is good; just work on keeping your hands lower during the takeoff.",
+            "The first jump is solid, and you might want to refine your hand movement by not raising them too high during takeoff.",
+            "Your first jump is solid, and you can refine your arm movements by keeping them from lifting too high during takeoff."
+        ],
+        "original_seq_len": 144,
+        "gt_start_frame": 53,
+        "gt_end_frame": 79,
+        "gt_std_start_frame": 0,
+        "gt_std_end_frame": 26,
+        "gt_seq_len": 26
+    },
+    {
+        "video_name": "479777901231997329_1",
+        "motion_type": "Lutz",
+        "labels": [
+            "Second jump toe loop: Don’t open your left shoulders first and then use your right. Make sure that you use them together then it’s not gonna count as Axel Because you pre turn too much."
+        ],
+        "augmented_labels": [
+            "For the second jump toe loop, use both shoulders together instead of opening your left one first, to avoid it being mistaken for an Axel due to too much pre-turning.",
+            "In the second jump toe loop, avoid opening your left shoulder first followed by the right. Using them simultaneously prevents the jump from being considered an Axel due to excessive pre-rotation.",
+            "Avoid opening your left shoulder first, then using your right. Engage both shoulders together to prevent excessive pre-turning, which could lead to it being counted as an Axel.",
+            "For the second jump, the toe loop, ensure your left and right shoulders open together. This will prevent it from being viewed as an Axel due to excessive pre-turning.",
+            "Avoid opening your left shoulder first and then using your right; instead, use them together. Otherwise, it won't count as an Axel due to excessive pre-turning."
+        ],
+        "original_seq_len": 144,
+        "gt_start_frame": 98,
+        "gt_end_frame": 144,
+        "gt_std_start_frame": 8,
+        "gt_std_end_frame": 54,
+        "gt_seq_len": 46
+    },
+    {
+        "video_name": "485958767041839121_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "Turn your hips and shoulders in the same time to the direction of the jump. You need to make bigger circle with your right hand in the moment you try and get to the Air position this is gonna help you make more turns. Pass your left leg longer until right leg and up your knee when you do takeoff it’s gonna help you get jump higher."
+        ],
+        "augmented_labels": [
+            "Rotate your hips and shoulders together toward the jump direction. Make a larger circle with your right hand as you move into the air position, which will help you make more turns. Extend your left leg further until it's alongside your right leg and lift your knee during takeoff to help increase the jump height.",
+            "Rotate your hips and shoulders simultaneously in the direction of the jump. Use a larger circle with your right hand when moving into the air position to aid in completing more turns. Extend your left leg longer towards the right leg and lift your knee during takeoff to help achieve greater height in the jump.",
+            "Synchronize your hips and shoulders to the direction of the jump while making a larger circle with your right hand as you transition to the air position, as it assists with more rotations. Extend your left leg longer towards the right leg and raise your knee during takeoff to improve jump height.",
+            "Rotate your hips and shoulders simultaneously in the direction of the jump. Creating a larger circle with your right hand as you move into the air position can assist in achieving more rotations. Extend your left leg further until it reaches the right leg and lift your knee during takeoff to aid in jumping higher.",
+            "Rotate your hips and shoulders simultaneously toward the direction of the jump. Creating a larger circle with your right hand as you move into the air position will assist you in achieving more rotations. Extend your left leg longer until your right leg and lift your knee during takeoff to gain more height in your jump."
+        ],
+        "original_seq_len": 80,
+        "gt_start_frame": 48,
+        "gt_end_frame": 52,
+        "gt_std_start_frame": 13,
+        "gt_std_end_frame": 17,
+        "gt_seq_len": 4
+    },
+    {
+        "video_name": "485956826287046865_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "The way you use your hands when you do takeoff very weird: You’re not allowed to pre turn your you left shoulder And then use your right shoulder, you should use them together in the same time. Make sure is it you jump up when you do takeoff. You need fully straight yourself in air position, Close close your hands tightly and straight your body up."
+        ],
+        "augmented_labels": [
+            "Your hand movement during takeoff is unusual: Don't pre-turn your left shoulder and then the right one; use both together at the same time. Jump upwards during takeoff. Fully straighten your body in the air and keep your hands tightly closed and your body upright.",
+            "The use of your hands during takeoff is unusual: Avoid pre-turning your left shoulder then using your right shoulder; instead, move them simultaneously. Ensure you jump up at takeoff and fully straighten your body in the air, keeping your hands tightly closed and your body straight.",
+            "Your hand usage during takeoff is unusual. Avoid rotating your left shoulder before the right; they should move simultaneously. Ensure you jump upward during takeoff, fully extending your body in the air and keeping your hands tightly closed and your body straight.",
+            "Your hand movements during takeoff seem unusual. Avoid pre-turning your left shoulder and then your right; instead, move them together simultaneously. Ensure you jump up when taking off, fully straighten your body while in the air, keep your hands close together, and straighten your body upwards.",
+            "Your hand movement during takeoff seems unusual. Instead of pre-turning your left shoulder and then using your right, coordinate both shoulders to move together simultaneously. It's important to jump upward during takeoff. Fully extend your body in the air, close your hands tightly, and keep your body straight."
+        ],
+        "original_seq_len": 87,
+        "gt_start_frame": 30,
+        "gt_end_frame": 44,
+        "gt_std_start_frame": 7,
+        "gt_std_end_frame": 21,
+        "gt_seq_len": 14
+    },
+    {
+        "video_name": "485956965722489145_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "Here’s big mistake. You step you’re right like too much behind your left leg. It’s very hard to do takeoff like this. Make sure that your left side doesn’t up so much because you can destroy your jump and make sure that you’re right side doing circle around your body when you’re doing takeoff. Also use power when you jump up that’s why you don’t have enough heist rotate your jump."
+        ],
+        "augmented_labels": [
+            "You’re making a big mistake by stepping your right foot too far behind your left leg, making it difficult to take off. Don't lift your left side too much, as it can ruin your jump. Your right side should circle around your body during takeoff. Use more power when you jump up to get the height needed to rotate.",
+            "You're making a significant mistake by stepping too much behind your left leg with your right leg. This makes a proper takeoff challenging. Ensure your left side does not lift excessively, as it can disrupt your jump. Your right side should circle around your body during takeoff. Additionally, use sufficient power when jumping to achieve the height needed to complete the rotation.",
+            "You step your right foot too far behind your left leg, making takeoff difficult. Ensure your left side stays level to avoid disrupting your jump, and your right side should circle around your body during takeoff. Use more power when jumping to achieve better height and rotation.",
+            "There's a significant error here. The right foot steps too far behind the left leg, which makes it difficult to take off. Ensuring the left side doesn't rise too much is important because it could ruin the jump. The right side should circle around the body during takeoff. Additionally, using power when jumping will help achieve the necessary height to rotate the jump effectively.",
+            "There seems to be an issue with stepping too far behind your left leg with your right, making takeoff challenging. Ensure your left side remains steady, and let your right side create a circular motion around your body during takeoff. Additionally, utilizing power during your jump will help increase your height and rotation."
+        ],
+        "original_seq_len": 85,
+        "gt_start_frame": 44,
+        "gt_end_frame": 52,
+        "gt_std_start_frame": 8,
+        "gt_std_end_frame": 16,
+        "gt_seq_len": 8
+    },
+    {
+        "video_name": "495773206188130770_0",
+        "motion_type": "Lutz",
+        "labels": [
+            "It’s better if your left leg will open straight backward on the landing, but you open left leg forward and then backward, it destroyed your lending."
+        ],
+        "augmented_labels": [
+            "Opening your left leg straight back when landing is more effective, as opening it forward and then backward affects your landing negatively.",
+            "Your landing would improve if your left leg goes straight backward on the landing, rather than opening forward before going backward, as doing so negatively impacts your landing.",
+            "Opening your left leg straight backward on the landing is preferable, as opening it forward and then backward affects your landing negatively.",
+            "It's more effective for your left leg to extend straight backward on landing, as opening it forward first and then backward can disrupt your landing.",
+            "Your landing will improve if your left leg opens straight backward, instead of first opening forward and then backward, which affects your landing negatively."
+        ],
+        "original_seq_len": 354,
+        "gt_start_frame": 299,
+        "gt_end_frame": 321,
+        "gt_std_start_frame": 32,
+        "gt_std_end_frame": 54,
+        "gt_seq_len": 22
+    }
+]
