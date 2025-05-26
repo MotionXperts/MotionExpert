@@ -154,10 +154,10 @@
         ],
         "original_seq_len": 87,
         "gt_start_frame": 73,
-        "gt_end_frame": 88,
+        "gt_end_frame": 87,
         "gt_std_start_frame": 29,
-        "gt_std_end_frame": 44,
-        "gt_seq_len": 15
+        "gt_std_end_frame": 43,
+        "gt_seq_len": 14
     },
     {
         "video_name": "485952546285027444_0",
