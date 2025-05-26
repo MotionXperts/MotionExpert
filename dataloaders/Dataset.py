@@ -19,23 +19,32 @@ def get_coords(joint_coords) :
 
 def get_std_coords(sport, motion_type, std_coords_list) :
     if sport == 'Skating' :
-        if 'Axel' in motion_type :
-            return std_coords_list[0]
-        elif 'Axel_com' in motion_type :
-            return std_coords_list[1]
-        elif 'Loop' in motion_type :
-            return std_coords_list[2]
-        elif 'Lutz' in motion_type :
-            return std_coords_list[3]
+        if motion_type == 'Single_Axel' :
+            for std in std_coords_list :
+                if (std["video_name"] == "Single_Axel"):
+                    return std["coordinates"]
+        if motion_type == 'Double_Axel' :
+            for std in std_coords_list :
+                if (std["video_name"] == "Double_Axel"):
+                    return std["coordinates"]
+        if motion_type == 'Loop' :
+            for std in std_coords_list :
+                if (std["video_name"] == "Loop"):
+                    return std["coordinates"]
+        if motion_type == 'Lutz' :
+            for std in std_coords_list :
+                if (std["video_name"] == "Lutz"):
+                    return std["coordinates"]
     elif sport == 'Boxing' :
         if motion_type == 'Cross' :
             for std in std_coords_list :
-                if (motion_type == "Cross"):
-                    return std
+                print(std)
+                if (std["video_name"] == "Cross"):
+                    return std["coordinates"]
         elif motion_type == 'Jab' :
             for std in std_coords_list :
-                if (motion_type == "Jab"):
-                    return std
+                if (std["video_name"] == "Jab"):
+                    return std["coordinates"]
 
 def get_label(pretrain, labels, augmented_labels) :
     if not pretrain :
@@ -78,7 +87,12 @@ class DatasetLoader(Dataset) :
             standard_path = cfg.STANDARD_PATH
             with open(standard_path, 'rb') as f :
                 standard_file = pickle.load(f)
-            std_coords_list = [get_coords(item['coordinates']) for item in standard_file]
+            std_coords_list = []
+            for item in standard_file :
+                new_item = {}
+                new_item['video_name'] = item['video_name']
+                new_item['coordinates'] = get_coords(item['coordinates'])
+                std_coords_list.append(new_item)
 
         for item in self.data_list :
             video_name = item['video_name']
