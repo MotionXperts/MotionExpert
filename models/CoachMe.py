@@ -21,7 +21,6 @@ class CoachMe(nn.Module) :
         if self.pretrain :
             hpp_lora_config, proj_lora_config = None, None
         elif not self.pretrain and cfg.TASK.SPORT == "Skating" :
-            
             hpp_lora_config = {"bias" : "none", "r" : 32, "lora_alpha" : 64, "lora_dropout" : 0.1}
             proj_lora_config = {"bias" : "none", "r" : 32, "lora_alpha" : 64, "lora_dropout" : 0.1}
         elif not self.pretrain and cfg.TASK.SPORT == "Boxing" :
