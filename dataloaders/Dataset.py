@@ -38,7 +38,6 @@ def get_std_coords(sport, motion_type, std_coords_list) :
     elif sport == 'Boxing' :
         if motion_type == 'Cross' :
             for std in std_coords_list :
-                print(std)
                 if (std["video_name"] == "Cross"):
                     return std["coordinates"]
         elif motion_type == 'Jab' :
