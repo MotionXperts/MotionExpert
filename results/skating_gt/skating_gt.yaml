@@ -10,7 +10,7 @@ TASK:
     DIFF_TYPE : "Skeleton"
     PROJ_STRATEGY : "TIME_POOL"
 
-STANDARD_PATH : "/home/andrewchen/Error_Localize/standard_features.pkl"
+STANDARD_PATH : "./dataset/FS_standard.pkl"
 WEIGHT_PATH : "./results/pretrain_ref/pretrain_checkpoints/checkpoint_epoch_00012.pth"
 
 DATA :
@@ -24,7 +24,7 @@ OPTIMIZER :
     WARMUP_STEPS : 5000
 
 LOGDIR : "./results/skating_gt"
-LOSS : "ClosestSimGT"
+LOSS : "PerGT"
 DEBUG : False
 SETTING: "GT"
 EVAL :
