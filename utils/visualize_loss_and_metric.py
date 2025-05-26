@@ -1,4 +1,4 @@
-import re, os, matplotlib.pyplot as plt
+import re, os, json, matplotlib.pyplot as plt
 
 task = "skating_gt_ClosestSimGT"
 task_path = f"/home/weihsin/projects/MotionExpert_tmp/{task}"
@@ -8,8 +8,8 @@ task = "skating_gt_PerGT"
 task = "boxing_gt_PerGT"
 task = "pretrain_ref"
 task = "pretrain"
-task = "boxing_aligned"
-task_path = f"/home/weihsin/projects/MotionExpert_tmp/MotionExpert/results/{task}"
+task = "boxing_aligned_best"
+task_path = f"./results/{task}"
 
 log_path = os.path.join(task_path, "stdout.log")
 
@@ -121,3 +121,28 @@ image_path = os.path.join(task_path, f"metrics.png")
 plt.savefig(image_path)
 
 plt.close()
+
+Geval_path = os.path.join(task_path, "geval/allgeval.json")
+
+with open(Geval_path, "r", encoding="utf-8") as f:
+    Geval = json.load(f)
+
+# Geval has epoch (from most high to low)
+geval_epochs = [v["epoch"] for k, v in Geval.items()]
+
+# According to the order of geval to construct metrics JSON
+metrics_ordered = {}
+
+for epoch in geval_epochs:
+    epoch_key = f"epoch{epoch}"
+    metrics_ordered[epoch_key] = {
+        "BLEU-1": bleu_1.get(epoch),
+        "BLEU-4": bleu_4.get(epoch),
+        "ROUGE": rouge.get(epoch),
+        "CIDEr": cider.get(epoch),
+        "BERTScore": bertscore.get(epoch),
+    }
+
+metrics_path = os.path.join(task_path, "metrics.json")
+with open(metrics_path, "w", encoding="utf-8") as f:
+    json.dump(metrics_ordered, f, indent=2, ensure_ascii=False)
