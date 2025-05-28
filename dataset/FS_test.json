@@ -457,7 +457,7 @@
         "gt_end_frame": 281,
         "gt_std_start_frame": 0,
         "gt_std_end_frame": 46,
-        "gt_seq_len": 147
+        "gt_seq_len": 46
     },
     {
         "video_name": "471706263479386249_1",
@@ -477,7 +477,7 @@
         "gt_end_frame": 205,
         "gt_std_start_frame": 0,
         "gt_std_end_frame": 46,
-        "gt_seq_len": 99
+        "gt_seq_len": 46
     },
     {
         "video_name": "471706290155159700_0",
@@ -557,7 +557,7 @@
         "gt_end_frame": 237,
         "gt_std_start_frame": 0,
         "gt_std_end_frame": 46,
-        "gt_seq_len": 49
+        "gt_seq_len": 46
     },
     {
         "video_name": "471706304466387043_0",
@@ -577,7 +577,7 @@
         "gt_end_frame": 72,
         "gt_std_start_frame": 0,
         "gt_std_end_frame": 46,
-        "gt_seq_len": 72
+        "gt_seq_len": 46
     },
     {
         "video_name": "471706304466387043_1",
@@ -657,7 +657,7 @@
         "gt_end_frame": 88,
         "gt_std_start_frame": 0,
         "gt_std_end_frame": 47,
-        "gt_seq_len": 92
+        "gt_seq_len": 47
     },
     {
         "video_name": "495779172569055492_0",
@@ -717,7 +717,7 @@
         "gt_end_frame": 63,
         "gt_std_start_frame": 0,
         "gt_std_end_frame": 47,
-        "gt_seq_len": 93
+        "gt_seq_len": 47
     },
     {
         "video_name": "471703087418179585_1",
@@ -877,7 +877,7 @@
         "gt_end_frame": 76,
         "gt_std_start_frame": 0,
         "gt_std_end_frame": 54,
-        "gt_seq_len": 95
+        "gt_seq_len": 54
     },
     {
         "video_name": "468961490423775240_0",
