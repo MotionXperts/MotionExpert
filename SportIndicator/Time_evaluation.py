@@ -6,6 +6,9 @@ from detection import read_template, read_data, acc, g_eval
 # Time
 indicator = 'Time'
 
+# Usage :
+# $ python SportIndicator/Time_evaluation.py
+
 if __name__ == '__main__':
     load_dotenv()
     argparser = argparse.ArgumentParser()

@@ -6,6 +6,9 @@ from detection import read_template, read_data, acc, g_eval
 # Method
 indicator = 'Method'
 
+# Usage :
+# $ python SportIndicator/Method_evaluation.py
+
 if __name__ == '__main__':
     load_dotenv()
     argparser = argparse.ArgumentParser()

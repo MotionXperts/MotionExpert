@@ -5,6 +5,9 @@ from detection import read_template, read_data, acc, g_eval
 # Causation
 indicator = 'Causation'
 
+# Usage :
+# $ python SportIndicator/Causation_evaluation.py
+
 if __name__ == '__main__':
     load_dotenv()
     argparser = argparse.ArgumentParser()
