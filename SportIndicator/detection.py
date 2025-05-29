@@ -11,7 +11,7 @@ def read_data(predict_path):
     return predictions
 
 def acc(args, filename, metric):
-    output_filename = metric + '_Detection_{{filename}}'
+    output_filename = metric + '_Detection_{{filename}}.json'
 
     output_filename = output_filename.replace('{{filename}}',filename)
     output_filepath = os.path.join(args.output,output_filename)
@@ -61,7 +61,7 @@ def g_eval(args,summeval, prompt, api_key, filename, metric):
             print(f"Error occurred: {e}")
             ignore += 1
     
-    output_filename = metric + '_Detection_{{filename}}'
+    output_filename = metric + '_Detection_{{filename}}.json'
     output_filename = output_filename.replace('{{filename}}',filename)
 
     output_filepath = os.path.join(args.output,output_filename)

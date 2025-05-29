@@ -31,7 +31,7 @@ if __name__ == '__main__':
     filename    = os.path.basename(args.predict)
     filename    = os.path.splitext(filename)[0]
 
-    all_filename = indicator + f'_Detection_avg{filename}'
+    all_filename = indicator + f'_Detection_avg{filename}.json'
     all_filepath = os.path.join(args.output, all_filename)
         
     file_path   = os.path.join(args.predict, filename)
