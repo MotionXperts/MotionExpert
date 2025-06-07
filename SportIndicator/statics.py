@@ -123,17 +123,18 @@ if __name__ == '__main__':
             elif item["score"] == 4: metric2["score_4"] += 1
             elif item["score"] == 5: metric2["score_5"] += 1
 
-    matrix = [[0] * 6 for _ in range(6)]  # 建立 6x6 矩陣
+    # create a 6x6 matrix
+    matrix = [[0] * 6 for _ in range(6)]
 
-    for i in range(6):
-        for j in range(6):
+    for i in range(0,6):
+        for j in range(0,6):
             if i == j: continue
             for item in all_instructions:
                 data = all_instructions[item]
-                key1 = str(i + 1)  # 把 i+1 轉成字串
-                key2 = str(j + 1)  # 把 j+1 轉成字串
-                print(data)
-                if key1 in data and key2 in data:  # 確保 key 存在於字典
+                key1 = str(i + 1)
+                key2 = str(j + 1)
+
+                if key1 in data and key2 in data:
                     if data[key1] > 0 and data[key2] > 0 and data["score"] > 1:
                         matrix[i][j] += data["score"]
                         matrix[j][i] += data["score"]
