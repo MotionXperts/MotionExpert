@@ -135,6 +135,10 @@ if __name__ == '__main__':
                 key2 = str(j + 1)
 
                 if key1 in data and key2 in data:
+                    if isinstance(data["score"], list) :
+                        bestscore = max(data["score"])
+                    else :
+                        bestscore = data["score"]
                     if data[key1] > 0 and data[key2] > 0 and data["score"] > 1:
                         matrix[i][j] += data["score"]
                         matrix[j][i] += data["score"]
