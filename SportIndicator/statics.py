@@ -141,7 +141,6 @@ if __name__ == '__main__':
                         bestscore = data["score"]
                     if data[key1] > 0 and data[key2] > 0 and data["score"] > 1:
                         matrix[i][j] += data["score"]
-                        matrix[j][i] += data["score"]
 
     data = {
         "metric1": metric1,
