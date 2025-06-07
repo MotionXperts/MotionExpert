@@ -55,6 +55,8 @@ if __name__ == '__main__':
 
         if item["BodyPart_Detection_score"] == 1 :
             metric3["total"] += 1
+            if isinstance(item["score"], list):
+                item["score"] = max(item["score"])
             if item["score"] == 1: metric3["score_1"] += 1
             elif item["score"] == 2: metric3["score_2"] += 1
             elif item["score"] == 3: metric3["score_3"] += 1
@@ -65,6 +67,8 @@ if __name__ == '__main__':
         all_instructions[item["file_name"]]["2"] = item["Causation_Detection_score"]
         if item["Causation_Detection_score"] == 1 :
             metric4["total"] += 1
+            if isinstance(item["score"], list):
+                item["score"] = max(item["score"])
             if item["score"] == 1: metric4["score_1"] += 1
             elif item["score"] == 2: metric4["score_2"] += 1
             elif item["score"] == 3: metric4["score_3"] += 1
@@ -75,6 +79,8 @@ if __name__ == '__main__':
         all_instructions[item["file_name"]]["3"] = item["Coordination_Detection_score"]
         if item["Coordination_Detection_score"] == 1 :
             metric6["total"] += 1
+            if isinstance(item["score"], list):
+                item["score"] = max(item["score"])
             if item["score"] == 1: metric6["score_1"] += 1
             elif item["score"] == 2: metric6["score_2"] += 1
             elif item["score"] == 3: metric6["score_3"] += 1
@@ -85,6 +91,8 @@ if __name__ == '__main__':
         all_instructions[item["file_name"]]["4"] = item["Error_Detection_score"]
         if item["Error_Detection_score"] == 1 :
             metric1["total"] += 1
+            if isinstance(item["score"], list):
+                item["score"] = max(item["score"])
             if item["score"] == 1: metric1["score_1"] += 1
             elif item["score"] == 2: metric1["score_2"] += 1
             elif item["score"] == 3: metric1["score_3"] += 1
@@ -95,6 +103,8 @@ if __name__ == '__main__':
         all_instructions[item["file_name"]]["5"] = item["Method_Detection_score"]
         if item["Method_Detection_score"] == 1 :
             metric5["total"] += 1
+            if isinstance(item["score"], list):
+                item["score"] = max(item["score"])
             if item["score"] == 1: metric5["score_1"] += 1
             elif item["score"] == 2: metric5["score_2"] += 1
             elif item["score"] == 3: metric5["score_3"] += 1
@@ -105,6 +115,8 @@ if __name__ == '__main__':
         all_instructions[item["file_name"]]["6"] = item["Time_Detection_score"]
         if item["Time_Detection_score"] == 1 :
             metric2["total"] += 1
+            if isinstance(item["score"], list):
+                item["score"] = max(item["score"])
             if item["score"] == 1: metric2["score_1"] += 1
             elif item["score"] == 2: metric2["score_2"] += 1
             elif item["score"] == 3: metric2["score_3"] += 1

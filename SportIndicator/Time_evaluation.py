@@ -55,7 +55,8 @@ if __name__ == '__main__':
     
     Scores[acc_score_name] = acc_score
     Scores[acc_shot_count_name] = acc_shot_count
-    Scores[acc_name] = acc_score/acc_shot_count
+    if acc_shot_count != 0:
+        Scores[acc_name] = acc_score/acc_shot_count
 
     with open(all_filepath, 'w') as f:
         json.dump(Scores, f, indent=4)

@@ -23,9 +23,14 @@ def acc(args, filename, metric):
 
     score_name = metric + '_Detection_score'
     for data in datas:
-        if data[score_name] != 0 and data["score"] > 1:
+        if isinstance(data["score"], list):
+            bestscore = max(data["score"])
+        else :
+             bestscore = data["score"]
+
+        if data[score_name] != 0 and bestscore > 1:
             acc_shot_count += 1
-            acc_score += data["score"]
+            acc_score += bestscore
     return acc_score, acc_shot_count
 
 def g_eval(args,summeval, prompt, api_key, filename, metric):
