@@ -82,7 +82,7 @@ class DatasetLoader(Dataset) :
         self.samples = []
         index_dict = {}
 
-        if not pretrain :
+        if not pretrain and cfg.TASK.REF == True :
             standard_path = cfg.STANDARD_PATH
             with open(standard_path, 'rb') as f :
                 standard_file = pickle.load(f)
