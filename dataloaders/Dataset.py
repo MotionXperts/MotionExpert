@@ -46,7 +46,7 @@ def get_std_coords(sport, motion_type, std_coords_list) :
                     return std["coordinates"]
 
 def get_label(pretrain, labels, augmented_labels) :
-    if not pretrain :
+    if not pretrain and augmented_labels != None:
         labels = labels + augmented_labels
 
     newlabels = ["Motion Description : " + label if pretrain else "Motion Instruction : " + label for label in labels]
