@@ -98,10 +98,10 @@ The dataset is saved as a pickle file and is of type `<class 'list'>`.
 Each entry in the dataset contains the following information :
 - `video_name` : `<class 'str'>` e.g. `Jab`
 ```
-The naming of video_name is currently the same as `motion_type`.
+The naming of `video_name` is currently the same as `motion_type`.
 In the FS dataset, there are four figure skating jumps: "Single_Axel", "Double_Axel", "Loop", and "Lutz".
 In the BX dataset, there are two boxing techniques: "Jab" and "Cross".
-However, in the future, users will be able to choose their preferred standard video, in which case video_name may differ from `motion_type`.
+However, in the future, users will be able to choose their preferred standard video, in which case `video_name` may differ from `motion_type`.
 ```
 - `motion_type` : `<class 'str'>` e.g. `Jab`
 ```
