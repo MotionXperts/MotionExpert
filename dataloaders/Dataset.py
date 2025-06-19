@@ -108,14 +108,24 @@ class DatasetLoader(Dataset) :
 
             if pretrain == True or self.cfg.SETTING == "NO_SEGMENT":
                 std_coords = skeleton_coords
-                labels = get_label(pretrain, item['labels'], None)
+                # For evaluation from linebot.
+                if not cfg.EVAL.score:
+                    labels = None
+                elif pretrain == True :
+                    labels = get_label(pretrain, item['labels'], None)
+                else :
+                    labels = get_label(pretrain, item['labels'], item['augmented_labels'])
                 # Use the whole sequence without segmentation.
                 usr_start, length = 0, skeleton_coords.shape[1]
                 subtraction = torch.empty(0)
             else :
                 motion_type = item['motion_type']
                 std_coords = get_std_coords(cfg.TASK.SPORT, motion_type, std_coords_list)
-                labels = get_label(pretrain, item['labels'], item['augmented_labels'])
+                # For evaluation from linebot.
+                if not cfg.EVAL.score :
+                    labels = None
+                else :
+                    labels = get_label(pretrain, item['labels'], item['augmented_labels'])
 
                 # Specify the segment.
                 if self.cfg.TASK.DIFF_TYPE == 'RGB' :
@@ -150,24 +160,34 @@ class DatasetLoader(Dataset) :
                         print(f"Skipping {video_name} as no frames found")
                         continue
                     self.samples.append((video_name,
-                                        torch.FloatTensor(skeleton_coords),
-                                        seq_len,
-                                        torch.FloatTensor(frame_mask),
-                                        label,
-                                        item['labels'],
-                                        torch.FloatTensor(std_coords),
-                                        subtraction))
+                                         torch.FloatTensor(skeleton_coords),
+                                         seq_len,
+                                         torch.FloatTensor(frame_mask),
+                                         label,
+                                         item['labels'],
+                                         torch.FloatTensor(std_coords),
+                                         subtraction))
             # Every sample only need to feed into the model once when testing.
             else :
-                self.samples.append((video_name,
-                                    torch.FloatTensor(skeleton_coords),
-                                    seq_len,
-                                    torch.FloatTensor(frame_mask),
-                                    labels[0],
-                                    item['labels'],
-                                    torch.FloatTensor(std_coords),
-                                    subtraction))
-            if pretrain == False :
+                if not cfg.EVAL.score :
+                    self.samples.append((video_name,
+                                         torch.FloatTensor(skeleton_coords),
+                                         seq_len,
+                                         torch.FloatTensor(frame_mask),
+                                         None,
+                                         None,
+                                         torch.FloatTensor(std_coords),
+                                         subtraction))
+                else :
+                    self.samples.append((video_name,
+                                         torch.FloatTensor(skeleton_coords),
+                                         seq_len,
+                                         torch.FloatTensor(frame_mask),
+                                         labels[0],
+                                         item['labels'],
+                                         torch.FloatTensor(std_coords),
+                                         subtraction))
+            if pretrain == False and self.cfg.SETTING != "NO_SEGMENT" :
                 # Save data for visulization attention graph on 2D skeleton.
                 index_dict[video_name] = {"seq_len" : seq_len,
                                           "usr_start_frame" : usr_start,
