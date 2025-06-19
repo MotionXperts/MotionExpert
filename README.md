@@ -43,10 +43,10 @@ In case of installation of language_evaluation, you need to install from github 
 ### Dataset
 The dataset is saved as a pickle file and is of type `<class 'list'>`.
 Each entry in the dataset contains the following information :
-- `video_name` : `<class 'str'>` e.g. `7_front_4_cam1`
-- `motion_type` : `<class 'str'>` e.g. `front`
+- `video_name` : `<class 'str'>` e.g. `test_0`
+- `motion_type` : `<class 'str'>` e.g. `Jab`
 ```
-In the FS dataset, there are four figure skating jumps: "Axel_single_jump", "Axel_double_jump", "Loop_double_jump", and "Lutz_double_jump".
+In the FS dataset, there are four figure skating jumps: "Single_Axel", "Double_Axel", "Loop", and "Lutz".
 In the BX dataset, there are two boxing techniques: "Jab" and "Cross".
 ```
 - `coordinates` : `<class 'torch.Tensor'>` shape : `torch.Size([number of frames, 66])`
@@ -92,6 +92,30 @@ e.g.
 - `error_std_start_frame` `<class 'int'>`
 - `error_std_end_frame` `<class 'int'>`
 - `error_seq_len` `<class 'int'>`
+
+### Standard Dataset
+The dataset is saved as a pickle file and is of type `<class 'list'>`.
+Each entry in the dataset contains the following information :
+- `video_name` : `<class 'str'>` e.g. `Jab`
+```
+The naming of video_name is currently the same as `motion_type`.
+In the FS dataset, there are four figure skating jumps: "Single_Axel", "Double_Axel", "Loop", and "Lutz".
+In the BX dataset, there are two boxing techniques: "Jab" and "Cross".
+However, in the future, users will be able to choose their preferred standard video, in which case video_name may differ from `motion_type`.
+```
+- `motion_type` : `<class 'str'>` e.g. `Jab`
+```
+In the FS dataset, there are four figure skating jumps: "Single_Axel", "Double_Axel", "Loop", and "Lutz".
+In the BX dataset, there are two boxing techniques: "Jab" and "Cross".
+```
+- `coordinates` : `<class 'torch.Tensor'>` shape : `torch.Size([number of frames, 66])`
+```
+Each 66-dimensional feature vector in the dataset represents the 3D coordinates of 22 skeletal
+joints captured within a single frame. The vector is constructed by sequentially concatenating
+the x, y, and z coordinates of each joint. Specifically, the first three elements correspond
+to the x, y, and z coordinates of joint 0, the next three elements to joint 1, and this
+pattern continues up to joint 21.
+```
 
 ### Config File
 
