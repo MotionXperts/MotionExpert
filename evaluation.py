@@ -162,13 +162,14 @@ def main() :
                         datefmt = '%Y-%m-%d %H:%M:%S',
                         filename = os.path.join(cfg.LOGDIR, 'stdout.log'))
 
-    model = CoachMe(cfg)
+    model = CoachMe(cfg).to(torch.float32)
 
     seed_everything(42)
 
     test_pkl_file = cfg.DATA.TEST
     video_name_list = load_video_name(test_pkl_file)
 
+    # Distributed Training.
     dist.init_process_group(backend='nccl', init_method='env://')
     id = dist.get_rank()
     device = id % torch.cuda.device_count()
@@ -193,7 +194,10 @@ def main() :
     
     checkpoints = [cfg.EVAL.ckpt]
     for ckpt in checkpoints :
+        model = model.to(torch.float32)
         epoch = load_checkpoint(cfg, model, optimizer, ckpt)
+        model = model.to(torch.float32)
+        model.eval()
         eval(cfg, val_dataloader, model, epoch, summary_writer, store = store, video_name_list = video_name_list, logger = logger,
              eval_name = cfg.SETTING, test_pkl_file = test_pkl_file)
     dist.destroy_process_group()

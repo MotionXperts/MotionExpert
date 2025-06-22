@@ -177,7 +177,7 @@ def main():
     logging.basicConfig(level = logging.INFO, format = '%(asctime)s %(filename)s %(lineno)d: %(message)s',
                         datefmt = '%Y-%m-%d %H:%M:%S', filename = os.path.join(cfg.LOGDIR, 'stdout.log'))
 
-    model = CoachMe(cfg)
+    model = CoachMe(cfg).to(torch.float32)
 
     test_pkl_file = cfg.DATA.TEST
     video_name_list = load_video_name(test_pkl_file)
@@ -210,8 +210,9 @@ def main():
     scheduler = get_linear_schedule_with_warmup(optimizer,
                                                 num_warmup_steps = cfg.OPTIMIZER.WARMUP_STEPS,
                                                 num_training_steps = max_epoch * len(train_dataloader))
-
+    model = model.to(torch.float32)
     start_epoch = load_checkpoint(cfg, model, optimizer)
+    model = model.to(torch.float32)
     if cfg.TASK.PRETRAIN == True :
         cycle = 1
     else :

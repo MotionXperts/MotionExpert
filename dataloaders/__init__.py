@@ -26,7 +26,7 @@ def collate_fn(batch):
 
     seq_len = [s.item() if isinstance(s, torch.Tensor) else s for s in seq_len]
     # Change standard to padded_standard.
-    return video_name, padded_skeleton_coords, seq_len, frame_mask, label, labels, padded_standard, subtraction
+    return video_name, padded_skeleton_coords.float(), seq_len, frame_mask.float(), label, labels, padded_standard.float(), subtraction.float()
 
 def construct_dataloader(split,cfg,pkl_file):
     if split == 'train' :
