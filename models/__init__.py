@@ -61,7 +61,7 @@ def load_checkpoint(cfg, model, optimizer, name = None) :
         # If the checkpoint path is 'None', it indicates that the process is training rather than evaluation.
         if (cfg.EVAL.ckpt != "None") :
             # Evaluation
-            checkpoint_path = cfg.args.ckpt
+            checkpoint_path = cfg.EVAL.ckpt
             dist.barrier()
             print("checkpoint_path", checkpoint_path)
             checkpoint = torch.load(checkpoint_path)
