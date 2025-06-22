@@ -116,7 +116,7 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
             results[data] = instruction.replace('\u2019', "'")
 
         print("Saving results")
-        filename = '_' + str(epoch) + '.json'
+        filename = str(epoch) + '.json'
         if epoch == "demo" :
             result_json = os.path.join(cfg.JSONDIR, filename)
         else :
