@@ -195,7 +195,7 @@ class DatasetLoader(Dataset) :
 
         print('Number of sample : ', len(self.samples))
 
-        if (pretrain == False) :
+        if (pretrain == False and self.cfg.SETTING != "NO_SEGMENT") :
             with open(cfg.LOGDIR + '/index_dict_results.json', 'w') as f :
                 json.dump(index_dict, f, indent = 4)
 
