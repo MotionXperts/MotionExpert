@@ -1,0 +1,32 @@
+# command :
+# python -m torch.distributed.run --nproc_per_node=1 --master_port=29051 evaluation.py --cfg_file ./results/skating_evaluation/skating_evaluation.yaml
+
+TASK :
+    PRETRAIN : False
+    SPORT : "Skating"
+    HPP_WAY : "HPP"
+    REF : True
+    DIFF_WAY : "Subtraction"
+    DIFF_TYPE : "Skeleton"
+    PROJ_STRATEGY : "TIME_POOL"
+
+STANDARD_PATH : "./result/std.pk"
+WEIGHT_PATH : "./results/skating_gt/checkpoints/best_epoch.pth"
+
+DATA :
+    TRAIN : "./dataset/FS_train.pkl"
+    TEST : "./result/user.pk"
+    BATCH_SIZE : 1
+
+OPTIMIZER :
+    LR : 1e-4
+    MAX_EPOCH : 200
+    WARMUP_STEPS : 5000
+
+LOGDIR : "./results/skating_evaluation"
+LOSS : "PerGT"
+DEBUG : False
+SETTING: "GT"
+EVAL :
+    score : False
+    ckpt : "./results/skating_gt/checkpoints/best_epoch.pth"
