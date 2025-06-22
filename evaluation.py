@@ -100,7 +100,8 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
 
     # Distributed Training.
     if dist.get_rank() == 0 :
-        summary_writer.add_scalar('eval/loss', np.mean(loss_list), epoch)
+        if cfg.EVAL.score :
+            summary_writer.add_scalar('eval/loss', np.mean(loss_list), epoch)
 
         results = {}
         for name in video_name_list :
