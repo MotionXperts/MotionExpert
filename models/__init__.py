@@ -66,7 +66,10 @@ def load_checkpoint(cfg, model, optimizer, name = None) :
             print("checkpoint_path", checkpoint_path)
             checkpoint = torch.load(checkpoint_path)
             base_name = os.path.basename(checkpoint_path)
-            checkpoint_num = int(re.search(r'\d+', base_name).group())
+            try:
+                checkpoint_num = int(re.search(r'\d+', base_name).group())
+            except Exception as e:
+                checkpoint_num = "demo"
             model.module.load_state_dict(checkpoint["model_state"], strict = False)
 
             # Load LoRA state
