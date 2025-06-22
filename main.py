@@ -84,7 +84,8 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
                     gt_label = Tokenizer([gt_label], return_tensors = "pt", padding = "max_length",
                                          truncation = True, max_length = 160)['input_ids'].to(skeleton_coords.device)
                     gt_label = gt_label[:, 1:].to(logits.device)
-                    avg_loss = loss_fn(logits[i].view(-1, vocab_size), gt_label.view(-1))
+                    with torch.no_grad():
+                        avg_loss = loss_fn(logits[i].view(-1, vocab_size), gt_label.view(-1))
                     if avg_loss < min_loss :
                         min_loss = avg_loss
                         best_gt = gt_label
@@ -114,7 +115,8 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
                         gt_label = Tokenizer([gt_label], return_tensors = "pt", padding = "max_length",
                                             truncation = True, max_length = 160)["input_ids"].to(skeleton_coords.device)
                         gt_label = gt_label[:, 1:].to(logits.device)
-                        avg_loss = loss_fn(logits[i].view(-1, vocab_size), gt_label.view(-1))
+                        with torch.no_grad():
+                            avg_loss = loss_fn(logits[i].view(-1, vocab_size), gt_label.view(-1))
                         if avg_loss < min_loss :
                             min_loss = avg_loss
                             best_gt = gt_label
