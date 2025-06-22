@@ -108,6 +108,12 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
             try : results[name] = store.get(name).decode('utf-8')
             except : continue
 
+        # Clean up generated text by replacing all Unicode right single quotation marks (\u2019) with
+        # standard ASCII apostrophes (').
+        for data in results :
+            instruction = results[data]
+            results[data] = instruction.replace('\u2019', "'")
+
         print("Saving results")
         filename = str(epoch) + '.json'
         result_json = cfg.JSONDIR + '/results_epoch' + filename
