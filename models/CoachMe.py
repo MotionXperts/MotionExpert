@@ -86,37 +86,39 @@ class CoachMe(nn.Module) :
         return tokens, max_indices
 
     def forward(self,**kwargs) :
-        skeleton_coords = kwargs['skeleton_coords']
-        frame_mask = kwargs['frame_mask']
+        skeleton_coords = kwargs['skeleton_coords'].float()
+        frame_mask = kwargs['frame_mask'].float()
         seq_len = kwargs['seq_len']
-        std_coords = kwargs['std_coords']
+        standard = kwargs['std_coords'].float()
         decoder_input_ids = kwargs['decoder_input_ids']
         labels = kwargs['labels']
-        subtraction = kwargs['subtraction']
+        subtraction = kwargs['subtraction'].float()
 
         self.HumanPosePerception.train()
         motion_tokens, _, _ = self.HumanPosePerception(skeleton_coords)
+        motion_tokens = motion_tokens.float()
 
         if self.ref :
             with torch.no_grad() :
                 self.HumanPosePerception.eval()
                 if self.pretrain :
                     standard = self.get_std_feat(skeleton_coords, seq_len)
-                else :
-                    standard = std_coords
+                    standard = standard.float()
                 standard_tokens, _ , _ = self.HumanPosePerception(standard)
-
+                standard_tokens = standard_tokens.float()
             difference_tokens = self.get_diff_feat(motion_tokens, standard_tokens, self.ref)
+            difference_tokens = difference_tokens.float()
             tokens, max_indices = self.get_proj_feat(motion_tokens, difference_tokens, self.ref, self.diff_type)
 
         elif self.diff_type == 'RGB' :
             # The dimension of difference_tokens is [batch size, seq length, 1, 128]
-            difference_tokens = subtraction
-            # The dimension of difference_tokens becomes [batch size, seq length, 22, 128]
             difference_tokens = subtraction.unsqueeze(2).expand(-1, -1, 22, -1)
+            # The dimension of difference_tokens becomes [batch size, seq length, 22, 128]
+            difference_tokens = difference_tokens.float()
             tokens, max_indices = self.get_proj_feat(motion_tokens, difference_tokens, self.ref, self.diff_type)
         else :
             tokens, max_indices = self.get_proj_feat(motion_tokens, None, self.ref, self.diff_type)
+        tokens = tokens.float()
 
         return self.LanguageModel(inputs_embeds = tokens.contiguous(),
                                   attention_mask = frame_mask,
@@ -124,33 +126,40 @@ class CoachMe(nn.Module) :
                                   labels = labels.contiguous())
 
     def generate(self,**kwargs) :
-        skeleton_coords = kwargs['skeleton_coords']
-        frame_mask = kwargs['frame_mask']
+        skeleton_coords = kwargs['skeleton_coords'].float()
+        frame_mask = kwargs['frame_mask'].float()
         seq_len = kwargs['seq_len']
-        standard = kwargs['std_coords']
+        standard = kwargs['std_coords'].float()
         decoder_input_ids = kwargs['decoder_input_ids']
         tokenizer = kwargs['tokenizer']
-        subtraction = kwargs['subtraction']
+        subtraction = kwargs['subtraction'].float()
         with torch.no_grad() :
             self.HumanPosePerception.eval()
             motion_tokens, attention_node, attention_graph = self.HumanPosePerception(skeleton_coords)
+            motion_tokens = motion_tokens.float()
+
             if self.ref :
                 if self.pretrain :
                     standard = self.get_std_feat(skeleton_coords, seq_len)
-                else :
-                    standard = standard
-                standard_tokens, _ , _ = self.HumanPosePerception(standard)
+                    standard = standard.float()
 
-                difference_tokens = self.get_diff_feat(motion_tokens, standard_tokens, self.diff_way)
-                tokens, max_indices = self.get_proj_feat(motion_tokens, difference_tokens, self.ref, self.diff_type)
+                standard_tokens, _ , _ = self.HumanPosePerception(standard)
+                standard_tokens = standard_tokens.float()
+
+                difference_tokens = self.get_diff_feat(motion_tokens, standard_tokens, self.diff_way).float()
+                difference_tokens = difference_tokens.float()
+
+                tokens, max_indices = self.get_proj_feat(motion_tokens.float(), difference_tokens, self.ref, self.diff_type)
             elif self.diff_type== 'RGB' :
                 # The dimension of difference_tokens is [batch size, seq length, 1, 128].
-                difference_tokens = subtraction
-                # The dimension of difference_tokens is [batch size, seq length, 22, 128].
                 difference_tokens = subtraction.unsqueeze(2).expand(-1, -1, 22, -1)
+                difference_tokens = difference_tokens.float()
+                # The dimension of difference_tokens is [batch size, seq length, 22, 128].
                 tokens, max_indices = self.get_proj_feat(motion_tokens, difference_tokens, self.ref, self.diff_type)
             else :
                 tokens, max_indices = self.get_proj_feat(motion_tokens, None, self.ref, self.diff_type)
+            tokens = tokens.float()
+
         generated_ids = self.LanguageModel.generate(inputs_embeds = tokens,
                                                     attention_mask = frame_mask,
                                                     decoder_input_ids = decoder_input_ids,
