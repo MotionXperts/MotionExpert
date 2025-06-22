@@ -160,6 +160,10 @@ class CoachMe(nn.Module) :
                 tokens, max_indices = self.get_proj_feat(motion_tokens, None, self.ref, self.diff_type)
             tokens = tokens.float()
 
+        dosample = False
+        if self.cfg.EVAL.ckpt != "None" :
+            dosample = True
+
         generated_ids = self.LanguageModel.generate(inputs_embeds = tokens,
                                                     attention_mask = frame_mask,
                                                     decoder_input_ids = decoder_input_ids,
@@ -170,7 +174,7 @@ class CoachMe(nn.Module) :
                                                     return_dict_in_generate = True,
                                                     output_attentions = True,
                                                     # Set do_sample as True for demo.
-                                                    do_sample = False,
+                                                    do_sample = dosample,
                                                     early_stopping = True)
         # Distributed Training.
         if not self.pretrain and dist.get_rank() == 0 :
