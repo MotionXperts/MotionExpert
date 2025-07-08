@@ -19,11 +19,16 @@ if __name__ == '__main__':
     # argparser.add_argument('--predict', type=str, default='./SportIndicator/geval_epoch_135.json')
     # argparser.add_argument('--predict', type=str, default='./SportIndicator/geval_instruction_by_GPT4-o.json')
     # argparser.add_argument('--predict', type=str, default='./SportIndicator/geval_llama32_skating.json')      
-    argparser.add_argument('--output', type=str, default='./SportIndicator/')
-    
+    # argparser.add_argument('--output', type=str, default='./SportIndicator/')
+    # argparser.add_argument('--output', type=str, default="./results/boxing_aligned/.")
+    # argparser.add_argument('--output', type=str, default="./results/boxing_llama/.")
+    #argparser.add_argument('--output', type=str, default="./results/boxing_gpt/.")
+    argparser.add_argument('--output', type=str, default="./results/GT_FS/.")
     # Boxing
-    argparser.add_argument('--predict', type=str, default='./SportIndicator/geval_boxing_epoch70.json')
-    
+    # argparser.add_argument('--predict', type=str, default="./results/boxing_aligned/geval/geval_epoch_115.json")
+    # argparser.add_argument('--predict', type=str, default="./results/boxing_llama/geval/geval_epoch_31.json")
+    # argparser.add_argument('--predict', type=str, default="./results/boxing_gpt/geval/geval_epoch_31.json")
+    argparser.add_argument('--predict', type=str, default="./results/GT_FS/geval/results.json")
     args = argparser.parse_args()
 
     api_key     = os.getenv("ANTHROPIC_KEY")
