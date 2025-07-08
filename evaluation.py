@@ -118,7 +118,7 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
         print("Saving results")
         filename = str(epoch) + '.json'
         if epoch == "demo" :
-            result_json = os.path.join(cfg.JSONDIR, filename)
+            result_json = os.path.join(cfg.JSONDIR, cfg.EVAL.UID + '_' + filename)
         else :
             result_json = cfg.JSONDIR + '/results_epoch' + filename
         with open(result_json, 'w') as f :

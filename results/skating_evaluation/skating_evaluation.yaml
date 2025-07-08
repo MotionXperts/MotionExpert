@@ -10,12 +10,12 @@ TASK :
     DIFF_TYPE : "Skeleton"
     PROJ_STRATEGY : "TIME_POOL"
 
-STANDARD_PATH : "./result/std.pk"
+STANDARD_PATH : "./dataset/FS_std_demo.pkl"
 WEIGHT_PATH : "./results/skating_gt/checkpoints/best_epoch.pth"
 
 DATA :
     TRAIN : "./dataset/FS_train.pkl"
-    TEST : "./result/user.pk"
+    TEST : "./dataset/FS_eval_demo.pkl"
     BATCH_SIZE : 1
 
 OPTIMIZER :
@@ -30,3 +30,4 @@ SETTING: "GT"
 EVAL :
     score : False
     ckpt : "./results/skating_gt/checkpoints/best_epoch.pth"
+    UID : "{UID}"
