@@ -4,33 +4,28 @@ def read_data(predict_path):
         predictions = json.load(f)
 
     return predictions
-body_part_file      = "./SportIndicator/BodyPart_Detection_geval_epoch_135.json"
-causation_file      = "./SportIndicator/Causation_Detection_geval_epoch_135.json"
-coordination_file   = "./SportIndicator/Coordination_Detection_geval_epoch_135.json"
-error_file          = "./SportIndicator/Error_Detection_geval_epoch_135.json"
-method_file         = "./SportIndicator/Method_Detection_geval_epoch_135.json"
-time_file           = "./SportIndicator/Time_Detection_geval_epoch_135.json"
 
-body_part_file      = "./SportIndicator/BodyPart_Detection_geval_instruction_by_GPT4-o.json"
-causation_file      = "./SportIndicator/Causation_Detection_geval_instruction_by_GPT4-o.json"
-coordination_file   = "./SportIndicator/Coordination_Detection_geval_instruction_by_GPT4-o.json"
-error_file          = "./SportIndicator/Error_Detection_geval_instruction_by_GPT4-o.json"
-method_file         = "./SportIndicator/Method_Detection_geval_instruction_by_GPT4-o.json"
-time_file           = "./SportIndicator/Time_Detection_geval_instruction_by_GPT4-o.json"
 '''
-body_part_file      = "./SportIndicator/BodyPart_Detection_geval_llama32_skating.json"
-causation_file      = "./SportIndicator/Causation_Detection_geval_llama32_skating.json"
-coordination_file   = "./SportIndicator/Coordination_Detection_geval_llama32_skating.json"
-error_file          = "./SportIndicator/Error_Detection_geval_llama32_skating.json"
-method_file         = "./SportIndicator/Method_Detection_geval_llama32_skating.json"
-time_file           = "./SportIndicator/Time_Detection_geval_llama32_skating.json"
+body_part_file      = "./results/boxing_aligned/BodyPart_Detection_geval_epoch_115.json"
+causation_file      = "./results/boxing_aligned/Causation_Detection_geval_epoch_115.json"
+coordination_file   = "./results/boxing_aligned/Coordination_Detection_geval_epoch_115.json"
+error_file          = "./results/boxing_aligned/Error_Detection_geval_epoch_115.json"
+method_file         = "./results/boxing_aligned/Method_Detection_geval_epoch_115.json"
+time_file           = "./results/boxing_aligned/Time_Detection_geval_epoch_115.json"
 
-body_part_file      = "./BodyPart_Detection_geval_boxing_epoch70"
-causation_file      = "./Causation_Detection_geval_boxing_epoch70"
-coordination_file   = "./Coordination_Detection_geval_boxing_epoch70"
-error_file          = "./Error_Detection_geval_boxing_epoch70"
-method_file         = "./Method_Detection_geval_boxing_epoch70"
-time_file           = "./Time_Detection_geval_boxing_epoch70"
+body_part_file      = "./results/boxing_llama/BodyPart_Detection_geval_epoch_31.json"
+causation_file      = "./results/boxing_llama/Causation_Detection_geval_epoch_31.json"
+coordination_file   = "./results/boxing_llama/Coordination_Detection_geval_epoch_31.json"
+error_file          = "./results/boxing_llama/Error_Detection_geval_epoch_31.json"
+method_file         = "./results/boxing_llama/Method_Detection_geval_epoch_31.json"
+time_file           = "./results/boxing_llama/Time_Detection_geval_epoch_31.json"
+'''
+body_part_file      = "./results/GT_FS/BodyPart_Detection_results.json"
+causation_file      = "./results/GT_FS/Causation_Detection_results.json"
+coordination_file   = "./results/GT_FS/Coordination_Detection_results.json"
+error_file          = "./results/GT_FS/Error_Detection_results.json"
+method_file         = "./results/GT_FS/Method_Detection_results.json"
+time_file           = "./results/GT_FS/Time_Detection_results.json"
 
 if __name__ == '__main__':
     body_part = read_data(body_part_file)
