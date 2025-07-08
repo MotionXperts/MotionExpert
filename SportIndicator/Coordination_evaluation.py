@@ -13,7 +13,7 @@ if __name__ == '__main__':
     argparser = argparse.ArgumentParser()
 
     # Coordination
-    argparser.add_argument('--prompt_fp', type=str, default='./SportIndicator/Coordination_Detection_prompt.txt')
+    argparser.add_argument('--prompt_fp', type=str, default='./SportIndicator/GEval_template/GEval_Coordination_template.txt')
     # Skating
     # argparser.add_argument('--predict', type=str, default='./SportIndicator/geval_epoch_135.json')
     # argparser.add_argument('--predict', type=str, default='./SportIndicator/geval_instruction_by_GPT4-o.json')
