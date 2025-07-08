@@ -120,9 +120,13 @@ if __name__ == '__main__' :
     # argparser.add_argument('--output', type = str, default = './results/skating_evaluation/geval/.')
 
     # Boxing Evaluation
-    argparser.add_argument('--ground_truth', type = str, default = '../results/boxing_evaluation/boxing_gt.json')
-    argparser.add_argument('--predict', type = str, default = '../results/boxing_evaluation/jsons')
-    argparser.add_argument('--output', type = str, default = '../results/boxing_evaluation/geval/.')
+    # argparser.add_argument('--ground_truth', type = str, default = '../results/boxing_evaluation/boxing_gt.json')
+    # argparser.add_argument('--predict', type = str, default = '../results/boxing_evaluation/jsons')
+    # argparser.add_argument('--output', type = str, default = '../results/boxing_evaluation/geval/.')
+
+    argparser.add_argument('--ground_truth', type = str, default = '../results/skating_gt/skating_gt.json')
+    argparser.add_argument('--predict', type = str, default = '../results/skating_gt/jsons')
+    argparser.add_argument('--output', type = str, default = '../results/skating_gt/geval/.')
 
     args = argparser.parse_args()
     api_key = os.getenv("ANTHROPIC_KEY")
