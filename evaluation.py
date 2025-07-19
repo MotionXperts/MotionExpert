@@ -3,7 +3,7 @@ import torch.distributed as dist
 from pytorch_lightning import seed_everything
 from utils.parser import parse_args, load_config
 from utils.data_information import load_video_name
-from cider import readJSON, readPickle, getGTCaptions, BLEUScore, CIDERScore
+from utils.cider import readJSON, readPickle, getGTCaptions, BLEUScore, CIDERScore
 from dataloaders import construct_dataloader
 from models.CoachMe import CoachMe
 from transformers import AutoTokenizer
