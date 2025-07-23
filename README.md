@@ -263,3 +263,31 @@ Concept Difference : https://hackmd.io/@uan/HJvPoxNw6
 * [Dynamic time warping](https://github.com/minghchen/CARL_code/blob/master/utils/dtw.py)
 * [CARL](https://arxiv.org/abs/2203.14957)
 * [Temporal Cycle-Consistency Learning](https://arxiv.org/abs/1904.07846)
+
+## Citation
+```
+@inproceedings{yeh-etal-2025-coachme,
+    title = "{C}oach{M}e: Decoding Sport Elements with a Reference-Based Coaching Instruction Generation Model",
+    author = "Yeh, Wei-Hsin  and
+      Su, Yu-An  and
+      Chen, Chih-Ning  and
+      Lin, Yi-Hsueh  and
+      Ku, Calvin  and
+      Chiu, Wenhsin  and
+      Hu, Min-Chun  and
+      Ku, Lun-Wei",
+    editor = "Che, Wanxiang  and
+      Nabende, Joyce  and
+      Shutova, Ekaterina  and
+      Pilehvar, Mohammad Taher",
+    booktitle = "Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2025",
+    address = "Vienna, Austria",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2025.acl-long.1413/",
+    pages = "29126--29151",
+    ISBN = "979-8-89176-251-0",
+    abstract = "Motion instruction is a crucial task that helps athletes refine their technique by analyzing movements and providing corrective guidance. Although recent advances in multimodal models have improved motion understanding,generating precise and sport-specific instruction remains challenging due to the highly domain-specific nature of sports and the need for informative guidance. We propose CoachMe, a reference-based model that analyzes the differences between a learner{'}s motion and a reference under temporal and physical aspects. This approach enables both domain-knowledge learning and the acquisition of a coach-like thinking process that identifies movement errors effectively and provides feedback to explain how to improve. In this paper, weillustrate how CoachMe adapts well to specific sports such as skating and boxing by learning from general movements and then leveraging limited data. Experiments show that CoachMe provides high-quality instructions instead of directions merely in the tone of a coach but without critical information. CoachMe outperforms GPT-4o by 31.6{\%} in G-Eval on figure skating and by 58.3{\%} on boxing. Analysisfurther confirms that it elaborates on errors and their corresponding improvement methods in the generated instructions. You can find CoachMe here: \url{https://motionxperts.github.io/}"
+}
+```
