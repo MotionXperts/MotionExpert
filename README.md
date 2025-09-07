@@ -1,4 +1,9 @@
-# MotionXpert
+# CoachMe: Decoding Sport Elements with a Reference-Based Coaching Instruction Generation Model (ACL 2025)
+
+<a href='https://aclanthology.org/2025.acl-long.1413/'><img src='https://img.shields.io/badge/ACL_2025_paper-CoachMe-red'></a> &nbsp;
+ <a href='https://motionxperts.github.io/'><img src='https://img.shields.io/badge/Project_Page-CoachMe-green'></a> &nbsp;
+ <a href='https://youtu.be/m7LDiiOyHjQ?list=PL_9a5ic6GUikB6J5lTi7Dg7LgRpXS9E0H'><img src='https://img.shields.io/badge/Video-CoachMe-yellow'></a> &nbsp;
+
 ```                            
     __ ( }       __  __       _   _            __   __                _   
   '---. _`---,  |  \/  |     | | (_)           \ \ / /               | |  
@@ -265,6 +270,7 @@ Concept Difference : https://hackmd.io/@uan/HJvPoxNw6
 * [Temporal Cycle-Consistency Learning](https://arxiv.org/abs/1904.07846)
 
 ## Citation
+If you find our work useful, please consider cite this work as
 ```
 @inproceedings{yeh-etal-2025-coachme,
     title = "{C}oach{M}e: Decoding Sport Elements with a Reference-Based Coaching Instruction Generation Model",
