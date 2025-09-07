@@ -46,6 +46,8 @@ In case of installation of language_evaluation, you need to install from github 
 
 ## Prepare
 ### Dataset
+**The released dataset is located in the `./dataset` directory.**
+
 The dataset is saved as a pickle file and is of type `<class 'list'>`.
 Each entry in the dataset contains the following information :
 - `video_name` : `<class 'str'>` e.g. `test_0`
