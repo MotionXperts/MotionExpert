@@ -256,6 +256,11 @@ $ git submodule update
 $ git pull
 ```
 
+## Evaluation
+The implementation for visualizing the attention mechanism in Human Pose Perception can be found in the repository: https://github.com/MotionXperts/Evaluation.
+
+The G-eval template for consistency score and sport indicators can be found in the `./GEval` directory.
+
 ## Development Rcecord
 CoachMe Development Rcecord : https://hackmd.io/@weihsinyeh/MotionXperts
 
