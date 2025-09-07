@@ -45,6 +45,9 @@ $ pip install anthropic
 In case of installation of language_evaluation, you need to install from github source code
 
 ## Prepare
+### Data Augmentation
+The implementation of data augmentation can be found in the `./gt_preprocess` directory.
+
 ### Dataset
 **The released dataset is located in the `./dataset` directory.**
 
