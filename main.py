@@ -2,6 +2,7 @@ import os, torch, numpy as np, pickle, logging, warnings, traceback, warnings
 # Visualize the gt indices
 import json
 import torch.cuda
+import random
 os.environ['NUMEXPR_MAX_THREADS'] = '2'
 os.environ['TOKENIZERS_PARALLELISM'] = "false"
 warnings.filterwarnings("ignore", category = UserWarning)
