@@ -68,7 +68,9 @@ def eval(cfg, eval_dataloader, model, epoch, summary_writer, sanity_check = Fals
                                       truncation = True,
                                       max_length = 160)['input_ids'].to(skeleton_coords.device)
                 tgt_input = tgt_batch[ :, : -1 ]
+                tgt_label = tgt_batch[:, 1:]
                 inputs['decoder_input_ids'] = tgt_input.to(model.device)
+                inputs['labels'] = tgt_label.to(model.device)
                 loss = model(**inputs).loss
 
                 loss[torch.isnan(loss)] = 0
