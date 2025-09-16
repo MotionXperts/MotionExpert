@@ -69,7 +69,7 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
         best_losses, best_gts = [], []
         best_gt_indices = []
         loss_fn = torch.nn.CrossEntropyLoss(ignore_index = -100)
-        if cfg.LOSS == "ClosestSimGT" :
+        if cfg.LOSS == "ClosestSimGT":
             # ClosestSimGT :
             # From multiple ground truths, select the one that is most similar to the prediction,
             # and compute the cross-entropy loss. The goal is to converge towards the most similar
