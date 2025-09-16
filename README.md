@@ -1,8 +1,9 @@
 # CoachMe: Decoding Sport Elements with a Reference-Based Coaching Instruction Generation Model (ACL 2025)
 
 <a href='https://aclanthology.org/2025.acl-long.1413/'><img src='https://img.shields.io/badge/ACL_2025_paper-CoachMe-red'></a> &nbsp;
- <a href='https://motionxperts.github.io/'><img src='https://img.shields.io/badge/Project_Page-CoachMe-green'></a> &nbsp;
- <a href='https://youtu.be/m7LDiiOyHjQ?list=PL_9a5ic6GUikB6J5lTi7Dg7LgRpXS9E0H'><img src='https://img.shields.io/badge/Video-CoachMe-yellow'></a> &nbsp;
+<a href='https://motionxperts.github.io/'><img src='https://img.shields.io/badge/Project_Page-CoachMe-green'></a> &nbsp;
+<a href='https://youtu.be/m7LDiiOyHjQ?list=PL_9a5ic6GUikB6J5lTi7Dg7LgRpXS9E0H'><img src='https://img.shields.io/badge/Video-CoachMe-yellow'></a> &nbsp;
+<a href='https://arxiv.org/abs/2509.11698'><img src='https://img.shields.io/badge/2509.11698-arXiv-red'></a> &nbsp;
 
 ```                            
     __ ( }       __  __       _   _            __   __                _   
@@ -144,7 +145,6 @@ Skating | V | aligned | `./results/skating_aligned/skating_aligned.yaml` |
 Boxing | X | NO_SEGMENT | `./results/boxing/boxing.yaml` |
 Boxing | V | error | `./results/boxing_error/boxing_error.yaml` |
 Boxing | V | aligned | `./results/boxing_aligned/boxing_aligned.yaml` |
-
 
 ### Pretrain
 Take `pretrain_ref` setting as an example:
