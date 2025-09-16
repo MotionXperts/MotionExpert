@@ -184,7 +184,7 @@ class DatasetLoader(Dataset) :
                                          seq_len,
                                          torch.FloatTensor(frame_mask),
                                          labels[0],
-                                         item['labels'],
+                                         labels,
                                          torch.FloatTensor(std_coords),
                                          subtraction))
             if pretrain == False and self.cfg.SETTING != "NO_SEGMENT" :
