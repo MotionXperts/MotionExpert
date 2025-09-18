@@ -161,6 +161,7 @@ class CoachMe(nn.Module) :
             tokens = tokens.float()
 
         dosample = False
+        # Set do_sample as True for demo.
         if self.cfg.EVAL.ckpt != "None" :
             dosample = True
 
@@ -169,11 +170,12 @@ class CoachMe(nn.Module) :
                                                     decoder_input_ids = decoder_input_ids,
                                                     max_length = 160,
                                                     num_beams = 3,
-                                                    repetition_penalty = 2.5,
-                                                    length_penalty = 1.0,
+                                                    repetition_penalty = 5.0,
+                                                    length_penalty = 3.0,
                                                     return_dict_in_generate = True,
                                                     output_attentions = True,
                                                     # Set do_sample as True for demo.
+                                                    temperature = 2.0,
                                                     do_sample = dosample,
                                                     early_stopping = True)
         # Distributed Training.
