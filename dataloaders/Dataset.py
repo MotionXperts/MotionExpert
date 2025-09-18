@@ -179,6 +179,7 @@ class DatasetLoader(Dataset) :
             # Every sample only need to feed into the model once when testing.
             else :
                 if not cfg.EVAL.score :
+                    # Loss calculation is skipped during evaluation for the deployment of CoachMe’s LineBot.
                     self.samples.append((video_name,
                                          torch.FloatTensor(skeleton_coords),
                                          seq_len,
@@ -188,6 +189,7 @@ class DatasetLoader(Dataset) :
                                          torch.FloatTensor(std_coords),
                                          subtraction))
                 else :
+                    # Enable loss calculation when running evaluation for monitoring purposes.
                     self.samples.append((video_name,
                                          torch.FloatTensor(skeleton_coords),
                                          seq_len,
