@@ -24,7 +24,7 @@ OPTIMIZER :
     WARMUP_STEPS : 5000
 
 LOGDIR : "./results/skating_gt"
-LOSS : "PerGT"
+LOSS : "RandomGT"
 DEBUG : False
 SETTING: "GT"
 EVAL :
