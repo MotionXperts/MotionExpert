@@ -155,10 +155,13 @@ class DatasetLoader(Dataset) :
             frame_mask = torch.ones(22)
             # Every ground truth should be used to learn.
             if train == True :
-                for label in labels :
-                    if seq_len == 0 or seq_len == 1 :
-                        print(f"Skipping {video_name} as no frames found")
+                # For Mix, randomly select 3 GTs to learn every epoch.
+                if cfg.LOSS == "Mix" :
+                    rand_indices = random.sample(range(len(labels)), 3)
+                for idx, label in enumerate(labels):
+                    if cfg.LOSS == "Mix" and idx not in rand_indices :
                         continue
+                    # The PerGT loss calculation provides all ground truths (GTs) per epoch for the model to learn.
                     self.samples.append((video_name,
                                          torch.FloatTensor(skeleton_coords),
                                          seq_len,
