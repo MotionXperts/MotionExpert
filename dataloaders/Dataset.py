@@ -170,10 +170,9 @@ class DatasetLoader(Dataset) :
                                          labels,
                                          torch.FloatTensor(std_coords),
                                          subtraction))
-                    # The RandomGT loss calculation provides only one ground truth (GT)
-                    # per epoch for the model to learn. During training, the GT is
-                    # randomly sampled from the variable `labels`, which contains the
-                    # original ground truth and five augmented versions.
+                    # The RandomGT loss calculation provides only one ground truth (GT) per epoch for the model to
+                    # learn. During training, the GT is randomly sampled from the variable `labels`, which contains
+                    # the original ground truth and five augmented versions.
                     if cfg.LOSS == "RandomGT" :
                         break
             # Every sample only need to feed into the model once when testing.
