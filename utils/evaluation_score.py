@@ -2,7 +2,28 @@ from bert_score import score
 from nlgmetricverse import NLGMetricverse,load_metric
 import pickle , os, json
 import torch
-## calculate scores
+
+def find_ground_truth(filename, ground_truths):
+    for data in ground_truths:
+        if (data["video_name"] == filename) :
+            return data["labels"]
+
+def read_data(ground_truth_path, predict_path, ground_truth_train_path = None) :
+    with open(ground_truth_path, 'r', encoding = 'utf-8') as f :
+        ground_truth = json.load(f)
+    if ground_truth_train_path != None:
+        with open(ground_truth_train_path, 'r', encoding = 'utf-8') as f :
+            ground_truth_train = json.load(f)
+        ground_truth = ground_truth_train + ground_truth
+    with open(predict_path, 'r', encoding = 'utf-8') as f :
+        predictions = json.load(f)
+    results = {}
+    for key in predictions.keys() :
+        print(key)
+        results[key] = find_ground_truth(key, ground_truth)
+    return results, predictions
+
+# calculate scores
 def calculate_scores(predictions,gts):
         metrics = [
             load_metric("bleu",resulting_name="bleu_1",compute_kwargs={"max_order":1}),
@@ -20,69 +41,49 @@ def calculate_scores(predictions,gts):
 
         predictions = list(predictions.values())
         gts = list(gts.values())
-        
-        scores = Evaluator(predictions=predictions,references=gts, reduce_fn="max")
-                
+
+        scores = Evaluator(predictions = predictions, references = gts, reduce_fn = "max")
+
         score_results = {}
         score_results["bleu_1"] = scores["bleu_1"]['score']
         score_results["bleu_4"] = scores["bleu_4"]['score']
         score_results["rouge"] = scores["rouge"]['rougeL']
         score_results["cider"] = scores["cider"]['score']
-        # score_results["bertscore"] = scores["bertscore_1"]['score']
-        P,R,F1 = score(predictions,gts,lang="en",verbose=False,idf=True,rescale_with_baseline=True)
-        score_results["bertscore"] = F1.mean().item()
-        # max_F1 = torch.max(F1, dim=1)[0]
-        # print("F1:", F1)
-        # score_results["bertscore"] = F1.mean().item()
+
+        is_multi_candidate = isinstance(predictions[0], list)
+
+        if not is_multi_candidate :
+            P,R,F1 = score(predictions, gts, lang = "en", verbose = False, idf = True, rescale_with_baseline = True)
+            score_results["bertscore"] = F1.mean().item()
+        else :
+            best_predictions = []
+            for prediction, gt in zip(predictions, gts):
+                references = [gt] * len(prediction)
+
+                P, R, F1 = score(prediction, references, lang = "en", verbose = False, idf = True, rescale_with_baseline = True)
+
+                best_idx = F1.argmax().item()
+                best_predictions.append(prediction[best_idx])
+
+                print(f"Group predictions: {prediction}")
+                print(f"BERTScores (F1): {[round(f.item(), 4) for f in F1]}")
+                print(f"Best: {prediction[best_idx]}\n")
+            P, R, F1 = score(best_predictions, gts, lang = "en", verbose = False, idf = True, rescale_with_baseline = True)
+            score_results["bertscore"] = F1.mean().item()
         return score_results
-def gts():
-    # pkl_file = "./datasets/boxing_safetrim/boxing_GT_test/aggregate.pkl"
-    pkl_file = './Error_Localize/aggregate_vibe.pkl'
-    groud_truth = {}
-    with open(pkl_file, 'rb') as f:
-        data_list = pickle.load(f)
-        for item in data_list:
-            # item.video_name and item.labels
-            # if item['video_name'] == 'standard':
-            #     continue
-            groud_truth[item['video_name']] = item['revised_label']
-            # groud_truth[item['video_name']] = item['labels']
-        return groud_truth
 
 def main():
-    groud_truth = gts()
-    path_name = "./MotionExpert_v2/MotionExpert/results/finetune_skeleton/Metrics_ground_truth_mean.json"
-    # path_name = './MotionExpert_v2/boxing_eval/Metrics_ground_truth_bertMean_otherMax.json'
+    ground_truth_path = "./dataset/BX_test.json"
+    ground_truth_train_path = "./dataset/BX_train.json"
+    path_name = "./results/boxing_aligned/metrics.json"
     All_file = {}
-    folder_path = "./MotionExpert_v2/MotionExpert/vibe_eval"
+    folder_path = "./results/boxing_aligned/best_json/"
     for file_name in os.listdir(folder_path):
         if file_name.endswith('.json') and file_name.startswith('results_epoch'):
             file_path = os.path.join(folder_path, file_name)
-            predictions = {}
-            with open(file_path, 'r') as f:
-                json_data = json.load(f)
-                for(k, v) in json_data.items():
-                   if k == 'standard' :
-                        print("standard")
-                        continue
-                   predictions[k] = v
-                All_file[file_name] = calculate_scores(predictions,groud_truth)
-    '''
-    All_file = {}
-    TM2T_path_name = "./projects/MotionExpert/_TM2T.json"
-    predictions = {}
-    with open(TM2T_path_name, 'r') as f:
-        json_data = json.load(f)
-        for(k, v) in json_data.items():
-                   if k == 'standard' :
-                        print("standard")
-                        continue
-                   if 'Motion Instruction : ' in v:
-                       v = v.replace('Motion Instruction : ', '')
-                   predictions[k] = v
-        All_file['TM2T'] = calculate_scores(predictions,groud_truth)
-    '''
-    #All_file 先用 bertscore sort 再用其他的 bleu1, bleu4, rouge, cider
+            groud_truth, predictions = read_data(ground_truth_path, file_path, ground_truth_train_path)
+            All_file[file_name] = calculate_scores(predictions, groud_truth)
+
     All_file = dict(sorted(All_file.items(), key=lambda item: item[1]['bertscore'], reverse=True))
     with open(path_name, 'w') as f:
         json.dump(All_file, f, indent=4)
