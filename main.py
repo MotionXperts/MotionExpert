@@ -45,7 +45,15 @@ def train(cfg, train_dataloader, model, optimizer, scheduler, scaler, summary_wr
         optimizer.zero_grad()
 
         # Convert the ground truth (descriptions or instructions) into token IDs.
-        tgt_batch = Tokenizer(label_batch, return_tensors = "pt", padding = "max_length",
+        if cfg.LOSS == "RandomGT" :
+            num_gt = len(labels_batch[0])
+            rand_idx = random.randint(0, num_gt - 1)
+            instructions = []
+            for i in range(0, len(labels_batch)) :
+                instructions.append(labels_batch[i][rand_idx])
+        else :
+            instructions = label_batch
+        tgt_batch = Tokenizer(instructions, return_tensors = "pt", padding = "max_length",
                               truncation = True, max_length = 160)['input_ids'].to(skeleton_coords.device)
         tgt_input = tgt_batch[:, :-1]
         tgt_label = tgt_batch[:, 1:]
