@@ -53,6 +53,7 @@ The implementation of data augmentation can be found in the `./gt_preprocess` di
 **The released dataset is located in the `./dataset` directory.**
 
 The dataset is saved as a pickle file and is of type `<class 'list'>`.
+The type of each entry is `<class 'dict'>`.
 Each entry in the dataset contains the following information :
 - `video_name` : `<class 'str'>` e.g. `test_0`
 - `motion_type` : `<class 'str'>` e.g. `Jab`
@@ -106,6 +107,7 @@ e.g.
 
 ### Standard Dataset
 The dataset is saved as a pickle file and is of type `<class 'list'>`.
+The type of each entry is `<class 'dict'>`.
 Each entry in the dataset contains the following information :
 - `video_name` : `<class 'str'>` e.g. `Jab`
 ```
