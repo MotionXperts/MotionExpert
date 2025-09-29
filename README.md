@@ -130,6 +130,22 @@ to the x, y, and z coordinates of joint 0, the next three elements to joint 1, a
 pattern continues up to joint 21.
 ```
 
+### Pretrained Dataset
+Both `humanml3D_train.pkl` and `humanml3D_test.pkl` correspond to the train and test datasets in HumanML3D, respectively.
+
+The dataset is saved as a pickle file and is of type `<class 'list'>`.
+The type of each entry is `<class 'dict'>`.
+Each entry in the dataset contains the following information :
+- `video_name` : `<class 'str'>` e.g. `000001`
+- `coordinates` : `<class 'torch.Tensor'>` shape : `torch.Size([number of frames, 66])`
+- `labels` : `<class 'list'>` e.g.
+```
+['a man squats extraordinarily low then bolts up in an unsatisfactory jump.',
+ 'a person falls to the ground in a sitting motion and then pops back up in a standing position.',
+ 'a person squats down then jumps',
+ 'a descends into a falling motion and thens bounces back up.']
+```
+
 ### Config File
 
 |Task | Ref | Segment | config file |
